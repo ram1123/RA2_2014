@@ -55,7 +55,7 @@ def makeRA2TreeTreeFromMiniADO(process,
         process.hltHighLevel
         )
     if MC:
-        print "Running over MC: removing HLT selection"
+        print "Running on MC: removing HLT selection"
         process.HLTSelection.remove(process.hltHighLevel)
     elif not hltPath:
         print "Empty list of HLT paths: removing HLT selection"
@@ -65,10 +65,6 @@ def makeRA2TreeTreeFromMiniADO(process,
         "TFileService",
         fileName = cms.string(outFileName+".root")
         )
-    from AllHadronicSUSY.SignalScan.genDecayStringMakerPythia8_cfi import printDecayPythia8
-    process.PrintDecay = printDecayPythia8.clone(
-        src = cms.InputTag("prunedGenParticles"),
-    )
 	    
     ## --- Selection sequences ---------------------------------------------
     # leptons
