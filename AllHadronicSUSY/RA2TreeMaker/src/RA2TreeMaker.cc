@@ -41,6 +41,7 @@ RA2TreeMaker::RA2TreeMaker(const edm::ParameterSet& iConfig)
   treeName_ = iConfig.getParameter<std::string>("TreeName");
   vertexCollectionTag_ = iConfig.getParameter<edm::InputTag>("VertexCollection");
   varsDoubleTags_ = iConfig.getParameter< std::vector<edm::InputTag> >("VarsDouble");
+  filterDecisionTags_ = iConfig.getParameter< std::vector<edm::InputTag> >("Filters");
   MC_ = iConfig.getParameter<bool> ("MC");
   QCD_ = iConfig.getParameter<bool> ("QCD");
   StoreAll_ = iConfig.getParameter<bool> ("StoreAll");
@@ -75,6 +76,7 @@ RA2TreeMaker::RA2TreeMaker(const edm::ParameterSet& iConfig)
   leptonTagName_        			= 	iConfig.getParameter< std::vector<std::string> >  ("LeptonTagName");
   genra2JetsTag_				=	iConfig.getParameter<edm::InputTag>  ("GenJetTag");
   varsDouble_ = std::vector<Float_t>(varsDoubleTags_.size(),1.);
+  filterDecisions_ = std::vector<UChar_t>(filterDecisionTags_.size(),0);
   for(unsigned int i = 0; i < ra2JetsCollectionInputTag_.size(); ++i) {
     ra2JetsN_.push_back(0);
     ra2JetsPt_.push_back (new Float_t[nMaxCandidates_]);
@@ -157,6 +159,14 @@ RA2TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     iEvent.getByLabel(varsDoubleTags_.at(i),var);
     if( var.isValid() ) {
       varsDouble_.at(i) = *var;
+    }
+  }
+  for(unsigned int i = 0; i < filterDecisionTags_.size(); ++i) {
+    edm::Handle<bool> dec;
+    iEvent.getByLabel(filterDecisionTags_.at(i),dec);
+    if( dec.isValid() ) {
+      if( *dec ) filterDecisions_.at(i) = 1;
+      else filterDecisions_.at(i) = 0;
     }
   }
   edm::Handle< edm::View<pat::Jet> > ra2JetsCands;
@@ -303,6 +313,12 @@ RA2TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       GenJetEta_[i]=ra2GenJetsCands->at(i).eta();
       GenJetPhi_[i]=ra2GenJetsCands->at(i).phi();
       GenJetE_[i]=ra2GenJetsCands->at(i).energy();
+      std::vector <const GenParticle*> Constituents = ra2GenJetsCands->at(i).getGenConstituents();
+      //std::cout<<"GenJetConstituentsSize: "<<Constituents.size()<<std::endl;
+      for(unsigned int ii=0; ii < Constituents.size();ii++)
+      {
+	if(true) std::cout<<"GenParticlesofJet["<<i<<"] constituent["<<ii<<"] pdgId:"<<Constituents[ii]->pdgId()<<std::endl;
+      }
       // select HT Jets
       if(ra2GenJetsCands->at(i).pt() > minPTHTJets_ && abs(ra2GenJetsCands->at(i).eta() ) <maxEtaHTJets_ )/// check values!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       {
@@ -615,6 +631,13 @@ RA2TreeMaker::beginJob()
     tree_->Branch((name+"E").c_str(),  GenJetE_,  (name+"E["+name+"Num]/F").c_str());
     }
   }
+  for(unsigned int i = 0; i < filterDecisionTags_.size(); ++i) {
+    if(debug_) std::cout<<"Filter"<<i<<" with name"<<filterDecisionTags_.at(i).label()<<" has been selected"<<std::endl;
+    TString name = "Filter_";
+    name += filterDecisionTags_.at(i).label();
+    tree_->Branch(name,&(filterDecisions_.at(i)),name+"/b");
+  }
+  
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
@@ -715,6 +738,12 @@ RA2TreeMaker::setBranchVariablesToDefault()
       ra2JetsBTagValue_.at(i)[j]   = -9999.;
       ra2JetsBTag_.at(i)[j]   = 1000.;
     }
+  }
+  for(unsigned int i = 0; i < filterDecisions_.size(); ++i) {
+    filterDecisions_.at(i) = 0;
+  }
+  for(unsigned int i = 0; i < varsDouble_.size(); ++i) {
+    varsDouble_.at(i) = 9999.;
   }
   for(unsigned int i = 0; i < leptonTag_.size(); ++i) {
     leptonN_[i] = 0;

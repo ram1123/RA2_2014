@@ -68,6 +68,9 @@ private:
 	std::vector<edm::InputTag> varsDoubleTags_;
 	std::vector<std::string> varsDoubleNamesInTree_;
 	std::vector<Float_t> varsDouble_;
+	// Any boolean variables
+	std::vector<edm::InputTag> filterDecisionTags_;
+	std::vector<UChar_t> filterDecisions_;
 	// main search variables
 	edm::InputTag ra2JetsTag_;
 	std::string   btagname_;

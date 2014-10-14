@@ -230,6 +230,17 @@ def getWeightProducer(fileName):
         weightProducer.Method     = cms.string("Constant")
         weightProducer.XS         = cms.double(0.0038872)
         weightProducer.NumberEvts = cms.double(30436)
+        
+        
+        # 13 TeV miniAOD samples
+    if "TTJets_MSDecaysCKM_central_Tune4C_13TeV" in fileName:
+        mcVersion = "Spring14miniaod"
+        weightProducer.Method     = cms.string("Constant")
+        weightProducer.XS         = cms.double(745.16)
+        weightProducer.NumberEvts = cms.double(25478151)  
+        print "TTjets 13TeV used for : '"+fileName+"'"
+        applyWeight = True
+        weightProducer.weight = cms.double(-1.)
 
 
 	

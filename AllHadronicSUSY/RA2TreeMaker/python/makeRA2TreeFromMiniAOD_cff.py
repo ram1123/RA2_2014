@@ -88,19 +88,43 @@ def makeRA2TreeTreeFromMiniADO(process,
     process.selectedIDElectrons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedElectrons"), cut = cms.string('''abs(eta)<2.5 && pt>5. &&
     gsfTrack.isAvailable() &&
     gsfTrack.trackerExpectedHitsInner.numberOfLostHits<2'''))
+    
+    
+       ## --- Setup of TreeMaker ----------------------------------------------
+    FilterNames = cms.VInputTag()
+    FilterNames.append(cms.InputTag("HBHENoiseFilterRA2","HBHENoiseFilterResult","PAT"))
+    FilterNames.append(cms.InputTag("beamHaloFilter"))
+    FilterNames.append(cms.InputTag("eeNoiseFilter"))
+    FilterNames.append(cms.InputTag("trackingFailureFilter"))
+    FilterNames.append(cms.InputTag("inconsistentMuons"))
+    FilterNames.append(cms.InputTag("greedyMuons"))
+    FilterNames.append(cms.InputTag("ra2EcalTPFilter"))
+    FilterNames.append(cms.InputTag("ra2EcalBEFilter"))
+    FilterNames.append(cms.InputTag("hcalLaserEventFilter"))
+    FilterNames.append(cms.InputTag("ecalLaserCorrFilter"))
+    FilterNames.append(cms.InputTag("eeBadScFilter"))
+    FilterNames.append(cms.InputTag("PBNRFilter"))
+    FilterNames.append(cms.InputTag("HCALLaserEvtFilterList2012"))
+    FilterNames.append(cms.InputTag("manystripclus53X"))
+    FilterNames.append(cms.InputTag("toomanystripclus53X"))
+    FilterNames.append(cms.InputTag("logErrorTooManyClusters"))
+    FilterNames.append(cms.InputTag("RA2HONoiseFilter"))
+    
+    
     ## --- Setup WeightProducer -------------------------------------------
     from AllHadronicSUSY.WeightProducer.getWeightProducer_cff import getWeightProducer
     process.WeightProducer = getWeightProducer(testFileName)
     process.WeightProducer.Lumi                       = cms.double(5000)
     process.WeightProducer.PU                         = cms.int32(0) # PU S10 3 for S10 2 for S7
     process.WeightProducer.FileNamePUDataDistribution = cms.string("NONE")
-    
+    print process.WeightProducer.PU
     from AllHadronicSUSY.RA2TreeMaker.ra2TreeMaker import RA2TreeMaker
     process.RA2TreeMaker2 = RA2TreeMaker.clone(
     	TreeName          = cms.string("RA2PreSelection"),
     	VertexCollection  = cms.InputTag('offlineSlimmedPrimaryVertices'),
     	VarsDouble        = cms.VInputTag(cms.InputTag('WeightProducer:weight')),
     	VarsDoubleNamesInTree = cms.vstring('Weight'),
+    	Filters           = cms.VInputTag(FilterNames), #FilterNames
     	MC = MC,
     	QCD = QCD,  # use this switch to store only information needed for qcd background estimation method
     	StoreAll = StoreAll, # override QCD only switch and stores in addition to non QCD selection also gen jet information use this for maximum information in tree

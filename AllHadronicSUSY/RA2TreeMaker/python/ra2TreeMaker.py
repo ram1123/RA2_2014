@@ -14,6 +14,9 @@ VarsDouble        = cms.VInputTag(),
 # this vector is not specified, the generic names "<InputTag::label()>"
 # are used.
 VarsDoubleNamesInTree = cms.vstring(),
+# list of filter decisions (bool) written from filters in tag mode
+# will be stored as "Filter_..."
+Filters           = cms.VInputTag(),
 
 MC = cms.bool(False),
 QCD = cms.bool(False),
