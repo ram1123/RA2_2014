@@ -14,7 +14,7 @@ def makeRA2TreeTreeFromMiniADO(process,
 		    MC=False,
 		    debug = False,
 		    QCD=False,
-		    StoreAll=False,
+		    LostLepton=False,
                     numProcessedEvt=1000):
 
     process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
@@ -127,12 +127,13 @@ def makeRA2TreeTreeFromMiniADO(process,
     	Filters           = cms.VInputTag(FilterNames), #FilterNames
     	MC = MC,
     	QCD = QCD,  # use this switch to store only information needed for qcd background estimation method
-    	StoreAll = StoreAll, # override QCD only switch and stores in addition to non QCD selection also gen jet information use this for maximum information in tree
+    	LostLepton = LostLepton, # use this siwtch to store lost lepton relevant information only
     	debug =debug,
     	LeptonTag = cms.VInputTag(cms.InputTag('selectedIDIsoMuons'),cms.InputTag('selectedIDMuons'),cms.InputTag('selectedIDIsoElectrons'),cms.InputTag('selectedIDElectrons')),
     	LeptonTagName = cms.vstring('RecoIsoMuon','RecoMuon','RecoIsoElec','RecoElec'),
     #RA2JetsTag = cms.InputTag("patJetsAK5PFCHS"),   
     	RA2DefaultJetsTag = cms.InputTag("slimmedJets"),  
+    	METTag  = cms.InputTag("slimmedMETs"),
     	ra2JetsCollectionInputTag = cms.VInputTag(cms.InputTag('slimmedJets')),
     	ra2JetsCollectionNameInTree = cms.vstring('ak4'),
     	ra2JetsBTagInputTag = cms.vstring('combinedSecondaryVertexBJetTags','combinedSecondaryVertexBJetTags'),

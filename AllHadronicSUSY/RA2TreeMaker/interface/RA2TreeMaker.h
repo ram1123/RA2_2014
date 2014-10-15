@@ -53,7 +53,7 @@ private:
 	
 	TString treeName_;
 	TTree* tree_;
-	bool MC_, QCD_, StoreAll_;
+	bool MC_, QCD_, LostLepton_, UseAll_;
 	
 	// CMSSW 7
 	UShort_t debug_;
@@ -73,11 +73,13 @@ private:
 	std::vector<UChar_t> filterDecisions_;
 	// main search variables
 	edm::InputTag ra2JetsTag_;
+	edm::InputTag metTag_;
 	std::string   btagname_;
 	double        btagvalue_;
-	Float_t ht_, mht_;
+	Float_t ht_, mht_, mhtEta_, mhtPhi_;
 	Float_t minHT_, minMHT_, maxEtaHTJets_, maxEtaMHTJets_, minPTHTJets_, minPTMHTJets_;
 	int minNJets_;
+	Float_t metPt_, metEta_, metPhi_;
 	
 	UShort_t nJets_, BTags_;
 	UShort_t nIsoLeptons_;
