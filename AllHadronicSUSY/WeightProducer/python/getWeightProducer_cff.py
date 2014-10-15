@@ -231,22 +231,71 @@ def getWeightProducer(fileName):
         weightProducer.XS         = cms.double(0.0038872)
         weightProducer.NumberEvts = cms.double(30436)
         
-        
+    print "---------------------------------------------------------------"
         # 13 TeV miniAOD samples
-    if "TTJets_MSDecaysCKM_central_Tune4C_13TeV" in fileName:
+    if "TTJets_MSDecaysCKM_central_Tune4C_13TeV" in fileName and "PU40bx25_POSTLS170_V5-v2" in fileName:
         mcVersion = "Spring14miniaod"
         weightProducer.Method     = cms.string("Constant")
         weightProducer.XS         = cms.double(745.16)
         weightProducer.NumberEvts = cms.double(25478151)  
-        print "TTjets 13TeV used for : '"+fileName+"'"
+        print "TTJets_MSDecaysCKM_central_Tune4C_13TeV_PU50x25_V5_v2 : '"+fileName+"'"
+        applyWeight = True
+        weightProducer.weight = cms.double(-1.)
+        
+    if "TTJets_MSDecaysCKM_central_Tune4C_13TeV" in fileName and "PU20bx250_V5-v2" in fileName:
+        mcVersion = "Spring14miniaod"
+        weightProducer.Method     = cms.string("Constant")
+        weightProducer.XS         = cms.double(818.8)
+        weightProducer.NumberEvts = cms.double(25474122)  
+        print "TTJets_MSDecaysCKM_central_Tune4C_13TeV_PU20bx250_V5-v2 : '"+fileName+"'"
+        applyWeight = True
+        weightProducer.weight = cms.double(-1.)
+        
+    if "WJetsToLNu_HT-100to200_Tune4C_13TeV" in fileName and "PU20bx25_POSTLS170_V5-v2" in fileName:
+        mcVersion = "Spring14miniaod"
+        weightProducer.Method     = cms.string("Constant")
+        weightProducer.XS         = cms.double(1817.0)
+        weightProducer.NumberEvts = cms.double(5229141)  
+        print "WJetsToLNu_HT-100to200_Tune4C_13TeV : '"+fileName+"'"
+        applyWeight = True
+        weightProducer.weight = cms.double(-1.)
+	
+    if "WJetsToLNu_HT-200to400_Tune4C_13TeV" in fileName and "PU20bx25_POSTLS170_V5-v1" in fileName:
+        mcVersion = "Spring14miniaod"
+        weightProducer.Method     = cms.string("Constant")
+        weightProducer.XS         = cms.double(471.6)
+        weightProducer.NumberEvts = cms.double(4933933)  
+        print "WJetsToLNu_HT-200to400_Tune4C_13TeV : '"+fileName+"'"
+        applyWeight = True
+        weightProducer.weight = cms.double(-1.)
+        
+    if "WJetsToLNu_HT-400to600_Tune4C_13TeV" in fileName and "PU20bx25_POSTLS170_V5-v1" in fileName:
+        mcVersion = "Spring14miniaod"
+        weightProducer.Method     = cms.string("Constant")
+        weightProducer.XS         = cms.double(55.61)
+        weightProducer.NumberEvts = cms.double(4642823)  
+        print "WJetsToLNu_HT-400to600 : '"+fileName+"'"
         applyWeight = True
         weightProducer.weight = cms.double(-1.)
 
+    if "WJetsToLNu_HT-600toInf_Tune4C_13TeV" in fileName and "PU20bx25_POSTLS170_V5-v1" in fileName:
+        mcVersion = "Spring14miniaod"
+        weightProducer.Method     = cms.string("Constant")
+        weightProducer.XS         = cms.double(18.81)
+        weightProducer.NumberEvts = cms.double(4634811)  
+        print "WJetsToLNu_HT-600toIn : '"+fileName+"'"
+        applyWeight = True
+        weightProducer.weight = cms.double(-1.)     
 
-	
-
-     
-
+    if "QCD_Pt-470to600_Tune4C_13TeV_pythia8" in fileName and "PU20bx25_POSTLS170_V5-v1" in fileName:
+        mcVersion = "Spring14miniaod"
+        weightProducer.Method     = cms.string("Constant")
+        weightProducer.XS         = cms.double(587.1)
+        weightProducer.NumberEvts = cms.double(2907137)  
+        print "WJetsToLNu_HT-600toIn : '"+fileName+"'"
+        applyWeight = True
+        weightProducer.weight = cms.double(-1.)     
+        
     ## --- PU Reweighting and Lumi ------------------------------------------------
          
     if mcVersion == "Summer12_5_3_X":

@@ -23,7 +23,13 @@
 class EffMaker : public TSelector {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
-
+   // functions
+   void resetValues();
+   bool FiltersPass();
+   double deltaR(double eta1, double phi1, double eta2, double phi2);
+   double MTWCalculator(double metPt,double  metPhi,double  lepPt,double  lepPhi);
+   TH2F* ratioCalculator(TH2F* passTH2, TH2F* failTH2);
+   TH1F* ratioCalculator(TH1F* passTH1, TH1F* failTH1);
    // Declaration of the TH2Fs
    // eff TH2F
    TH2F *MuonIsoLow_, *MuonIso0_, *MuonIso1_, *MuonIso2_; 
@@ -36,7 +42,6 @@ public :
    TH2F *MTWMHTNJet_;
    TH1F *TauDecayCorrectionHT_, *TauDecayCorrectionMHT_, *TauDecayCorrectionNJet_;
    TH2F *TauDecayNJetMHT_;
-   bool doTauEstimation_;
    
    TH2F *MC_TAP_mu_iso_eff, *Data_TAP_mu_iso_eff, *MC_TAP_mu_reco_eff, *Data_TAP_mu_reco_eff;
    TH2F *MC_TAP_elec_iso_eff, *Data_TAP_elec_iso_eff, *MC_TAP_elec_reco_eff, *Data_TAP_elec_reco_eff;
@@ -48,7 +53,10 @@ public :
    TH2F *ElecIso0Fail, *ElecIsoLowFail, *ElecIso1Fail, *ElecIso2Fail, *ElecAccFail, *ElecReco0Fail, *ElecRecoLowFail, *ElecReco1Fail, *ElecReco2Fail;
    TH1F *MTWNJetFail;
    TH2F *MTWMHTNJetFail;
-   
+   // eff variables for tree
+   UShort_t Expectation;
+   UShort_t muIso, muReco, muAcc, muMTW, muTotal;
+   UShort_t elecIso, elecReco, elecAcc, elecMTW, elecTotal;
    // end of Eff definitions
    TTree	*tExpectation_;
    // Declaration of leaf types

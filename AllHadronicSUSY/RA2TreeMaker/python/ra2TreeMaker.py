@@ -20,12 +20,13 @@ Filters           = cms.VInputTag(),
 
 MC = cms.bool(False),
 QCD = cms.bool(False),
-StoreAll = cms.bool(False),
+LostLepton = cms.bool(False),
 debug = cms.bool(False),
 # CMSSW 7 varaibles miniAOD
 prunedGenParticles = cms.InputTag("prunedGenParticles"),
 packedGenParticles = cms.InputTag("packedGenParticles"),   
 RA2DefaultJetsTag = cms.InputTag("patJetsAK5PFCHS"), 
+METTag  = cms.InputTag("slimmedMETs"),
 bTagName     = cms.string("combinedSecondaryVertexBJetTags"),
 bTagValue    = cms.double(0.679),
 # jet selection for HT MHT NJets and Btag

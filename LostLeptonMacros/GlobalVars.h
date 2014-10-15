@@ -15,14 +15,32 @@
 #ifndef _mal2_hpp_
 #define _mal2_hpp_
 // user defined functions
-double deltaR(double eta1, double phi1, double eta2, double phi2);
-double MTWCalculator(double metPt,double  metPhi,double  lepPt,double  lepPhi);
+
+void saveCutsToFile(fstream *llLogFile);
+
 // Global Variables for debuging documentation and reports
 fstream *llLogFile_;
 // global variables generell
 TFile *outPutFile_;
 TString outPutFileName_;
 unsigned int toBeProcessedEvents_;
+const double minHT_=500;
+const double minMHT_=100;
+const unsigned int minNJets_=3;
+const double deltaPhi1_=0.5;
+const double deltaPhi2_=0.5;
+const double deltaPhi3_=0.3;
+const bool applyFilters_=false;
+// lepton cuts
+const double minMuPt_=10;
+const double maxMuEta_=2.4;
+const double minElecPt_=10;
+const double maxElecEta_=2.4;
+// lepton matching
+const double maxDeltaRGenToRecoMu_ =0.3;
+const double maxDiffPtGenToRecoMu_ =0.3;
+const double maxDeltaRRecoToIsoMu_ =0.1;
+const double maxDiffPtRecoToIsoMu_ =0.1;
 // basic cuts
 const double NjetLowLow_=1.6;
 const double NjetHighLow_ = 2.6;

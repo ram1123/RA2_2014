@@ -47,13 +47,6 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
 
    TString option = GetOption();
  //  std::cout<<"SlaveStarted"<<std::endl;
-   // initialize the tree and the Histograms
-   tExpectation_ = new TTree("LostLeptonExpectation","a simple Tree with simple variables");
-   tExpectation_->Branch("HT",&HT,"HT/F");
-   tExpectation_->Branch("MHT",&MHT,"MHT/F");
-   tExpectation_->Branch("NJets",&NJets,"NJets/s");
-   GetOutputList()->Add(tExpectation_);
-
    MuonIsoLow_ = new TH2F("MuonIsoNJet2Jet","MuonIsoNJet2Jet",muIsoHTLow_-1,MuIsoHTLow_,muIsoMHTLow_-1,MuIsoMHTLow_);
    GetOutputList()->Add(MuonIsoLow_);
    MuonIsoLowFail = (TH2F*)MuonIsoLow_->Clone();
@@ -173,19 +166,132 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    MTWMHTNJetFail = (TH2F*)MTWMHTNJet_->Clone();
    MTWMHTNJetFail->SetName("MTWMHTNJetFail");
    GetOutputList()->Add(MTWMHTNJetFail);
+   
+   // initialize the tree and the Histograms
+   tExpectation_ = new TTree("LostLeptonExpectation","a simple Tree with simple variables");
+   tExpectation_->Branch("HT",&HT,"HT/F");
+   tExpectation_->Branch("MHT",&MHT,"MHT/F");
+   tExpectation_->Branch("NJets",&NJets,"NJets/s");
+   tExpectation_->Branch("BTags",&BTags,"BTags/s");
+   tExpectation_->Branch("NVtx",&NVtx,"NVtx/s");
+   tExpectation_->Branch("DeltaPhi1",&DeltaPhi1,"DeltaPhi1/F");
+   tExpectation_->Branch("DeltaPhi2",&DeltaPhi2,"DeltaPhi2/F");
+   tExpectation_->Branch("DeltaPhi3",&DeltaPhi3,"DeltaPhi3/F");
+   tExpectation_->Branch("WeightProducer", &WeightProducer, "WeightProducer/F");
+   tExpectation_->Branch("GenMuNum",&GenMuNum,"GenMuNum/s");
+   tExpectation_->Branch("GenMuFromTau",GenMuFromTau,"GenMuFromTau[GenMuNum]/s");
+   tExpectation_->Branch("GenMuPt", GenMuPt,"GenMuPt[GenMuNum]/F");
+   tExpectation_->Branch("GenMuEta", GenMuEta,"GenMuEta[GenMuNum]/F");
+   tExpectation_->Branch("GenMuPhi", GenMuPhi,"GenMuPhi[GenMuNum]/F");
+   tExpectation_->Branch("GenElecNum",&GenElecNum,"GenElecNum/s");
+   tExpectation_->Branch("GenElecFromTau",GenElecFromTau,"GenElecFromTau[GenElecNum]/s");
+   tExpectation_->Branch("GenElecPt", GenElecPt,"GenElecPt[GenElecNum]/F");
+   tExpectation_->Branch("GenElecEta", GenElecEta,"GenElecEta[GenElecNum]/F");
+   tExpectation_->Branch("GenElecPhi", GenElecPhi,"GenElecPhi[GenElecNum]/F");
+   tExpectation_->Branch("GenTauNum",&GenTauNum,"GenTauNum/s");
+   tExpectation_->Branch("GenTauPt", GenTauPt,"GenTauPt[GenTauNum]/F");
+   tExpectation_->Branch("GenTauEta", GenTauEta,"GenTauEta[GenTauNum]/F");
+   tExpectation_->Branch("GenTauPhi", GenTauPhi,"GenTauPhi[GenTauNum]/F");
+   tExpectation_->Branch("Expectation",&Expectation,"Expectation/s");  
+   tExpectation_->Branch("muAcc",&muAcc,"muAcc/s");  
+   tExpectation_->Branch("muReco",&muReco,"muReco/s");  
+   tExpectation_->Branch("muIso",&muIso,"muIso/s");  
+   tExpectation_->Branch("elecAcc",&elecAcc,"elecAcc/s");  
+   GetOutputList()->Add(tExpectation_);
 
 
 }
 
 Bool_t EffMaker::Process(Long64_t entry)
 {
-	fChain->GetTree()->GetEntry(entry);
-
-	tExpectation_->Fill();
-
-
-
-   return kTRUE;
+  resetValues();
+  fChain->GetTree()->GetEntry(entry);
+  if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_ ||  DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_) return kTRUE;
+  if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
+  // check if it is a diplepton event
+  if( (GenMuNum+GenElecNum)==2)
+  {
+    
+  }
+  // start with gen muons consider only single muon events
+  if(GenMuNum==1 && GenElecNum==0)
+  {
+    if ( GenMuPt[0] < minMuPt_ || std::abs(GenMuEta[0]) > maxMuEta_)
+    {
+      MuonAccFail->Fill(MHT,NJets,WeightProducer);
+      muAcc=0;
+      Expectation=1;
+    }
+    else
+    {
+      MuonAcc_->Fill(MHT,NJets,WeightProducer);
+      muAcc=2;
+      bool RecoNotMatched=true;
+      for (UShort_t i=0; i<RecoMuonNum; i++)
+      {
+	std::cout<<"RecoMuonNum["<<i<<"] started"<<std::endl;
+	if(deltaR(GenMuEta[0],GenMuPhi[0],RecoMuonEta[i],RecoMuonPhi[i])<maxDeltaRGenToRecoMu_ && std::abs(GenMuPt[0]-RecoMuonPt[i])/GenMuPt[0] <maxDiffPtGenToRecoMu_)
+	{
+	  std::cout<<"RecoMuonNum["<<i<<"] started"<<std::endl;
+	  RecoNotMatched=false;
+	  if( NjetLowLow_ < NJets && NJets < NjetHighLow_) MuonRecoLow_->Fill(HT,MHT,WeightProducer);
+	  if( NjetLow0_ < NJets && NJets < NjetHigh0_) MuonReco0_->Fill(HT,MHT,WeightProducer);
+	  if( NjetLow1_ < NJets && NJets < NjetHigh1_) MuonReco1_->Fill(HT,MHT,WeightProducer);
+	  if( NjetLow2_ < NJets && NJets < NjetHigh2_) MuonReco2_->Fill(HT,MHT,WeightProducer);
+	  muReco =2;
+	  bool IsoNotMatched=true;
+	  for (UShort_t ii=0; ii < RecoIsoMuonNum; ii++)
+	  {
+	    if(deltaR(RecoIsoElecEta[ii],RecoIsoElecPhi[ii],RecoMuonEta[i],RecoMuonPhi[i])<maxDeltaRRecoToIsoMu_ && std::abs(RecoIsoMuonPt[ii]-RecoMuonPt[i])/RecoIsoMuonPt[ii] <maxDiffPtRecoToIsoMu_)
+	    {
+	      IsoNotMatched=false;
+	      if( NjetLowLow_ < NJets && NJets < NjetHighLow_) MuonIsoLow_->Fill(HT,MHT,WeightProducer);
+	      if( NjetLow0_ < NJets && NJets < NjetHigh0_) MuonIso0_->Fill(HT,MHT,WeightProducer);
+	      if( NjetLow1_ < NJets && NJets < NjetHigh1_) MuonIso1_->Fill(HT,MHT,WeightProducer);
+	      if( NjetLow2_ < NJets && NJets < NjetHigh2_) MuonIso2_->Fill(HT,MHT,WeightProducer);
+	      muIso=2;
+	      Expectation=2;
+	    }
+	  }
+	  if(IsoNotMatched)
+	  {
+	    if( NjetLowLow_ < NJets && NJets < NjetHighLow_) MuonIsoLowFail->Fill(HT,MHT,WeightProducer);
+	    if( NjetLow0_ < NJets && NJets < NjetHigh0_) MuonIso0Fail->Fill(HT,MHT,WeightProducer);
+	    if( NjetLow1_ < NJets && NJets < NjetHigh1_) MuonIso1Fail->Fill(HT,MHT,WeightProducer);
+	    if( NjetLow2_ < NJets && NJets < NjetHigh2_) MuonIso2Fail->Fill(HT,MHT,WeightProducer);
+	    muIso=0;
+	    Expectation=1;
+	  }
+	}
+      }
+      if(RecoNotMatched)
+      {
+	if( NjetLowLow_ < NJets && NJets < NjetHighLow_) MuonRecoLowFail->Fill(HT,MHT,WeightProducer);
+	if( NjetLow0_ < NJets && NJets < NjetHigh0_) MuonReco0Fail->Fill(HT,MHT,WeightProducer);
+	if( NjetLow1_ < NJets && NJets < NjetHigh1_) MuonReco1Fail->Fill(HT,MHT,WeightProducer);
+	if( NjetLow2_ < NJets && NJets < NjetHigh2_) MuonReco2Fail->Fill(HT,MHT,WeightProducer);
+	muReco=0;
+	Expectation=1;
+      }
+    }
+  }
+  // analyse gen electrons consider only single elec events
+  if(GenMuNum==0 && GenElecNum==1)
+  {
+    if ( GenElecPt[0] < minElecPt_ || std::abs(GenElecEta[0])>maxElecEta_)
+    {
+      ElecAccFail->Fill(MHT,NJets,WeightProducer);
+      elecAcc=0;
+      Expectation=1;
+    }
+    else
+    {
+      ElecAcc_->Fill(MHT,NJets,WeightProducer);
+      elecAcc=2;
+    }
+  }
+  tExpectation_->Fill();
+  return kTRUE;
 }
 
 void EffMaker::SlaveTerminate()
@@ -203,7 +309,104 @@ void EffMaker::Terminate()
    // the results graphically or save the results to file.
    std::cout<<"EffMaker::Terminate started"<<std::endl;
    outPutFile_->cd();
- //  MuAccEff->Draw();
- //  MuAccEff_ = MuAccEff;
    tExpectation_->Write();
+   outPutFile_->mkdir("Efficiencies");
+   TDirectory *dEfficiencies = (TDirectory*)outPutFile_->Get("Efficiencies");
+   dEfficiencies->cd();   std::cout<<"1"<<std::endl;
+   MuonAcc_ = ratioCalculator(MuonAcc_,MuonAccFail);   
+   MuonAccFail->Delete("all");
+   MuonAcc_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu acceptance; #slash{H}_{T} [GeV]; N_{Jets}");
+   MuonAcc_->Write();
+   MuonRecoLow_ = ratioCalculator(MuonRecoLow_,MuonRecoLowFail);   
+   MuonRecoLowFail->Delete("all");
+   MuonRecoLow_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco N_{Jets}=2; #slash{H}_{T} [GeV]; H_{T} [GeV]");
+   MuonRecoLow_->Write();
+   MuonReco0_ = ratioCalculator(MuonReco0_,MuonReco0Fail);   
+   MuonReco0Fail->Delete("all");
+   MuonReco0_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco 3#leqN_{Jets}#leq5; #slash{H}_{T} [GeV]; H_{T} [GeV]");
+   MuonReco0_->Write();
+   MuonReco1_ = ratioCalculator(MuonReco1_,MuonReco1Fail);   
+   MuonReco1Fail->Delete("all");
+   MuonReco1_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco 6#leqN_{Jets}#leq7; #slash{H}_{T} [GeV]; H_{T} [GeV]");
+   MuonReco1_->Write();
+   MuonReco2_ = ratioCalculator(MuonReco2_,MuonReco2Fail);   
+   MuonReco2Fail->Delete("all");
+   MuonReco2_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco 8#leqlegN_{Jets}; #slash{H}_{T} [GeV]; H_{T} [GeV]");
+   MuonReco2_->Write();
+   
+   MuonIsoLow_ = ratioCalculator(MuonIsoLow_,MuonIsoLowFail);   
+   MuonIsoLowFail->Delete("all");
+   MuonIsoLow_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso N_{Jets}=2; #slash{H}_{T} [GeV]; H_{T} [GeV]");
+   MuonIsoLow_->Write();
+   MuonIso0_ = ratioCalculator(MuonIso0_,MuonIso0Fail);   
+   MuonIso0Fail->Delete("all");
+   MuonIso0_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso 3#leqN_{Jets}#leq5; #slash{H}_{T} [GeV]; H_{T} [GeV]");
+   MuonIso0_->Write();
+   MuonIso1_ = ratioCalculator(MuonIso1_,MuonIso1Fail);   
+   MuonIso1Fail->Delete("all");
+   MuonIso1_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso 6#leqN_{Jets}#leq7; #slash{H}_{T} [GeV]; H_{T} [GeV]");
+   MuonIso1_->Write();
+   MuonIso2_ = ratioCalculator(MuonIso2_,MuonIso2Fail);   
+   MuonIso2Fail->Delete("all");
+   MuonIso2_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso 8#leqlegN_{Jets}; #slash{H}_{T} [GeV]; H_{T} [GeV]");
+   MuonIso2_->Write();
+   
+   ElecAcc_ = ratioCalculator(ElecAcc_,ElecAccFail);
+   ElecAccFail->Delete("all");
+   ElecAcc_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV electron acceptance; #slash{H}_{T} [GeV]; N_{Jets}");
+   ElecAcc_->Write();
+   std::cout<<"End of Effmaker"<<std::endl;
+
+}
+void EffMaker::resetValues()
+{
+  Expectation=0;
+  muIso =1;
+  muReco =1;
+  muAcc =1;
+  muMTW =1;
+  muTotal=1;
+  elecIso =1;
+  elecReco =1;
+  elecAcc =1;
+  elecTotal=1;
+  elecMTW=1;
+}
+bool EffMaker::FiltersPass()
+{
+  bool result=true;
+  // if(Filter_HBHENoiseFilterRA2==0) result=false;
+  return result;
+}
+TH2F* EffMaker::ratioCalculator(TH2F* passTH2, TH2F* failTH2)
+{
+  passTH2->Sumw2();
+  TH2F *sum = (TH2F*)passTH2->Clone();
+  failTH2->Sumw2();
+  
+  sum->Add(failTH2);
+  passTH2->Divide(passTH2,sum,1,1,"B");
+  return passTH2;
+}
+TH1F* EffMaker::ratioCalculator(TH1F* passTH1, TH1F* failTH1)
+{
+  passTH1->Sumw2();
+  TH1F *sum = (TH1F*)passTH1->Clone();
+  failTH1->Sumw2();
+  
+  sum->Add(failTH1);
+  passTH1->Divide(passTH1,sum,1,1,"B");
+  return passTH1;
+}
+double EffMaker::deltaR(double eta1, double phi1, double eta2, double phi2)
+{
+  double deta = eta1-eta2;
+  double dphi = TVector2::Phi_mpi_pi(phi1-phi2);
+  return sqrt(deta * deta + dphi *dphi); 
+}
+
+double EffMaker::MTWCalculator(double metPt,double  metPhi,double  lepPt,double  lepPhi)
+{
+  double deltaPhi =TVector2::Phi_mpi_pi(lepPhi-metPhi);
+  return sqrt(2*lepPt*metPt*(1-cos(deltaPhi)) );
 }

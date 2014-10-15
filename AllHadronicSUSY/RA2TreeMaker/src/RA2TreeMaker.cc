@@ -44,7 +44,9 @@ RA2TreeMaker::RA2TreeMaker(const edm::ParameterSet& iConfig)
   filterDecisionTags_ = iConfig.getParameter< std::vector<edm::InputTag> >("Filters");
   MC_ = iConfig.getParameter<bool> ("MC");
   QCD_ = iConfig.getParameter<bool> ("QCD");
-  StoreAll_ = iConfig.getParameter<bool> ("StoreAll");
+  LostLepton_ = iConfig.getParameter<bool> ("LostLepton");
+  if(!QCD_ && !LostLepton_) UseAll_=true;
+  else UseAll_=false;
   debug_ = iConfig.getParameter<bool> ("debug");
   if(MC_)std::cout<<"Running on MC. Lepton gen information will be stored"<<std::endl;
   // cmssw 7 tags
@@ -53,6 +55,7 @@ RA2TreeMaker::RA2TreeMaker(const edm::ParameterSet& iConfig)
   ra2JetsTag_ = iConfig.getParameter<edm::InputTag>("RA2DefaultJetsTag");
   btagname_    = iConfig.getParameter<std::string>  ("bTagName");
   btagvalue_   = iConfig.getParameter<double>       ("bTagValue");
+  metTag_ = iConfig.getParameter<edm::InputTag> ("METTag");
   // selection criteria
   minHT_   = iConfig.getParameter<double>       ("MinHT");
   minMHT_   = iConfig.getParameter<double>       ("MinMHT");
@@ -169,6 +172,12 @@ RA2TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       else filterDecisions_.at(i) = 0;
     }
   }
+  edm::Handle< edm::View<reco::MET> > MET;
+  iEvent.getByLabel(metTag_,MET);  
+  metPt_=MET->at(0).pt();
+  metEta_=MET->at(0).eta();
+  metPhi_=MET->at(0).phi();
+  
   edm::Handle< edm::View<pat::Jet> > ra2JetsCands;
   iEvent.getByLabel(ra2JetsTag_,ra2JetsCands);
   reco::MET::LorentzVector mhtLorentz(0,0,0,0);
@@ -188,6 +197,8 @@ RA2TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
   }
   mht_=mhtLorentz.pt();
+  mhtEta_=mhtLorentz.eta();
+  mhtPhi_=mhtLorentz.phi();
   int count=0;
   for (unsigned int i = 0; i < ra2JetsCands->size();i++)
   {
@@ -359,52 +370,12 @@ RA2TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	if(count==3) break;
       }
     }
-    if(!QCD_ || StoreAll_)
-    {
+
+
     // Packed particles are all the status 1, so usable to remake jets
     // The navigation from status 1 to pruned is possible (the other direction should be made by hand)
-      Handle<edm::View<reco::GenParticle> > pruned;
-      iEvent.getByLabel(prunedGenToken_,pruned);
-    /*for(size_t i=0; i<pruned->size();i++)
-     *	   {
-     *		   if(abs((*pruned)[i].pdgId()) ==13 && false) // find muons
-     *		   {
-     *			   const Candidate * Muon = &(*pruned)[i];
-     *			   std::cout<<"RA2TreeMaker::Muon (isolated Muons size: "<<leptonN_[0]<<" found with status: "<<(*pruned)[i].status()<<std::endl;
-     *			   for(size_t j=0; j<packed->size();j++)
-     *			   {
-     *				   const Candidate * motherInPrunedCollection = (*packed)[j].mother(0) ;
-     *				   if(motherInPrunedCollection != nullptr && isAncestor( Muon , motherInPrunedCollection))
-     *				   {
-     *					   std::cout<<"Final mother of Muon PdgID: "<<(*packed)[j].pdgId() <<" status "<<(*packed)[j].status()<<std::endl;//<< " pt " << (*packed)[j].pt() << " eta: " << (*packed)[j].eta() << " phi: " << (*packed)[j].phi() << std::endl;
-  }
-  }
-  std::cout<<"------------------------------"<<std::endl;
-  }
-  }
-  std::cout<<"-----------------__________________________-------------"<<std::endl;
-  for(size_t i=0; i<pruned->size();i++)
-  {
-  //if(abs((*pruned)[i].pdgId() ) < 40 )std::cout<<"pdgId: "<<(*pruned)[i].pdgId()<<", ";
-  if( abs((*pruned)[i].pdgId() ) == 24)
-  {
-  std::cout<<"W status: "<<(*pruned)[i].status()<<" pt: "<<(*pruned)[i].pt()<<"mother id: "<<(*pruned)[i].mother(0)->pdgId()<<"daughters n: "<<(*pruned)[i].numberOfDaughters();
-  for (size_t ii=0; ii<(*pruned)[i].numberOfDaughters();ii++)
-  {
-  std::cout<<"Daugther["<<ii<<"]id: "<< (*pruned)[i].daughter(ii)->pdgId()<<", ";
-  }
-  if( abs((*pruned)[i].mother(0)->pdgId())==6) 
-  {
-  std::cout<<"daughters daughters number"<<(*pruned)[i].daughter(0)->numberOfDaughters()<<" id: ";
-  for (size_t ii=0; ii<(*pruned)[i].daughter(0)->numberOfDaughters();ii++)
-  {
-  std::cout<<"Daugther["<<ii<<"]id: "<< (*pruned)[i].daughter(0)->daughter(ii)->pdgId()<<", ";
-  if( abs((*pruned)[i].daughter(0)->daughter(ii)->pdgId())==13)std::cout<<"THIS MUON SHOULD BE USED!!!!!!!!!";
-  }
-  }
-  std::cout<<std::endl;
-  }
-  }*/
+    Handle<edm::View<reco::GenParticle> > pruned;
+    iEvent.getByLabel(prunedGenToken_,pruned);
     for(size_t i=0; i<pruned->size();i++)
     {
       if( abs((*pruned)[i].pdgId() ) == 24 && (*pruned)[i].status()==22) // W from the hard interaction 
@@ -490,7 +461,6 @@ RA2TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	// std::cout<<std::endl;
       }
     }
-    }
   //  std::cout<<"___________________________"<<std::endl;
   }
   // Fill variables into tree
@@ -519,15 +489,20 @@ RA2TreeMaker::beginJob()
     }
     tree_->Branch(name,&(varsDouble_.at(i)),name+"/F");
   }
-  if(!QCD_ || StoreAll_)
+  if(LostLepton_ || UseAll_)
   {
   tree_->Branch("HT",&ht_,"HT/F");
   tree_->Branch("MHT",&mht_,"MHT/F");
+  tree_->Branch("MHTEta",&mhtEta_,"MHTEta/F");
+  tree_->Branch("MHTPhi",&mhtPhi_,"MHTPhi/F");
   tree_->Branch("NJets",&nJets_,"NJets/s");
   tree_->Branch("BTags",&BTags_,"BTags/s");
   }
   tree_->Branch("Leptons",&nIsoLeptons_,"Leptons/s");
-  if(!QCD_ || StoreAll_)
+  tree_->Branch("METPt",&metPt_,"METPt/F");
+  tree_->Branch("METEta",&metEta_,"METEta/F");
+  tree_->Branch("METPhi",&metPhi_,"METPhi/F");
+  if(LostLepton_ || UseAll_)
   {
   tree_->Branch("Jet1Pt",&jet1Pt_,"Jet1Pt/F");
   tree_->Branch("Jet2Pt",&jet2Pt_,"Jet2Pt/F");
@@ -544,7 +519,7 @@ RA2TreeMaker::beginJob()
     if( i < ra2JetsCollectionNameInTree_.size() ) {
       name = ra2JetsCollectionNameInTree_.at(i);
     }
-    if(!QCD_ || StoreAll_)
+    if(LostLepton_ || UseAll_)
     {
     tree_->Branch((name+"HT").c_str(),&(ra2Jetsht_.at(i)),(name+"HT/F").c_str());
     tree_->Branch((name+"MHT").c_str(),&(ra2Jetsmht_.at(i)),(name+"MHT/F").c_str());
@@ -570,7 +545,7 @@ RA2TreeMaker::beginJob()
     tree_->Branch((name+"BTag").c_str(),  ra2JetsBTag_.at(i),  (name+"BTag["+name+"Num]/s").c_str());
   }
   // ra2Leptons
-  if(!QCD_ || StoreAll_)
+  if(LostLepton_ || UseAll_)
   {
   for(unsigned int i = 0; i < leptonTag_.size(); ++i) {
     std::string name = leptonTag_.at(i).label();
@@ -586,7 +561,7 @@ RA2TreeMaker::beginJob()
   }
   if(MC_)
   {
-    if(!QCD_ || StoreAll_)
+    if(LostLepton_ || UseAll_)
     {
     tree_->Branch("GenWNum",&GenWNum_,"GenWNum/s");
     tree_->Branch("GenWPt", GenWPt_,"GenWPt[GenWNum]/F");
@@ -621,7 +596,7 @@ RA2TreeMaker::beginJob()
     tree_->Branch("genDeltaPhi2",&gendeltaPhi2_,"genDeltaPhi2/F");
     tree_->Branch("genDeltaPhi3",&gendeltaPhi3_,"genDeltaPhi3/F");
     }
-    if(QCD_ || StoreAll_)
+    if(QCD_ || UseAll_)
     {
     std::string name = genra2JetsTag_.label();
     tree_->Branch((name+"Num").c_str(),&(GenJetNum_),(name+"Num/s").c_str());
@@ -700,6 +675,11 @@ RA2TreeMaker::setBranchVariablesToDefault()
   // main search variables
   ht_=0.;
   mht_=0.;
+  mhtEta_=0.;
+  mhtPhi_=0.;
+  metPt_=0.;
+  metEta_=0.;
+  metPhi_=0.;
   nJets_=0;
   BTags_=0;
   BTags_=0;

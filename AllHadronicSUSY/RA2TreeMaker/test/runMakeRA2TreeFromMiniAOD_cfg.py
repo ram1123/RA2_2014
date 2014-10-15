@@ -13,7 +13,7 @@ dataSetName = parameters.value("dataset","file:/pnfs/desy.de/cms/tier2/store/mc/
 global_tag = parameters.value("global_tag","")
 MC= parameters.value("MC", True)
 QCD= parameters.value("QCD", False)
-StoreAll= parameters.value("StoreAll", False)
+LostLepton= parameters.value("LostLepton", True)
 debug= parameters.value("debug", False)
 nJetsMin    = parameters.value("njets_min",0)
 htMin       = parameters.value("ht_min",0)
@@ -24,7 +24,7 @@ print "  dataSetName : "+dataSetName
 print " global_tag : "+global_tag
 print " runningOnMC : "+str(MC)
 print " runningOnQCD : "+str(QCD)
-print " StoringMaxAmountOfInformation(MC) : "+str(StoreAll)
+print " LostLepton(MC) : "+str(LostLepton)
 print "     nJetsMin : "+str(nJetsMin)
 print "        htMin : "+str(htMin)
 print "       mhtMin : "+str(mhtMin)
@@ -47,6 +47,6 @@ makeRA2TreeTreeFromMiniADO(process,
 		Global_Tag=global_tag,
 		MC=MC,
 		QCD=QCD,
-		StoreAll=StoreAll,
+		LostLepton=LostLepton,
 		debug = debug,
                 numProcessedEvt=-1)

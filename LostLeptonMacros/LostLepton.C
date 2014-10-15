@@ -52,18 +52,22 @@ void LostLepton()
 	*llLogFile_ <<"------------------------------------------------------------------------------------------------------------------------------------\n\n";
 	// trees to analyse
 	toBeProcessedEvents_= 1.0; // in percent use this value to determine how much of the samples you want to process! 1.00 = 100%
+	saveCutsToFile(llLogFile_);
 	outPutFileName_ = "LostLepton.root";
 	outPutFile_ = new TFile(outPutFileName_,"RECREATE");
 	// analyse the trees
-	TProof *proof = TProof::Open("workers=8");
+	TProof *proof = TProof::Open("workers=6");
 	//TProof *proof = TProof::Open();
 	TChain *Effchain = new TChain("RA2TreeMaker2/RA2PreSelection");
-	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauolaPU50x25_V5_v2/*.root");
+	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauolaPU20bx250_V5-v2/*.root");
+	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu*/*.root");
 	Effchain->SetProof(proof);
 	// run the selector
 	Effchain->Process("EffMaker.C+");
 	//Effchain->SetProof(0);
+	//delete proof;
 	// print out report file
+	std::cout<<"Processing done finishing macro"<<std::endl;
 	if(llLogFile_->is_open())
 	{
 		*llLogFile_ <<"\n------------------------------------------------------------------------------------------------------------------------------------\n";
@@ -78,15 +82,24 @@ void LostLepton()
 	outPutFile_->Close();
 }
 
-double deltaR(double eta1, double phi1, double eta2, double phi2)
-{
-	double deta = eta1-eta2;
-	double dphi = TVector2::Phi_mpi_pi(phi1-phi2);
-	return TMath::Sqrt(deta * deta + dphi *dphi); 
-}
 
-double MTWCalculator(double metPt,double  metPhi,double  lepPt,double  lepPhi)
+void saveCutsToFile(fstream *llLogFile)
 {
-	double deltaPhi =TVector2::Phi_mpi_pi(lepPhi-metPhi);
-	return sqrt(2*lepPt*metPt*(1-cos(deltaPhi)) );
+  *llLogFile <<"\n--------------------------------------------------------Basic cuts used---------------------------------------------------------------\n";
+  *llLogFile <<"Min HT: "<<minHT_<<"\n";
+  *llLogFile <<"Min MHT: "<<minMHT_<<"\n";
+  *llLogFile <<"Min NJets: "<<minNJets_<<"\n";
+  *llLogFile <<"Min deltaPhi1: "<<deltaPhi1_<<"\n";
+  *llLogFile <<"Min deltaPhi2: "<<deltaPhi2_<<"\n";
+  *llLogFile <<"Min deltaPhi3: "<<deltaPhi3_<<"\n";
+  *llLogFile <<"Filters applied: "<<applyFilters_<<"\n";
+  *llLogFile <<"\n---------------------------Lepton cuts-------------------------\n";
+  *llLogFile <<"Min muon pT: "<<minMuPt_<<"\n";
+  *llLogFile <<"Max muon eta: "<<maxMuEta_<<"\n";
+  *llLogFile <<"Min electron pT: "<<minElecPt_<<"\n";
+  *llLogFile <<"Max electron eta: "<<maxElecEta_<<"\n";
+  *llLogFile <<"\n---------------------------Search and Efficiency bins-------------------------\n";
+  *llLogFile <<"NJet: ["<<NjetLowLow_<<","<<NjetHighLow_<<","<<NjetLow0_<<","<<NjetHigh0_<<","<<NjetLow1_<<","<<NjetHigh1_<<","<<NjetLow2_<<","<<NjetHigh2_<<"]"<<"\n";
+  *llLogFile <<"\n--------------------------------------------------------End---------------------------------------------------------------\n\n";
+  
 }
