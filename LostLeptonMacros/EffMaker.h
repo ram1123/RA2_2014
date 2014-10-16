@@ -35,13 +35,13 @@ public :
    TH2F *MuonIsoLow_, *MuonIso0_, *MuonIso1_, *MuonIso2_; 
    TH2F *MuonRecoLow_, *MuonReco0_, *MuonReco1_, *MuonReco2_; 
    TH2F *MuonAcc_;
+   TH1F *MuMTWNJet_;
+   TH2F *MuMTWMHTNJet_;
    TH2F *ElecIsoLow_, *ElecIso0_, *ElecIso1_, *ElecIso2_; 
    TH2F *ElecRecoLow_, *ElecReco0_, *ElecReco1_, *ElecReco2_; 
    TH2F *ElecAcc_;
-   TH1F *MTWNJet_;
-   TH2F *MTWMHTNJet_;
-   TH1F *TauDecayCorrectionHT_, *TauDecayCorrectionMHT_, *TauDecayCorrectionNJet_;
-   TH2F *TauDecayNJetMHT_;
+   TH1F *ElecMTWNJet_;
+   TH2F *ElecMTWMHTNJet_;
    
    TH2F *MC_TAP_mu_iso_eff, *Data_TAP_mu_iso_eff, *MC_TAP_mu_reco_eff, *Data_TAP_mu_reco_eff;
    TH2F *MC_TAP_elec_iso_eff, *Data_TAP_elec_iso_eff, *MC_TAP_elec_reco_eff, *Data_TAP_elec_reco_eff;
@@ -51,12 +51,14 @@ public :
    
    TH2F *MuonIso0Fail, *MuonIsoLowFail, *MuonIso1Fail, *MuonIso2Fail, *MuonAccFail, *MuonReco0Fail, *MuonRecoLowFail, *MuonReco1Fail, *MuonReco2Fail;
    TH2F *ElecIso0Fail, *ElecIsoLowFail, *ElecIso1Fail, *ElecIso2Fail, *ElecAccFail, *ElecReco0Fail, *ElecRecoLowFail, *ElecReco1Fail, *ElecReco2Fail;
-   TH1F *MTWNJetFail;
-   TH2F *MTWMHTNJetFail;
+   TH1F *MuMTWNJetFail, *ElecMTWNJetFail;
+   TH2F *MuMTWMHTNJetFail, *ElecMTWMHTNJetFail;
    // eff variables for tree
    UShort_t Expectation;
    UShort_t muIso, muReco, muAcc, muMTW, muTotal;
    UShort_t elecIso, elecReco, elecAcc, elecMTW, elecTotal;
+   // additional information
+   Float_t mtw;
    // end of Eff definitions
    TTree	*tExpectation_;
    // Declaration of leaf types
@@ -67,9 +69,13 @@ public :
    Float_t         WeightProducer;
    Float_t         HT;
    Float_t         MHT;
+   Float_t         MHTPhi;
    UShort_t        NJets;
    UShort_t        BTags;
    UShort_t        Leptons;
+   Float_t	   METPt;
+   Float_t	   METEta;
+   Float_t	   METPhi;
    Float_t         Jet1Pt;
    Float_t         Jet2Pt;
    Float_t         Jet3Pt;
@@ -158,9 +164,13 @@ public :
    TBranch        *b_WeightProducer;   //!
    TBranch        *b_HT;   //!
    TBranch        *b_MHT;   //!
+   TBranch        *b_MHTPhi;   //!
    TBranch        *b_NJets;   //!
    TBranch        *b_BTags;   //!
    TBranch        *b_Leptons;   //!
+   TBranch        *b_METPt;   //!
+   TBranch        *b_METEta;   //!
+   TBranch        *b_METPhi;   //!
    TBranch        *b_Jet1Pt;   //!
    TBranch        *b_Jet2Pt;   //!
    TBranch        *b_Jet3Pt;   //!
@@ -285,9 +295,13 @@ void EffMaker::Init(TTree *tree)
    fChain->SetBranchAddress("WeightProducer", &WeightProducer, &b_WeightProducer);
    fChain->SetBranchAddress("HT", &HT, &b_HT);
    fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
+   fChain->SetBranchAddress("MHTPhi", &MHTPhi, &b_MHTPhi);
    fChain->SetBranchAddress("NJets", &NJets, &b_NJets);
    fChain->SetBranchAddress("BTags", &BTags, &b_BTags);
    fChain->SetBranchAddress("Leptons", &Leptons, &b_Leptons);
+   fChain->SetBranchAddress("METPt", &METPt, &b_METPt);
+   fChain->SetBranchAddress("METEta", &METEta, &b_METEta);
+   fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);
    fChain->SetBranchAddress("Jet1Pt", &Jet1Pt, &b_Jet1Pt);
    fChain->SetBranchAddress("Jet2Pt", &Jet2Pt, &b_Jet2Pt);
    fChain->SetBranchAddress("Jet3Pt", &Jet3Pt, &b_Jet3Pt);

@@ -36,11 +36,17 @@ const double minMuPt_=10;
 const double maxMuEta_=2.4;
 const double minElecPt_=10;
 const double maxElecEta_=2.4;
+const double mtwCut_=100;
 // lepton matching
 const double maxDeltaRGenToRecoMu_ =0.3;
 const double maxDiffPtGenToRecoMu_ =0.3;
 const double maxDeltaRRecoToIsoMu_ =0.1;
 const double maxDiffPtRecoToIsoMu_ =0.1;
+
+const double maxDeltaRGenToRecoElec_ =0.3;
+const double maxDiffPtGenToRecoElec_ =0.3;
+const double maxDeltaRRecoToIsoElec_ =0.1;
+const double maxDiffPtRecoToIsoElec_ =0.1;
 // basic cuts
 const double NjetLowLow_=1.6;
 const double NjetHighLow_ = 2.6;
@@ -90,6 +96,12 @@ double MuAccMht_ [muAccMht_]={0,50,100,200,300,450,2600};
 const int muAccNJets_ = 6;
 double MuAccNJets_ [muAccNJets_]={2,3,4,6,7,14};
 
+const int mumtwNjet_ = 5;
+double muMtwNjet_[mumtwNjet_] ={2,3,4,5,14};
+
+const int mumtwMHT_ = 5;
+double muMtwMHT_[mumtwMHT_] ={0,100,200,400,1600};
+
 const int elecIsoHTLow_=4;
 double ElecIsoHTLow_[elecIsoHTLow_]={350,500,800,2000};
 const int elecIsoMHTLow_=7;
@@ -129,12 +141,11 @@ double ElecAccMht_ [elecAccMht_]={0,50,100,200,300,450,2600};
 const int elecAccNJets_ = 6;
 double ElecAccNJets_ [elecAccNJets_]={2,3,4,6,7,14};
 
-const int mtwNjet_ = 5;
-double MtwNjet_[mtwNjet_] ={2,3,4,5,14};
+const int elecmtwNjet_ = 5;
+double elecMtwNjet_[elecmtwNjet_] ={2,3,4,5,14};
 
-const int mtwMHT_ = 5;
-double MtwMHT_[mtwMHT_] ={0,100,200,400,1600};
-TH2F *MuAccEff_;
+const int elecmtwMHT_ = 5;
+double elecMtwMHT_[elecmtwMHT_] ={0,100,200,400,1600};
 // reusable variables
 string line_;
 #endif
