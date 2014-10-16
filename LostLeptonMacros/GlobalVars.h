@@ -42,12 +42,30 @@ const double maxDeltaRGenToRecoMu_ =0.3;
 const double maxDiffPtGenToRecoMu_ =0.3;
 const double maxDeltaRRecoToIsoMu_ =0.1;
 const double maxDiffPtRecoToIsoMu_ =0.1;
+const double maxDeltaRIsoToGenMu_ = 0.3;
+const double maxDiffPtIsoToGenMu_ = 0.3;
 
 const double maxDeltaRGenToRecoElec_ =0.3;
 const double maxDiffPtGenToRecoElec_ =0.3;
 const double maxDeltaRRecoToIsoElec_ =0.1;
 const double maxDiffPtRecoToIsoElec_ =0.1;
-// basic cuts
+const double maxDeltaRIsoToGenElec_ = 0.3;
+const double maxDiffPtIsoToGenElec_ = 0.3;
+// TH2F efficiencies
+TH2F *MuonIsoLow_, *MuonIso0_, *MuonIso1_, *MuonIso2_; 
+TH2F *MuonRecoLow_, *MuonReco0_, *MuonReco1_, *MuonReco2_; 
+TH2F *MuonAcc_;
+TH1F *MuMTWNJet_;
+TH2F *MuMTWMHTNJet_;
+TH2F *ElecIsoLow_, *ElecIso0_, *ElecIso1_, *ElecIso2_; 
+TH2F *ElecRecoLow_, *ElecReco0_, *ElecReco1_, *ElecReco2_; 
+TH2F *ElecAcc_;
+TH1F *ElecMTWNJet_;
+TH2F *ElecMTWMHTNJet_;
+
+TH2F *MC_TAP_mu_iso_eff, *Data_TAP_mu_iso_eff, *MC_TAP_mu_reco_eff, *Data_TAP_mu_reco_eff;
+TH2F *MC_TAP_elec_iso_eff, *Data_TAP_elec_iso_eff, *MC_TAP_elec_reco_eff, *Data_TAP_elec_reco_eff;
+// Eff bins basic cuts
 const double NjetLowLow_=1.6;
 const double NjetHighLow_ = 2.6;
 const double NjetLow0_=2.6;

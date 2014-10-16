@@ -32,19 +32,17 @@ public :
    TH1F* ratioCalculator(TH1F* passTH1, TH1F* failTH1);
    // Declaration of the TH2Fs
    // eff TH2F
-   TH2F *MuonIsoLow_, *MuonIso0_, *MuonIso1_, *MuonIso2_; 
-   TH2F *MuonRecoLow_, *MuonReco0_, *MuonReco1_, *MuonReco2_; 
-   TH2F *MuonAcc_;
-   TH1F *MuMTWNJet_;
-   TH2F *MuMTWMHTNJet_;
-   TH2F *ElecIsoLow_, *ElecIso0_, *ElecIso1_, *ElecIso2_; 
-   TH2F *ElecRecoLow_, *ElecReco0_, *ElecReco1_, *ElecReco2_; 
-   TH2F *ElecAcc_;
-   TH1F *ElecMTWNJet_;
-   TH2F *ElecMTWMHTNJet_;
-   
-   TH2F *MC_TAP_mu_iso_eff, *Data_TAP_mu_iso_eff, *MC_TAP_mu_reco_eff, *Data_TAP_mu_reco_eff;
-   TH2F *MC_TAP_elec_iso_eff, *Data_TAP_elec_iso_eff, *MC_TAP_elec_reco_eff, *Data_TAP_elec_reco_eff;
+   TH2F *MuonIsoLow, *MuonIso0, *MuonIso1, *MuonIso2; 
+   TH2F *MuonRecoLow, *MuonReco0, *MuonReco1, *MuonReco2; 
+   TH2F *MuonAcc;
+   TH1F *MuMTWNJet;
+   TH2F *MuMTWMHTNJet;
+   TH2F *ElecIsoLow, *ElecIso0, *ElecIso1, *ElecIso2; 
+   TH2F *ElecRecoLow, *ElecReco0, *ElecReco1, *ElecReco2; 
+   TH2F *ElecAcc;
+   TH1F *ElecMTWNJet;
+   TH2F *ElecMTWMHTNJet;
+  
    // eff binning parameters
    // borders for the njet bins
 
@@ -57,6 +55,12 @@ public :
    UShort_t Expectation;
    UShort_t muIso, muReco, muAcc, muMTW, muTotal;
    UShort_t elecIso, elecReco, elecAcc, elecMTW, elecTotal;
+   UShort_t         RecoIsoMuonPromtMatched[10];
+   Float_t         RecoIsoMuonPromtMatchedDeltaR[10];
+   Float_t         RecoIsoMuonPromtMatchedRelPt[10];
+   UShort_t         RecoIsoElecPromtMatched[10];
+   Float_t         RecoIsoElecPromtMatchedDeltaR[10];
+   Float_t         RecoIsoElecPromtMatchedRelPt[10];
    // additional information
    Float_t mtw;
    // end of Eff definitions

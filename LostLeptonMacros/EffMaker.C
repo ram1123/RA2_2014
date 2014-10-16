@@ -36,7 +36,61 @@ void EffMaker::Begin(TTree * /*tree*/)
 
    TString option = GetOption();
 
-
+   MuonIsoLow=NULL;
+   MuonIso0=NULL;
+   MuonIso1=NULL;
+   MuonIso2=NULL;
+   MuonRecoLow=NULL;
+   MuonReco0=NULL;
+   MuonReco1=NULL;
+   MuonReco2=NULL;
+   MuonAcc=NULL;
+   MuMTWNJet=NULL;
+   MuMTWMHTNJet=NULL;
+   ElecIsoLow=NULL;
+   ElecIso0=NULL;
+   ElecIso1=NULL;
+   ElecIso2=NULL;
+   ElecRecoLow=NULL;
+   ElecReco0=NULL;
+   ElecReco1=NULL;
+   ElecReco2=NULL;
+   ElecAcc=NULL;
+   ElecMTWNJet=NULL;
+   ElecMTWMHTNJet=NULL;
+   
+   MuonIsoLowFail=NULL;
+   MuonIso0Fail=NULL;
+   MuonIso1Fail=NULL;
+   MuonIso2Fail=NULL;
+   MuonRecoLowFail=NULL;
+   MuonReco0Fail=NULL;
+   MuonReco1Fail=NULL;
+   MuonReco2Fail=NULL;
+   MuonAccFail=NULL;
+   MuMTWNJetFail=NULL;
+   MuMTWMHTNJetFail=NULL;
+   ElecIsoLowFail=NULL;
+   ElecIso0Fail=NULL;
+   ElecIso1Fail=NULL;
+   ElecIso2Fail=NULL;
+   ElecRecoLowFail=NULL;
+   ElecReco0Fail=NULL;
+   ElecReco1Fail=NULL;
+   ElecReco2Fail=NULL;
+   ElecAccFail=NULL;
+   ElecMTWNJetFail=NULL;
+   ElecMTWMHTNJetFail=NULL;
+   
+   MC_TAP_mu_iso_eff=NULL;
+   Data_TAP_mu_iso_eff=NULL;
+   MC_TAP_mu_reco_eff=NULL;
+   Data_TAP_mu_reco_eff=NULL;
+   MC_TAP_elec_iso_eff=NULL;
+   Data_TAP_elec_iso_eff=NULL;
+   MC_TAP_elec_reco_eff=NULL;
+   Data_TAP_elec_reco_eff=NULL;
+   tExpectation_=NULL;
    
 
 }
@@ -52,136 +106,136 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
 
    
    
-   MuonIsoLow_ = new TH2F("MuonIsoNJet2Jet","MuonIsoNJet2Jet",muIsoHTLow_-1,MuIsoHTLow_,muIsoMHTLow_-1,MuIsoMHTLow_);
-   GetOutputList()->Add(MuonIsoLow_);
-   MuonIsoLowFail = (TH2F*)MuonIsoLow_->Clone();
+   MuonIsoLow = new TH2F("MuonIsoNJet2Jet","MuonIsoNJet2Jet",muIsoHTLow_-1,MuIsoHTLow_,muIsoMHTLow_-1,MuIsoMHTLow_);
+   GetOutputList()->Add(MuonIsoLow);
+   MuonIsoLowFail = (TH2F*)MuonIsoLow->Clone();
    MuonIsoLowFail->SetName("MuonIsoLowFail");
    GetOutputList()->Add(MuonIsoLowFail);
    
-   MuonIso0_ = new TH2F("MuonIsoNJetLow","MuonIsoNJetLow",muIsoHT0_-1,MuIsoHT0_,muIsoMHT0_-1,MuIsoMHT0_);
-   GetOutputList()->Add(MuonIso0_);
-   MuonIso0Fail = (TH2F*)MuonIso0_->Clone();
+   MuonIso0 = new TH2F("MuonIsoNJetLow","MuonIsoNJetLow",muIsoHT0_-1,MuIsoHT0_,muIsoMHT0_-1,MuIsoMHT0_);
+   GetOutputList()->Add(MuonIso0);
+   MuonIso0Fail = (TH2F*)MuonIso0->Clone();
    MuonIso0Fail->SetName("MuonIso0Fail");
    GetOutputList()->Add(MuonIso0Fail);
    
-   MuonIso1_ = new TH2F("MuonIsoNJetMedium","MuonIsoNJetMedium",muIsoHT1_-1,MuIsoHT1_,muIsoMHT1_-1,MuIsoMHT1_);
-   GetOutputList()->Add(MuonIso1_);
-   MuonIso1Fail = (TH2F*)MuonIso1_->Clone();
+   MuonIso1 = new TH2F("MuonIsoNJetMedium","MuonIsoNJetMedium",muIsoHT1_-1,MuIsoHT1_,muIsoMHT1_-1,MuIsoMHT1_);
+   GetOutputList()->Add(MuonIso1);
+   MuonIso1Fail = (TH2F*)MuonIso1->Clone();
    MuonIso1Fail->SetName("MuonIso1Fail");
    GetOutputList()->Add(MuonIso1Fail);
    
-   MuonIso2_ = new TH2F("MuonIsoNJetHgih","MuonIsoNJetHigh",muIsoHT2_-1,MuIsoHT2_,muIsoMHT2_-1,MuIsoMHT2_);
-   GetOutputList()->Add(MuonIso2_);
-   MuonIso2Fail = (TH2F*)MuonIso2_->Clone();
+   MuonIso2 = new TH2F("MuonIsoNJetHgih","MuonIsoNJetHigh",muIsoHT2_-1,MuIsoHT2_,muIsoMHT2_-1,MuIsoMHT2_);
+   GetOutputList()->Add(MuonIso2);
+   MuonIso2Fail = (TH2F*)MuonIso2->Clone();
    MuonIso2Fail->SetName("MuonIso2Fail");
    GetOutputList()->Add(MuonIso2Fail);
    
-   MuonRecoLow_ = new TH2F("MuonRecoNJet2Jet","MuonRecoNJet2Jet",muRecoHTLow_-1,MuRecoHTLow_,muRecoMHTLow_-1,MuRecoMHTLow_);
-   GetOutputList()->Add(MuonRecoLow_);
-   MuonRecoLowFail = (TH2F*)MuonRecoLow_->Clone();
+   MuonRecoLow = new TH2F("MuonRecoNJet2Jet","MuonRecoNJet2Jet",muRecoHTLow_-1,MuRecoHTLow_,muRecoMHTLow_-1,MuRecoMHTLow_);
+   GetOutputList()->Add(MuonRecoLow);
+   MuonRecoLowFail = (TH2F*)MuonRecoLow->Clone();
    MuonRecoLowFail->SetName("MuonRecoLowFail");
    GetOutputList()->Add(MuonRecoLowFail);
    
-   MuonReco0_ = new TH2F("MuonRecoNJetLow","MuonRecoNJetLow",muRecoHT0_-1,MuRecoHT0_,muRecoMHT0_-1,MuRecoMHT0_);
-   GetOutputList()->Add(MuonReco0_);
-   MuonReco0Fail = (TH2F*)MuonReco0_->Clone();
+   MuonReco0 = new TH2F("MuonRecoNJetLow","MuonRecoNJetLow",muRecoHT0_-1,MuRecoHT0_,muRecoMHT0_-1,MuRecoMHT0_);
+   GetOutputList()->Add(MuonReco0);
+   MuonReco0Fail = (TH2F*)MuonReco0->Clone();
    MuonReco0Fail->SetName("MuonReco0Fail");
    GetOutputList()->Add(MuonReco0Fail);
    
-   MuonReco1_ = new TH2F("MuonRecoNJetMedium","MuonRecoNJetMedium",muRecoHT1_-1,MuRecoHT1_,muRecoMHT1_-1,MuRecoMHT1_);
-   GetOutputList()->Add(MuonReco1_);
-   MuonReco1Fail = (TH2F*)MuonReco1_->Clone();
+   MuonReco1 = new TH2F("MuonRecoNJetMedium","MuonRecoNJetMedium",muRecoHT1_-1,MuRecoHT1_,muRecoMHT1_-1,MuRecoMHT1_);
+   GetOutputList()->Add(MuonReco1);
+   MuonReco1Fail = (TH2F*)MuonReco1->Clone();
    MuonReco1Fail->SetName("MuonReco1Fail");
    GetOutputList()->Add(MuonReco1Fail);
    
-   MuonReco2_ = new TH2F("MuonRecoNJetHgih","MuonRecoNJetHigh",muRecoHT2_-1,MuRecoHT2_,muRecoMHT2_-1,MuRecoMHT2_);
-   GetOutputList()->Add(MuonReco2_);
-   MuonReco2Fail = (TH2F*)MuonReco2_->Clone();
+   MuonReco2 = new TH2F("MuonRecoNJetHgih","MuonRecoNJetHigh",muRecoHT2_-1,MuRecoHT2_,muRecoMHT2_-1,MuRecoMHT2_);
+   GetOutputList()->Add(MuonReco2);
+   MuonReco2Fail = (TH2F*)MuonReco2->Clone();
    MuonReco2Fail->SetName("MuonReco2Fail");
    GetOutputList()->Add(MuonReco2Fail);
    
-   MuonAcc_ = new TH2F("MuonAcc","MuonAcc",muAccMht_-1,MuAccMht_,muAccNJets_-1,MuAccNJets_);
-   GetOutputList()->Add(MuonAcc_);
-   MuonAccFail = (TH2F*)MuonAcc_->Clone();
+   MuonAcc = new TH2F("MuonAcc","MuonAcc",muAccMht_-1,MuAccMht_,muAccNJets_-1,MuAccNJets_);
+   GetOutputList()->Add(MuonAcc);
+   MuonAccFail = (TH2F*)MuonAcc->Clone();
    MuonAccFail->SetName("MuonAccFail");
    GetOutputList()->Add(MuonAccFail);
    
-   MuMTWNJet_ = new TH1F("MuMTW","MuMTW",mumtwNjet_-1,muMtwNjet_);
-   GetOutputList()->Add(MuMTWNJet_);
-   MuMTWNJetFail = (TH1F*)MuMTWNJet_->Clone();
+   MuMTWNJet = new TH1F("MuMTW","MuMTW",mumtwNjet_-1,muMtwNjet_);
+   GetOutputList()->Add(MuMTWNJet);
+   MuMTWNJetFail = (TH1F*)MuMTWNJet->Clone();
    MuMTWNJetFail->SetName("MuMTWNJetFail");
    GetOutputList()->Add(MuMTWNJetFail);
    
-   MuMTWMHTNJet_ = new TH2F("MuMTWMHTNjet","MuMTWMHTNjet",mumtwMHT_-1,muMtwMHT_,mumtwNjet_-1,muMtwNjet_);
-   GetOutputList()->Add(MuMTWMHTNJet_);
-   MuMTWMHTNJetFail = (TH2F*)MuMTWMHTNJet_->Clone();
+   MuMTWMHTNJet = new TH2F("MuMTWMHTNjet","MuMTWMHTNjet",mumtwMHT_-1,muMtwMHT_,mumtwNjet_-1,muMtwNjet_);
+   GetOutputList()->Add(MuMTWMHTNJet);
+   MuMTWMHTNJetFail = (TH2F*)MuMTWMHTNJet->Clone();
    MuMTWMHTNJetFail->SetName("MuMTWMHTNJetFail");
    GetOutputList()->Add(MuMTWMHTNJetFail);
    
    
-   ElecIsoLow_ = new TH2F("ElecIsoNJet2Jet","ElecIsoNJet2Jet",elecIsoHTLow_-1,ElecIsoHTLow_,elecIsoMHTLow_-1,ElecIsoMHTLow_);
-   GetOutputList()->Add(ElecIsoLow_);
-   ElecIsoLowFail = (TH2F*)ElecIsoLow_->Clone();
+   ElecIsoLow = new TH2F("ElecIsoNJet2Jet","ElecIsoNJet2Jet",elecIsoHTLow_-1,ElecIsoHTLow_,elecIsoMHTLow_-1,ElecIsoMHTLow_);
+   GetOutputList()->Add(ElecIsoLow);
+   ElecIsoLowFail = (TH2F*)ElecIsoLow->Clone();
    ElecIsoLowFail->SetName("ElecIsoLowFail");
    GetOutputList()->Add(ElecIsoLowFail);
    
-   ElecIso0_ = new TH2F("ElecIsoNJetLow","ElecIsoNJetLow",elecIsoHT0_-1,ElecIsoHT0_,elecIsoMHT0_-1,ElecIsoMHT0_);
-   GetOutputList()->Add(ElecIso0_);
-   ElecIso0Fail = (TH2F*)ElecIso0_->Clone();
+   ElecIso0 = new TH2F("ElecIsoNJetLow","ElecIsoNJetLow",elecIsoHT0_-1,ElecIsoHT0_,elecIsoMHT0_-1,ElecIsoMHT0_);
+   GetOutputList()->Add(ElecIso0);
+   ElecIso0Fail = (TH2F*)ElecIso0->Clone();
    ElecIso0Fail->SetName("ElecIso0Fail");
    GetOutputList()->Add(ElecIso0Fail);
    
-   ElecIso1_ = new TH2F("ElecIsoNJetMedium","ElecIsoNJetMedium",elecIsoHT1_-1,ElecIsoHT1_,elecIsoMHT1_-1,ElecIsoMHT1_);
-   GetOutputList()->Add(ElecIso1_);
-   ElecIso1Fail = (TH2F*)ElecIso1_->Clone();
+   ElecIso1 = new TH2F("ElecIsoNJetMedium","ElecIsoNJetMedium",elecIsoHT1_-1,ElecIsoHT1_,elecIsoMHT1_-1,ElecIsoMHT1_);
+   GetOutputList()->Add(ElecIso1);
+   ElecIso1Fail = (TH2F*)ElecIso1->Clone();
    ElecIso1Fail->SetName("ElecIso1Fail");
    GetOutputList()->Add(ElecIso1Fail);
    
-   ElecIso2_ = new TH2F("ElecIsoNJetHgih","ElecIsoNJetHigh",elecIsoHT2_-1,ElecIsoHT2_,elecIsoMHT2_-1,ElecIsoMHT2_);
-   GetOutputList()->Add(ElecIso2_);
-   ElecIso2Fail = (TH2F*)ElecIso2_->Clone();
+   ElecIso2 = new TH2F("ElecIsoNJetHgih","ElecIsoNJetHigh",elecIsoHT2_-1,ElecIsoHT2_,elecIsoMHT2_-1,ElecIsoMHT2_);
+   GetOutputList()->Add(ElecIso2);
+   ElecIso2Fail = (TH2F*)ElecIso2->Clone();
    ElecIso2Fail->SetName("ElecIso2Fail");
    GetOutputList()->Add(ElecIso2Fail);
    
-   ElecRecoLow_ = new TH2F("ElecRecoNJet2Jet","ElecRecoNJet2Jet",elecRecoHTLow_-1,ElecRecoHTLow_,elecRecoMHTLow_-1,ElecRecoMHTLow_);
-   GetOutputList()->Add(ElecRecoLow_);
-   ElecRecoLowFail = (TH2F*)ElecRecoLow_->Clone();
+   ElecRecoLow = new TH2F("ElecRecoNJet2Jet","ElecRecoNJet2Jet",elecRecoHTLow_-1,ElecRecoHTLow_,elecRecoMHTLow_-1,ElecRecoMHTLow_);
+   GetOutputList()->Add(ElecRecoLow);
+   ElecRecoLowFail = (TH2F*)ElecRecoLow->Clone();
    ElecRecoLowFail->SetName("ElecRecoLowFail");
    GetOutputList()->Add(ElecRecoLowFail);
    
-   ElecReco0_ = new TH2F("ElecRecoNJetLow","ElecRecoNJetLow",elecRecoHT0_-1,ElecRecoHT0_,elecRecoMHT0_-1,ElecRecoMHT0_);
-   GetOutputList()->Add(ElecReco0_);
-   ElecReco0Fail = (TH2F*)ElecReco0_->Clone();
+   ElecReco0 = new TH2F("ElecRecoNJetLow","ElecRecoNJetLow",elecRecoHT0_-1,ElecRecoHT0_,elecRecoMHT0_-1,ElecRecoMHT0_);
+   GetOutputList()->Add(ElecReco0);
+   ElecReco0Fail = (TH2F*)ElecReco0->Clone();
    ElecReco0Fail->SetName("ElecReco0Fail");
    GetOutputList()->Add(ElecReco0Fail);
    
-   ElecReco1_ = new TH2F("ElecRecoNJetMedium","ElecRecoNJetMedium",elecRecoHT1_-1,ElecRecoHT1_,elecRecoMHT1_-1,ElecRecoMHT1_);
-   GetOutputList()->Add(ElecReco1_);
-   ElecReco1Fail = (TH2F*)ElecReco1_->Clone();
+   ElecReco1 = new TH2F("ElecRecoNJetMedium","ElecRecoNJetMedium",elecRecoHT1_-1,ElecRecoHT1_,elecRecoMHT1_-1,ElecRecoMHT1_);
+   GetOutputList()->Add(ElecReco1);
+   ElecReco1Fail = (TH2F*)ElecReco1->Clone();
    ElecReco1Fail->SetName("ElecReco1Fail");
    GetOutputList()->Add(ElecReco1Fail);
    
-   ElecReco2_ = new TH2F("ElecRecoNJetHgih","ElecRecoNJetHigh",elecRecoHT2_-1,ElecRecoHT2_,elecRecoMHT2_-1,ElecRecoMHT2_);
-   GetOutputList()->Add(ElecReco2_);
-   ElecReco2Fail = (TH2F*)ElecReco2_->Clone();
+   ElecReco2 = new TH2F("ElecRecoNJetHgih","ElecRecoNJetHigh",elecRecoHT2_-1,ElecRecoHT2_,elecRecoMHT2_-1,ElecRecoMHT2_);
+   GetOutputList()->Add(ElecReco2);
+   ElecReco2Fail = (TH2F*)ElecReco2->Clone();
    ElecReco2Fail->SetName("ElecReco2Fail");
    GetOutputList()->Add(ElecReco2Fail);
    
-   ElecAcc_ = new TH2F("ElecAcc","ElecAcc",elecAccMht_-1,ElecAccMht_,elecAccNJets_-1,ElecAccNJets_);
-   GetOutputList()->Add(ElecAcc_);
-   ElecAccFail = (TH2F*)ElecAcc_->Clone();
+   ElecAcc = new TH2F("ElecAcc","ElecAcc",elecAccMht_-1,ElecAccMht_,elecAccNJets_-1,ElecAccNJets_);
+   GetOutputList()->Add(ElecAcc);
+   ElecAccFail = (TH2F*)ElecAcc->Clone();
    ElecAccFail->SetName("ElecAccFail");
    GetOutputList()->Add(ElecAccFail);
    
-   ElecMTWNJet_ = new TH1F("ElecMTW","ElecMTW",elecmtwNjet_-1,elecMtwNjet_);
-   GetOutputList()->Add(ElecMTWNJet_);
-   ElecMTWNJetFail = (TH1F*)ElecMTWNJet_->Clone();
+   ElecMTWNJet = new TH1F("ElecMTW","ElecMTW",elecmtwNjet_-1,elecMtwNjet_);
+   GetOutputList()->Add(ElecMTWNJet);
+   ElecMTWNJetFail = (TH1F*)ElecMTWNJet->Clone();
    ElecMTWNJetFail->SetName("ElecMTWNJetFail");
    GetOutputList()->Add(ElecMTWNJetFail);
    
-   ElecMTWMHTNJet_ = new TH2F("ElecMTWMHTNjet","ElecMTWMHTNjet",elecmtwMHT_-1,elecMtwMHT_,elecmtwNjet_-1,elecMtwNjet_);
-   GetOutputList()->Add(ElecMTWMHTNJet_);
-   ElecMTWMHTNJetFail = (TH2F*)ElecMTWMHTNJet_->Clone();
+   ElecMTWMHTNJet = new TH2F("ElecMTWMHTNjet","ElecMTWMHTNjet",elecmtwMHT_-1,elecMtwMHT_,elecmtwNjet_-1,elecMtwNjet_);
+   GetOutputList()->Add(ElecMTWMHTNJet);
+   ElecMTWMHTNJetFail = (TH2F*)ElecMTWMHTNJet->Clone();
    ElecMTWMHTNJetFail->SetName("ElecMTWMHTNJetFail");
    GetOutputList()->Add(ElecMTWMHTNJetFail);
    
@@ -217,7 +271,23 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    tExpectation_->Branch("MTW",&mtw,"MTW/F");  
    tExpectation_->Branch("elecAcc",&elecAcc,"elecAcc/s");  
    tExpectation_->Branch("elecReco",&elecReco,"elecReco/s");  
-   tExpectation_->Branch("elecIso",&elecIso,"elecIso/s");   
+   tExpectation_->Branch("elecIso",&elecIso,"elecIso/s");  
+   tExpectation_->Branch("RecoIsoMuonNum",&RecoIsoMuonNum,"RecoIsoMuonNum/s");
+   tExpectation_->Branch("RecoIsoMuonPt", RecoIsoMuonPt, "RecoIsoMuonPt[RecoIsoMuonNum]/F");
+   tExpectation_->Branch("RecoIsoMuonPromtMatched", RecoIsoMuonPromtMatched, "RecoIsoMuonPromtMatched[RecoIsoMuonNum]/s");
+//   tExpectation_->Branch("RecoIsoMuonPromtMatchedDeltaR", RecoIsoMuonPromtMatchedDeltaR, "RecoIsoMuonPromtMatchedDeltaR[RecoIsoMuonNum]/F");
+//   tExpectation_->Branch("RecoIsoMuonPromtMatchedRelPt", RecoIsoMuonPromtMatchedRelPt, "RecoIsoMuonPromtMatchedRelPt[RecoIsoMuonNum]/F");
+   tExpectation_->Branch("RecoIsoMuonEta", RecoIsoMuonEta, "RecoIsoMuonEta[RecoIsoMuonNum]/F");
+   tExpectation_->Branch("RecoIsoMuonPhi", RecoIsoMuonPhi, "RecoIsoMuonPhi[RecoIsoMuonNum]/F");
+   tExpectation_->Branch("RecoIsoMuonE", RecoIsoMuonE, "RecoIsoMuonE[RecoIsoMuonNum]/F");
+   tExpectation_->Branch("RecoIsoElecNum",&RecoIsoElecNum,"RecoIsoElecNum/s");
+   tExpectation_->Branch("RecoIsoElecPt", RecoIsoElecPt, "RecoIsoElecPt[RecoIsoElecNum]/F");
+   tExpectation_->Branch("RecoIsoElecPromtMatched", RecoIsoElecPromtMatched, "RecoIsoElecPromtMatched[RecoIsoElecNum]/s");
+   tExpectation_->Branch("RecoIsoElecPromtMatchedDeltaR", RecoIsoElecPromtMatchedDeltaR, "RecoIsoElecPromtMatchedDeltaR[RecoIsoElecNum]/F");
+   tExpectation_->Branch("RecoIsoElecPromtMatchedRelPt", RecoIsoElecPromtMatchedRelPt, "RecoIsoElecPromtMatchedRelPt[RecoIsoElecNum]/F");
+   tExpectation_->Branch("RecoIsoElecEta", RecoIsoElecEta, "RecoIsoElecEta[RecoIsoElecNum]/F");
+   tExpectation_->Branch("RecoIsoElecPhi", RecoIsoElecPhi, "RecoIsoElecPhi[RecoIsoElecNum]/F");
+   tExpectation_->Branch("RecoIsoElecE", RecoIsoElecE, "RecoIsoElecE[RecoIsoElecNum]/F");
    GetOutputList()->Add(tExpectation_);
 
 
@@ -246,7 +316,7 @@ Bool_t EffMaker::Process(Long64_t entry)
     }
     else
     {
-      MuonAcc_->Fill(MHT,NJets,WeightProducer);
+      MuonAcc->Fill(MHT,NJets,WeightProducer);
       muAcc=2;
       bool RecoNotMatched=true;
       for (UShort_t i=0; i<RecoMuonNum; i++)
@@ -256,10 +326,10 @@ Bool_t EffMaker::Process(Long64_t entry)
 	{
 	 // std::cout<<"RecoMuonNum["<<i<<"] started"<<std::endl;
 	  RecoNotMatched=false;
-	  if( NjetLowLow_ < NJets && NJets < NjetHighLow_) MuonRecoLow_->Fill(HT,MHT,WeightProducer);
-	  if( NjetLow0_ < NJets && NJets < NjetHigh0_) MuonReco0_->Fill(HT,MHT,WeightProducer);
-	  if( NjetLow1_ < NJets && NJets < NjetHigh1_) MuonReco1_->Fill(HT,MHT,WeightProducer);
-	  if( NjetLow2_ < NJets && NJets < NjetHigh2_) MuonReco2_->Fill(HT,MHT,WeightProducer);
+	  if( NjetLowLow_ < NJets && NJets < NjetHighLow_) MuonRecoLow->Fill(HT,MHT,WeightProducer);
+	  if( NjetLow0_ < NJets && NJets < NjetHigh0_) MuonReco0->Fill(HT,MHT,WeightProducer);
+	  if( NjetLow1_ < NJets && NJets < NjetHigh1_) MuonReco1->Fill(HT,MHT,WeightProducer);
+	  if( NjetLow2_ < NJets && NJets < NjetHigh2_) MuonReco2->Fill(HT,MHT,WeightProducer);
 	  muReco =2;
 	  bool IsoNotMatched=true;
 	  for (UShort_t ii=0; ii < RecoIsoMuonNum; ii++)
@@ -267,17 +337,17 @@ Bool_t EffMaker::Process(Long64_t entry)
 	    if(deltaR(RecoIsoMuonEta[ii],RecoIsoMuonPhi[ii],RecoMuonEta[i],RecoMuonPhi[i])<maxDeltaRRecoToIsoMu_ && std::abs(RecoIsoMuonPt[ii]-RecoMuonPt[i])/RecoIsoMuonPt[ii] <maxDiffPtRecoToIsoMu_)
 	    {
 	      IsoNotMatched=false;
-	      if( NjetLowLow_ < NJets && NJets < NjetHighLow_) MuonIsoLow_->Fill(HT,MHT,WeightProducer);
-	      if( NjetLow0_ < NJets && NJets < NjetHigh0_) MuonIso0_->Fill(HT,MHT,WeightProducer);
-	      if( NjetLow1_ < NJets && NJets < NjetHigh1_) MuonIso1_->Fill(HT,MHT,WeightProducer);
-	      if( NjetLow2_ < NJets && NJets < NjetHigh2_) MuonIso2_->Fill(HT,MHT,WeightProducer);
+	      if( NjetLowLow_ < NJets && NJets < NjetHighLow_) MuonIsoLow->Fill(HT,MHT,WeightProducer);
+	      if( NjetLow0_ < NJets && NJets < NjetHigh0_) MuonIso0->Fill(HT,MHT,WeightProducer);
+	      if( NjetLow1_ < NJets && NJets < NjetHigh1_) MuonIso1->Fill(HT,MHT,WeightProducer);
+	      if( NjetLow2_ < NJets && NJets < NjetHigh2_) MuonIso2->Fill(HT,MHT,WeightProducer);
 	      muIso=2;
 	      Expectation=2;
 	      mtw =  MTWCalculator(METPt,METPhi, RecoIsoMuonPt[ii], RecoIsoMuonPhi[ii]);
 	      if (mtw<mtwCut_)
 	      {
-		MuMTWNJet_->Fill(NJets,WeightProducer);
-		MuMTWMHTNJet_->Fill(MHT,NJets,WeightProducer);
+		MuMTWNJet->Fill(NJets,WeightProducer);
+		MuMTWMHTNJet->Fill(MHT,NJets,WeightProducer);
 	      }
 	      else
 	      {
@@ -319,7 +389,7 @@ Bool_t EffMaker::Process(Long64_t entry)
     }
     else
     {
-      ElecAcc_->Fill(MHT,NJets,WeightProducer);
+      ElecAcc->Fill(MHT,NJets,WeightProducer);
       elecAcc=2;
       bool RecoNotMatched=true;
       for (UShort_t i=0; i<RecoElecNum; i++)
@@ -329,10 +399,10 @@ Bool_t EffMaker::Process(Long64_t entry)
 	{
 	  // std::cout<<"RecoElecNum["<<i<<"] started"<<std::endl;
 	  RecoNotMatched=false;
-	  if( NjetLowLow_ < NJets && NJets < NjetHighLow_) ElecRecoLow_->Fill(HT,MHT,WeightProducer);
-	  if( NjetLow0_ < NJets && NJets < NjetHigh0_) ElecReco0_->Fill(HT,MHT,WeightProducer);
-	  if( NjetLow1_ < NJets && NJets < NjetHigh1_) ElecReco1_->Fill(HT,MHT,WeightProducer);
-	  if( NjetLow2_ < NJets && NJets < NjetHigh2_) ElecReco2_->Fill(HT,MHT,WeightProducer);
+	  if( NjetLowLow_ < NJets && NJets < NjetHighLow_) ElecRecoLow->Fill(HT,MHT,WeightProducer);
+	  if( NjetLow0_ < NJets && NJets < NjetHigh0_) ElecReco0->Fill(HT,MHT,WeightProducer);
+	  if( NjetLow1_ < NJets && NJets < NjetHigh1_) ElecReco1->Fill(HT,MHT,WeightProducer);
+	  if( NjetLow2_ < NJets && NJets < NjetHigh2_) ElecReco2->Fill(HT,MHT,WeightProducer);
 	  elecReco =2;
 	  bool IsoNotMatched=true;
 	  for (UShort_t ii=0; ii < RecoIsoElecNum; ii++)
@@ -340,17 +410,17 @@ Bool_t EffMaker::Process(Long64_t entry)
 	    if(deltaR(RecoIsoElecEta[ii],RecoIsoElecPhi[ii],RecoElecEta[i],RecoElecPhi[i])<maxDeltaRRecoToIsoElec_ && std::abs(RecoIsoElecPt[ii]-RecoElecPt[i])/RecoIsoElecPt[ii] <maxDiffPtRecoToIsoElec_)
 	    {
 	      IsoNotMatched=false;
-	      if( NjetLowLow_ < NJets && NJets < NjetHighLow_) ElecIsoLow_->Fill(HT,MHT,WeightProducer);
-	      if( NjetLow0_ < NJets && NJets < NjetHigh0_) ElecIso0_->Fill(HT,MHT,WeightProducer);
-	      if( NjetLow1_ < NJets && NJets < NjetHigh1_) ElecIso1_->Fill(HT,MHT,WeightProducer);
-	      if( NjetLow2_ < NJets && NJets < NjetHigh2_) ElecIso2_->Fill(HT,MHT,WeightProducer);
+	      if( NjetLowLow_ < NJets && NJets < NjetHighLow_) ElecIsoLow->Fill(HT,MHT,WeightProducer);
+	      if( NjetLow0_ < NJets && NJets < NjetHigh0_) ElecIso0->Fill(HT,MHT,WeightProducer);
+	      if( NjetLow1_ < NJets && NJets < NjetHigh1_) ElecIso1->Fill(HT,MHT,WeightProducer);
+	      if( NjetLow2_ < NJets && NJets < NjetHigh2_) ElecIso2->Fill(HT,MHT,WeightProducer);
 	      elecIso=2;
 	      Expectation=2;
 	      mtw =  MTWCalculator(METPt,METPhi, RecoIsoElecPt[ii], RecoIsoElecPhi[ii]);
 	      if (mtw<mtwCut_)
 	      {
-		ElecMTWNJet_->Fill(NJets,WeightProducer);
-		ElecMTWMHTNJet_->Fill(MHT,NJets,WeightProducer);
+		ElecMTWNJet->Fill(NJets,WeightProducer);
+		ElecMTWMHTNJet->Fill(MHT,NJets,WeightProducer);
 	      }
 	      else
 	      {
@@ -381,7 +451,48 @@ Bool_t EffMaker::Process(Long64_t entry)
       }
     }
   }
-  tExpectation_->Fill();
+  // purity studies:
+  for (UShort_t i=0; i< RecoIsoMuonNum;i++)
+  {
+    bool matched=false;
+    for(UShort_t ii=0; ii<GenMuNum;ii++)
+    {
+      if(deltaR(RecoIsoMuonEta[i],RecoIsoMuonPhi[i],GenMuEta[ii],GenMuPhi[ii])<RecoIsoMuonPromtMatchedDeltaR[i])RecoIsoMuonPromtMatchedDeltaR[i]=deltaR(RecoIsoMuonEta[i],RecoIsoMuonPhi[i],GenMuEta[ii],GenMuPhi[ii]);
+      if(std::abs(RecoIsoMuonPt[i]-GenMuPt[ii])/RecoIsoMuonPt[i] < std::abs(RecoIsoMuonPromtMatchedRelPt[i]) )RecoIsoMuonPromtMatchedRelPt[i]=(RecoIsoMuonPt[i]-GenMuPt[ii])/RecoIsoMuonPt[i];
+      if(deltaR(RecoIsoMuonEta[i],RecoIsoMuonPhi[i],GenMuEta[ii],GenMuPhi[ii])<maxDeltaRIsoToGenMu_ && std::abs(RecoIsoMuonPt[i]-GenMuPt[ii])/RecoIsoMuonPt[i] <maxDiffPtIsoToGenMu_)
+      {
+	RecoIsoMuonPromtMatched[i]=1;
+	matched=true;
+      }
+    }
+    if(!matched) RecoIsoMuonPromtMatched[i]=0;
+    if(GenMuNum==0)
+    {
+      RecoIsoMuonPromtMatchedDeltaR[i]=-1;
+      RecoIsoMuonPromtMatchedRelPt[i]=-100;
+    }
+  }
+  for (UShort_t i=0; i< RecoIsoElecNum;i++)
+  {
+    bool matched=false;
+    for(UShort_t ii=0; ii<GenElecNum;ii++)
+    {
+      if(deltaR(RecoIsoElecEta[i],RecoIsoElecPhi[i],GenElecEta[ii],GenElecPhi[ii])<RecoIsoElecPromtMatchedDeltaR[i])RecoIsoElecPromtMatchedDeltaR[i]=deltaR(RecoIsoElecEta[i],RecoIsoElecPhi[i],GenElecEta[ii],GenElecPhi[ii]);
+      if(std::abs(RecoIsoElecPt[i]-GenElecPt[ii])/RecoIsoElecPt[i] < std::abs(RecoIsoElecPromtMatchedRelPt[i]) )RecoIsoElecPromtMatchedRelPt[i]=(RecoIsoElecPt[i]-GenElecPt[ii])/RecoIsoElecPt[i];
+      if(deltaR(RecoIsoElecEta[i],RecoIsoElecPhi[i],GenElecEta[ii],GenElecPhi[ii])<maxDeltaRIsoToGenElec_ && std::abs(RecoIsoElecPt[i]-GenElecPt[ii])/RecoIsoElecPt[i] <maxDiffPtIsoToGenElec_)
+      {
+	RecoIsoElecPromtMatched[i]=1;
+	matched=true;
+      }
+    }
+    if(!matched) RecoIsoElecPromtMatched[i]=0;
+    if(GenElecNum==0)
+    {
+      RecoIsoElecPromtMatchedDeltaR[i]=-1;
+      RecoIsoElecPromtMatchedRelPt[i]=-100;
+    }
+  }
+ tExpectation_->Fill();
   return kTRUE;
 }
 
@@ -411,124 +522,124 @@ void EffMaker::Terminate()
    TDirectory *dEfficiencies = (TDirectory*)outPutFile_->Get("Efficiencies");
    dEfficiencies->cd();   std::cout<<"1"<<std::endl;
    
-   MuonAcc_ = ratioCalculator(MuonAcc_,MuonAccFail);   
+   MuonAcc = ratioCalculator(MuonAcc,MuonAccFail);   
   // MuonAccFail->Delete("all");
-   MuonAcc_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu acceptance; #slash{H}_{T} [GeV]; N_{Jets}");
-   MuonAcc_->SetMarkerSize(2.0);
-   MuonAcc_->UseCurrentStyle();
-   MuonAcc_->Write();
+   MuonAcc->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu acceptance; #slash{H}_{T} [GeV]; N_{Jets}");
+   MuonAcc->SetMarkerSize(2.0);
+   MuonAcc->UseCurrentStyle();
+   MuonAcc->Write();
    
-   MuonRecoLow_ = ratioCalculator(MuonRecoLow_,MuonRecoLowFail);   
+   MuonRecoLow = ratioCalculator(MuonRecoLow,MuonRecoLowFail);   
    //MuonRecoLowFail->Delete("all");
-   MuonRecoLow_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   MuonRecoLow_->SetMarkerSize(2.0);
-   MuonRecoLow_->UseCurrentStyle();
-   MuonRecoLow_->Write();
-   MuonReco0_ = ratioCalculator(MuonReco0_,MuonReco0Fail);   
+   MuonRecoLow->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   MuonRecoLow->SetMarkerSize(2.0);
+   MuonRecoLow->UseCurrentStyle();
+   MuonRecoLow->Write();
+   MuonReco0 = ratioCalculator(MuonReco0,MuonReco0Fail);   
   // MuonReco0Fail->Delete("all");
-   MuonReco0_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   MuonReco0_->SetMarkerSize(2.0);
-   MuonReco0_->UseCurrentStyle();
-   MuonReco0_->Write();
-   MuonReco1_ = ratioCalculator(MuonReco1_,MuonReco1Fail);   
+   MuonReco0->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   MuonReco0->SetMarkerSize(2.0);
+   MuonReco0->UseCurrentStyle();
+   MuonReco0->Write();
+   MuonReco1 = ratioCalculator(MuonReco1,MuonReco1Fail);   
    //MuonReco1Fail->Delete("all");
-   MuonReco1_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   MuonReco1_->SetMarkerSize(2.0);
-   MuonReco1_->UseCurrentStyle();
-   MuonReco1_->Write();
-   MuonReco2_ = ratioCalculator(MuonReco2_,MuonReco2Fail);   
+   MuonReco1->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   MuonReco1->SetMarkerSize(2.0);
+   MuonReco1->UseCurrentStyle();
+   MuonReco1->Write();
+   MuonReco2 = ratioCalculator(MuonReco2,MuonReco2Fail);   
   // MuonReco2Fail->Delete("all");
-   MuonReco2_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   MuonReco2_->SetMarkerSize(2.0);
-   MuonReco2_->UseCurrentStyle();
-   MuonReco2_->Write();
+   MuonReco2->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   MuonReco2->SetMarkerSize(2.0);
+   MuonReco2->UseCurrentStyle();
+   MuonReco2->Write();
    
-   MuonIsoLow_ = ratioCalculator(MuonIsoLow_,MuonIsoLowFail);   
+   MuonIsoLow = ratioCalculator(MuonIsoLow,MuonIsoLowFail);   
  //  MuonIsoLowFail->Delete("all");
-   MuonIsoLow_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   MuonIsoLow_->SetMarkerSize(2.0);
-   MuonIsoLow_->UseCurrentStyle();
-   MuonIsoLow_->Write();
-   MuonIso0_ = ratioCalculator(MuonIso0_,MuonIso0Fail);   
+   MuonIsoLow->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   MuonIsoLow->SetMarkerSize(2.0);
+   MuonIsoLow->UseCurrentStyle();
+   MuonIsoLow->Write();
+   MuonIso0 = ratioCalculator(MuonIso0,MuonIso0Fail);   
  //  MuonIso0Fail->Delete("all");
-   MuonIso0_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   MuonIso0_->SetMarkerSize(2.0);
-   MuonIso0_->UseCurrentStyle();
-   MuonIso0_->Write();
-   MuonIso1_ = ratioCalculator(MuonIso1_,MuonIso1Fail);   
+   MuonIso0->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   MuonIso0->SetMarkerSize(2.0);
+   MuonIso0->UseCurrentStyle();
+   MuonIso0->Write();
+   MuonIso1 = ratioCalculator(MuonIso1,MuonIso1Fail);   
  //  MuonIso1Fail->Delete("all");
-   MuonIso1_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   MuonIso1_->SetMarkerSize(2.0);
-   MuonIso1_->UseCurrentStyle();
-   MuonIso1_->Write();
-   MuonIso2_ = ratioCalculator(MuonIso2_,MuonIso2Fail);   
+   MuonIso1->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   MuonIso1->SetMarkerSize(2.0);
+   MuonIso1->UseCurrentStyle();
+   MuonIso1->Write();
+   MuonIso2 = ratioCalculator(MuonIso2,MuonIso2Fail);   
  //  MuonIso2Fail->Delete("all");
-   MuonIso2_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   MuonIso2_->SetMarkerSize(2.0);
-   MuonIso2_->UseCurrentStyle();
-   MuonIso2_->Write();
+   MuonIso2->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   MuonIso2->SetMarkerSize(2.0);
+   MuonIso2->UseCurrentStyle();
+   MuonIso2->Write();
    
-   MuMTWNJet_ = ratioCalculator(MuMTWNJet_,MuMTWNJetFail);   
+   MuMTWNJet = ratioCalculator(MuMTWNJet,MuMTWNJetFail);   
   // MuMTWNJetFail->Delete("all");
-   MuMTWNJet_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu M_{T}(W); N_{Jets}");
-   MuMTWNJet_->UseCurrentStyle();
-   MuMTWNJet_->Write();
+   MuMTWNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu M_{T}(W); N_{Jets}");
+   MuMTWNJet->UseCurrentStyle();
+   MuMTWNJet->Write();
    
-   MuMTWMHTNJet_ = ratioCalculator(MuMTWMHTNJet_,MuMTWMHTNJetFail);   
+   MuMTWMHTNJet = ratioCalculator(MuMTWMHTNJet,MuMTWMHTNJetFail);   
   // MuMTWMHTNJetFail->Delete("all");
-   MuMTWMHTNJet_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu M_{T}(W); #slash{H}_{T} [GeV]; N_{Jets}");
-   MuMTWMHTNJet_->SetMarkerSize(2.0);
-   MuMTWMHTNJet_->UseCurrentStyle();
-   MuMTWMHTNJet_->Write();
+   MuMTWMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu M_{T}(W); #slash{H}_{T} [GeV]; N_{Jets}");
+   MuMTWMHTNJet->SetMarkerSize(2.0);
+   MuMTWMHTNJet->UseCurrentStyle();
+   MuMTWMHTNJet->Write();
    
    
-   ElecAcc_ = ratioCalculator(ElecAcc_,ElecAccFail);   
+   ElecAcc = ratioCalculator(ElecAcc,ElecAccFail);   
  //  ElecAccFail->Delete("all");
-   ElecAcc_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec acceptance; #slash{H}_{T} [GeV]; N_{Jets}");
-   ElecAcc_->Write();
-   ElecRecoLow_ = ratioCalculator(ElecRecoLow_,ElecRecoLowFail);   
+   ElecAcc->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec acceptance; #slash{H}_{T} [GeV]; N_{Jets}");
+   ElecAcc->Write();
+   ElecRecoLow = ratioCalculator(ElecRecoLow,ElecRecoLowFail);   
  //  ElecRecoLowFail->Delete("all");
-   ElecRecoLow_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec reco N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   ElecRecoLow_->Write();
-   ElecReco0_ = ratioCalculator(ElecReco0_,ElecReco0Fail);   
+   ElecRecoLow->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec reco N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   ElecRecoLow->Write();
+   ElecReco0 = ratioCalculator(ElecReco0,ElecReco0Fail);   
 //   ElecReco0Fail->Delete("all");
-   ElecReco0_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec reco 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   ElecReco0_->Write();
-   ElecReco1_ = ratioCalculator(ElecReco1_,ElecReco1Fail);   
+   ElecReco0->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec reco 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   ElecReco0->Write();
+   ElecReco1 = ratioCalculator(ElecReco1,ElecReco1Fail);   
   // ElecReco1Fail->Delete("all");
-   ElecReco1_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec reco 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   ElecReco1_->Write();
-   ElecReco2_ = ratioCalculator(ElecReco2_,ElecReco2Fail);   
+   ElecReco1->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec reco 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   ElecReco1->Write();
+   ElecReco2 = ratioCalculator(ElecReco2,ElecReco2Fail);   
  //  ElecReco2Fail->Delete("all");
-   ElecReco2_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec reco 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   ElecReco2_->Write();
+   ElecReco2->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec reco 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   ElecReco2->Write();
    
-   ElecIsoLow_ = ratioCalculator(ElecIsoLow_,ElecIsoLowFail);   
+   ElecIsoLow = ratioCalculator(ElecIsoLow,ElecIsoLowFail);   
  //  ElecIsoLowFail->Delete("all");
-   ElecIsoLow_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec iso N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   ElecIsoLow_->Write();
-   ElecIso0_ = ratioCalculator(ElecIso0_,ElecIso0Fail);   
+   ElecIsoLow->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec iso N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   ElecIsoLow->Write();
+   ElecIso0 = ratioCalculator(ElecIso0,ElecIso0Fail);   
  //  ElecIso0Fail->Delete("all");
-   ElecIso0_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec iso 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   ElecIso0_->Write();
-   ElecIso1_ = ratioCalculator(ElecIso1_,ElecIso1Fail);   
+   ElecIso0->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec iso 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   ElecIso0->Write();
+   ElecIso1 = ratioCalculator(ElecIso1,ElecIso1Fail);   
 //   ElecIso1Fail->Delete("all");
-   ElecIso1_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec iso 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   ElecIso1_->Write();
-   ElecIso2_ = ratioCalculator(ElecIso2_,ElecIso2Fail);   
+   ElecIso1->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec iso 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   ElecIso1->Write();
+   ElecIso2 = ratioCalculator(ElecIso2,ElecIso2Fail);   
  //  ElecIso2Fail->Delete("all");
-   ElecIso2_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec iso 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
-   ElecIso2_->Write();
+   ElecIso2->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec iso 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+   ElecIso2->Write();
    
-   ElecMTWNJet_ = ratioCalculator(ElecMTWNJet_,ElecMTWNJetFail);   
+   ElecMTWNJet = ratioCalculator(ElecMTWNJet,ElecMTWNJetFail);   
  //  ElecMTWNJetFail->Delete("all");
-   ElecMTWNJet_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec M_{T}(W); N_{Jets}");
-   ElecMTWNJet_->Write();
+   ElecMTWNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec M_{T}(W); N_{Jets}");
+   ElecMTWNJet->Write();
    
-   ElecMTWMHTNJet_ = ratioCalculator(ElecMTWMHTNJet_,ElecMTWMHTNJetFail);   
+   ElecMTWMHTNJet = ratioCalculator(ElecMTWMHTNJet,ElecMTWMHTNJetFail);   
  //  ElecMTWMHTNJetFail->Delete("all");
-   ElecMTWMHTNJet_->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec M_{T}(W); #slash{H}_{T} [GeV]; N_{Jets}");
-   ElecMTWMHTNJet_->Write();
+   ElecMTWMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec M_{T}(W); #slash{H}_{T} [GeV]; N_{Jets}");
+   ElecMTWMHTNJet->Write();
    std::cout<<"End of Effmaker"<<std::endl;
 
    std::cout<<"All objects have been deleted"<<std::endl;
@@ -547,6 +658,15 @@ void EffMaker::resetValues()
   elecAcc =1;
   elecTotal=1;
   elecMTW=1;
+  for(unsigned int i=0; i<10;i++)
+  {
+    RecoIsoMuonPromtMatched[i]=999;
+    RecoIsoMuonPromtMatchedDeltaR[i]=999.;
+    RecoIsoMuonPromtMatchedRelPt[i]=999.;
+    RecoIsoElecPromtMatched[i]=999;
+    RecoIsoElecPromtMatchedDeltaR[i]=999.;
+    RecoIsoElecPromtMatchedRelPt[i]=999.;
+  }
 }
 bool EffMaker::FiltersPass()
 {

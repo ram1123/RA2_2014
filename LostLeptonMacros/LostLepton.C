@@ -56,7 +56,7 @@ void LostLepton()
 	outPutFileName_ = "LostLepton.root";
 	outPutFile_ = new TFile(outPutFileName_,"RECREATE");
 	// analyse the trees
-	TProof *proof = TProof::Open("workers=8");
+	TProof *proof = TProof::Open("workers=6");
 	//TProof *proof = TProof::Open();
 	TChain *Effchain = new TChain("RA2TreeMaker2/RA2PreSelection");
 	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauolaPU20bx250_V5-v2/*.root");
