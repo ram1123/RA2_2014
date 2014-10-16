@@ -68,8 +68,8 @@ void LostLepton()
 	Effchain->SetProof(proof);
 	// run the selector
 	Effchain->Process("EffMaker.C+");
-	//Effchain->SetProof(0);
-	//delete proof;
+	Effchain->SetProof(0);
+	delete proof;
 	// print out report file
 	std::cout<<"Processing done finishing macro"<<std::endl;
 	if(llLogFile_->is_open())
