@@ -72,7 +72,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    tPrediction->Branch("totalWeightMTWDiLep",&totalWeightMTWDiLep_,"totalWeightMTWDiLep/F");
    tPrediction->Branch("muIsoWeight",&muIsoWeight_,"muIsoWeight/F");
    tPrediction->Branch("muIsoWeightErrorUp",&muIsoWeightErrorUp_,"muIsoWeightErrorUp/F");
-   tPrediction->Branch("muIsoWeightErrorDown",&muIsoWeightErrorDown_,"muIsoWeightErrorDown/F");
+   tPrediction->Branch("muIsoWeightErrorDown",&muIsoWeightErrorDown_,"muIsoWeightErrorDown/F"); 
    tPrediction->Branch("muRecoWeight",&muRecoWeight_,"muRecoWeight_/F");
    tPrediction->Branch("muRecoWeightErrorUp",&muRecoWeightErrorUp_,"muRecoWeightErrorUp/F");
    tPrediction->Branch("muRecoWeightErrorDown",&muRecoWeightErrorDown_,"muRecoWeightErrorDown/F");

@@ -50,7 +50,7 @@ public :
    // Declaration of leaf types
    UInt_t          RunNum;
    UInt_t          LumiBlockNum;
-   UInt_t          EvtNum;
+   UInt_t          EvtNum; 
    UShort_t        NVtx;
    Float_t         WeightProducer;
    Float_t         HT;
