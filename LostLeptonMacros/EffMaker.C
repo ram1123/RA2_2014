@@ -239,6 +239,18 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    ElecMTWMHTNJetFail->SetName("ElecMTWMHTNJetFail");
    GetOutputList()->Add(ElecMTWMHTNJetFail);
    
+   MuonPurityMHTNJet = new TH2F("MuonPurity","MuonPurity",mupurityMHT_-1,muPurityMHT_,mupurityNJet_-1,muPurityNJet_);
+   GetOutputList()->Add(MuonPurityMHTNJet);
+   MuonPurityMHTNJetFail = (TH2F*)MuonPurityMHTNJet->Clone();
+   MuonPurityMHTNJetFail->SetName("MuonPurityFail");
+   GetOutputList()->Add(MuonPurityMHTNJetFail);  
+   
+   ElecPurityMHTNJet = new TH2F("ElecPurity","ElecPurity",elecpurityMHT_-1,elecPurityMHT_,elecpurityNJet_-1,elecPurityNJet_);
+   GetOutputList()->Add(ElecPurityMHTNJet);
+   ElecPurityMHTNJetFail = (TH2F*)ElecPurityMHTNJet->Clone();
+   ElecPurityMHTNJetFail->SetName("ElecPurityFail");
+   GetOutputList()->Add(ElecPurityMHTNJetFail); 
+   
    // initialize the tree and the Histograms
    tExpectation_ = new TTree("LostLeptonExpectation","a simple Tree with simple variables");
    tExpectation_->Branch("HT",&HT,"HT/F");
@@ -461,11 +473,16 @@ Bool_t EffMaker::Process(Long64_t entry)
       if(std::abs(RecoIsoMuonPt[i]-GenMuPt[ii])/RecoIsoMuonPt[i] < std::abs(RecoIsoMuonPromtMatchedRelPt[i]) )RecoIsoMuonPromtMatchedRelPt[i]=(RecoIsoMuonPt[i]-GenMuPt[ii])/RecoIsoMuonPt[i];
       if(deltaR(RecoIsoMuonEta[i],RecoIsoMuonPhi[i],GenMuEta[ii],GenMuPhi[ii])<maxDeltaRIsoToGenMu_ && std::abs(RecoIsoMuonPt[i]-GenMuPt[ii])/RecoIsoMuonPt[i] <maxDiffPtIsoToGenMu_)
       {
+	MuonPurityMHTNJet->Fill(MHT,NJets,WeightProducer);
 	RecoIsoMuonPromtMatched[i]=1;
 	matched=true;
       }
     }
-    if(!matched) RecoIsoMuonPromtMatched[i]=0;
+    if(!matched)
+    {
+      RecoIsoMuonPromtMatched[i]=0;
+      MuonPurityMHTNJetFail->Fill(MHT,NJets,WeightProducer);
+    }
     if(GenMuNum==0)
     {
       RecoIsoMuonPromtMatchedDeltaR[i]=-1;
@@ -483,9 +500,14 @@ Bool_t EffMaker::Process(Long64_t entry)
       {
 	RecoIsoElecPromtMatched[i]=1;
 	matched=true;
+	ElecPurityMHTNJet->Fill(MHT,NJets,WeightProducer);
       }
     }
-    if(!matched) RecoIsoElecPromtMatched[i]=0;
+    if(!matched)
+    {
+      RecoIsoElecPromtMatched[i]=0;
+      ElecPurityMHTNJetFail->Fill(MHT,NJets,WeightProducer);
+    }
     if(GenElecNum==0)
     {
       RecoIsoElecPromtMatchedDeltaR[i]=-1;
@@ -592,6 +614,13 @@ void EffMaker::Terminate()
    MuMTWMHTNJet->UseCurrentStyle();
    MuMTWMHTNJet->Write();
    
+   MuonPurityMHTNJet = ratioCalculator(MuonPurityMHTNJet,MuonPurityMHTNJetFail);   
+   // MuMTWMHTNJetFail->Delete("all");
+   MuonPurityMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu purity; #slash{H}_{T} [GeV]; N_{Jets}");
+   MuonPurityMHTNJet->SetMarkerSize(2.0);
+   MuonPurityMHTNJet->UseCurrentStyle();
+   MuonPurityMHTNJet->Write();
+   
    
    ElecAcc = ratioCalculator(ElecAcc,ElecAccFail);   
  //  ElecAccFail->Delete("all");
@@ -640,6 +669,15 @@ void EffMaker::Terminate()
  //  ElecMTWMHTNJetFail->Delete("all");
    ElecMTWMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec M_{T}(W); #slash{H}_{T} [GeV]; N_{Jets}");
    ElecMTWMHTNJet->Write();
+   
+   ElecPurityMHTNJet = ratioCalculator(ElecPurityMHTNJet,ElecPurityMHTNJetFail);   
+   // MuMTWMHTNJetFail->Delete("all");
+   ElecPurityMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec purity; #slash{H}_{T} [GeV]; N_{Jets}");
+   ElecPurityMHTNJet->SetMarkerSize(2.0);
+   ElecPurityMHTNJet->UseCurrentStyle();
+   ElecPurityMHTNJet->Write();
+  // copyEff();
+   
    std::cout<<"End of Effmaker"<<std::endl;
 
    std::cout<<"All objects have been deleted"<<std::endl;
@@ -667,6 +705,11 @@ void EffMaker::resetValues()
     RecoIsoElecPromtMatchedDeltaR[i]=999.;
     RecoIsoElecPromtMatchedRelPt[i]=999.;
   }
+}
+void EffMaker::copyEff()
+{
+
+
 }
 bool EffMaker::FiltersPass()
 {

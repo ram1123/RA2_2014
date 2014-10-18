@@ -16,13 +16,13 @@
 #include <TF1.h>
 #include <stdio.h>
 #include "TROOT.h"
-#include "TMinuit.h"
-#include "Math/Minimizer.h"
-#include "Math/Factory.h"
-#include "Math/Functor.h"
-#include "Fit/Fitter.h"
-#include "Fit/BinData.h"
-#include "Fit/Chi2FCN.h"
+//#include "TMinuit.h"
+//#include "Math/Minimizer.h"
+//#include "Math/Factory.h"
+//#include "Math/Functor.h"
+//#include "Fit/Fitter.h"
+//#include "Fit/BinData.h"
+//#include "Fit/Chi2FCN.h"
 #include "TH1.h"
 #include "TH2F.h"
 #include "TList.h"
@@ -56,7 +56,7 @@ void LostLepton()
 	outPutFileName_ = "LostLepton.root";
 	outPutFile_ = new TFile(outPutFileName_,"RECREATE");
 	// analyse the trees
-	TProof *proof = TProof::Open("workers=6");
+	TProof *proof = TProof::Open("workers=8");
 	//TProof *proof = TProof::Open();
 	TChain *Effchain = new TChain("RA2TreeMaker2/RA2PreSelection");
 	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauolaPU20bx250_V5-v2/*.root");
@@ -70,6 +70,30 @@ void LostLepton()
 	Effchain->Process("EffMaker.C+");
 	Effchain->SetProof(0);
 	delete proof;
+	delete Effchain;
+	outPutFile_->Close();
+	std::cout<<"outPutFileName_ "<<outPutFileName_<<std::endl;
+	outPutFile2_= new TFile("LostLepton.root","UPDATE");
+	std::cout<<"Done opening..."<<std::endl;
+	getEfficiencies((TDirectory*)outPutFile2_->Get("Efficiencies"));
+	std::cout<<"Got eff opening..."<<std::endl;
+	// do prediction
+//	TProof *proofPre = TProof::Open("workers=8");
+	//TProof *proof = TProof::Open();
+	TChain *Prechain = new TChain("RA2TreeMaker2/RA2PreSelection");
+	Prechain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauolaPU20bx250_V5-v2/*.root");
+	Prechain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-200to400/*root");
+	Prechain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-400to600/*root");
+	Prechain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-600toInf/*root");
+	
+	//Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu*/*.root");
+//	Prechain->SetProof(proofPre);
+	// run the selector
+	Prechain->Process("Prediction.C+");
+//	Prechain->SetProof(0);
+//	delete proofPre;
+	delete Prechain;
+	outPutFile2_->Close();
 	// print out report file
 	std::cout<<"Processing done finishing macro"<<std::endl;
 	if(llLogFile_->is_open())
@@ -83,7 +107,7 @@ void LostLepton()
 	else cout<<"File not opend output not printed out please see LostLeptonLogFile.txt file"<<std::endl;
 	llLogFile_->close();
 	delete llLogFile_;
-	outPutFile_->Close();
+	
 }
 
 
@@ -106,4 +130,30 @@ void saveCutsToFile(fstream *llLogFile)
   *llLogFile <<"NJet: ["<<NjetLowLow_<<","<<NjetHighLow_<<","<<NjetLow0_<<","<<NjetHigh0_<<","<<NjetLow1_<<","<<NjetHigh1_<<","<<NjetLow2_<<","<<NjetHigh2_<<"]"<<"\n";
   *llLogFile <<"\n--------------------------------------------------------End---------------------------------------------------------------\n\n";
   
+}
+void getEfficiencies(TDirectory *effFolder)
+{
+  MuonIsoLow_ = (TH2F*)effFolder->Get("MuonIsoNJet2Jet");
+  MuonIso0_ = (TH2F*)effFolder->Get("MuonIsoNJetLow");
+  MuonIso1_ = (TH2F*)effFolder->Get("MuonIsoNJetMedium");
+  MuonIso2_ = (TH2F*)effFolder->Get("MuonIsoNJetHgih");
+  MuonRecoLow_ = (TH2F*)effFolder->Get("MuonRecoNJet2Jet");
+  MuonReco0_ = (TH2F*)effFolder->Get("MuonRecoNJetLow");
+  MuonReco1_ = (TH2F*)effFolder->Get("MuonRecoNJetMedium");
+  MuonReco2_ = (TH2F*)effFolder->Get("MuonRecoNJetHgih");
+  MuonAcc_ = (TH2F*)effFolder->Get("MuonAcc");
+  MuMTWNJet_ = (TH1F*)effFolder->Get("MuMTW");
+  MuMTWMHTNJet_ = (TH2F*)effFolder->Get("MuMTWMHTNjet");
+  
+  ElecIsoLow_ = (TH2F*)effFolder->Get("ElecIsoNJet2Jet");
+  ElecIso0_ = (TH2F*)effFolder->Get("ElecIsoNJetLow");
+  ElecIso1_ = (TH2F*)effFolder->Get("ElecIsoNJetMedium");
+  ElecIso2_ = (TH2F*)effFolder->Get("ElecIsoNJetHgih");
+  ElecRecoLow_ = (TH2F*)effFolder->Get("ElecRecoNJet2Jet");
+  ElecReco0_ = (TH2F*)effFolder->Get("ElecRecoNJetLow");
+  ElecReco1_ = (TH2F*)effFolder->Get("ElecRecoNJetMedium");
+  ElecReco2_ = (TH2F*)effFolder->Get("ElecRecoNJetHgih");
+  ElecAcc_ = (TH2F*)effFolder->Get("ElecAcc");
+  MuMTWNJet_ = (TH1F*)effFolder->Get("MuMTW");
+  MuMTWMHTNJet_ = (TH2F*)effFolder->Get("MuMTWMHTNjet");
 }

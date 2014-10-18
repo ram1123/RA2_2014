@@ -17,11 +17,11 @@
 // user defined functions
 
 void saveCutsToFile(fstream *llLogFile);
-
+void getEfficiencies(TDirectory *effFolder);
 // Global Variables for debuging documentation and reports
 fstream *llLogFile_;
 // global variables generell
-TFile *outPutFile_;
+TFile *outPutFile_, *outPutFile2_;
 TString outPutFileName_;
 unsigned int toBeProcessedEvents_;
 const double minHT_=500;
@@ -51,6 +51,8 @@ const double maxDeltaRRecoToIsoElec_ =0.1;
 const double maxDiffPtRecoToIsoElec_ =0.1;
 const double maxDeltaRIsoToGenElec_ = 0.3;
 const double maxDiffPtIsoToGenElec_ = 0.3;
+// uncertainties lost lepton method
+const double MuAccUncertaintyDown_ = 9;
 // TH2F efficiencies
 TH2F *MuonIsoLow_, *MuonIso0_, *MuonIso1_, *MuonIso2_; 
 TH2F *MuonRecoLow_, *MuonReco0_, *MuonReco1_, *MuonReco2_; 
@@ -66,6 +68,10 @@ TH2F *ElecMTWMHTNJet_;
 TH2F *MC_TAP_mu_iso_eff, *Data_TAP_mu_iso_eff, *MC_TAP_mu_reco_eff, *Data_TAP_mu_reco_eff;
 TH2F *MC_TAP_elec_iso_eff, *Data_TAP_elec_iso_eff, *MC_TAP_elec_reco_eff, *Data_TAP_elec_reco_eff;
 // Eff bins basic cuts
+const UShort_t NJetsLow_=2;
+const UShort_t NJetsMedium_=5;
+const UShort_t NJetsMedium2_=7;
+const UShort_t NJetsHigh_=8;
 const double NjetLowLow_=1.6;
 const double NjetHighLow_ = 2.6;
 const double NjetLow0_=2.6;
@@ -75,42 +81,42 @@ const double NjetHigh1_=7.6;
 const double NjetLow2_=7.6;
 const double NjetHigh2_=9999;
 const int muIsoHTLow_=5;
-double MuIsoHTLow_[muIsoHTLow_]={350,500,800,2000,5000};
+double MuIsoHTLow_[muIsoHTLow_]={350,500,800,2000,9000};
 const int muIsoMHTLow_=8;
-double MuIsoMHTLow_[muIsoMHTLow_]={0,50,100,200,450,600,1200,2500};
+double MuIsoMHTLow_[muIsoMHTLow_]={0,50,100,200,450,600,750,9500};
 const int muIsoHT0_=6;
-double MuIsoHT0_[muIsoHT0_]={350,500,800,1000,1250,2000};
+double MuIsoHT0_[muIsoHT0_]={350,500,800,1000,1250,9000};
 const int muIsoMHT0_=8;
-double MuIsoMHT0_[muIsoMHT0_]={0,50,100,200,300,450,600,2500};
+double MuIsoMHT0_[muIsoMHT0_]={0,50,100,200,300,450,600,9500};
 const int muIsoHT1_=7;
-double MuIsoHT1_[muIsoHT1_]={350,500,800,1000,1250,1500,2000};
+double MuIsoHT1_[muIsoHT1_]={350,500,800,1000,1250,1500,9000};
 const int muIsoMHT1_=7;
-double MuIsoMHT1_[muIsoMHT1_]={0,50,100,200,300,450,2500};
+double MuIsoMHT1_[muIsoMHT1_]={0,50,100,200,300,450,9500};
 const int muIsoHT2_=7;
-double MuIsoHT2_[muIsoHT2_]={350,500,800,1000,1250,1500,2000};
+double MuIsoHT2_[muIsoHT2_]={350,500,800,1000,1250,1500,9000};
 const int muIsoMHT2_=5;
-double MuIsoMHT2_[muIsoMHT2_]={0,50,100,200,2500};
+double MuIsoMHT2_[muIsoMHT2_]={0,50,100,200,9500};
 
 const int muRecoHTLow_=4;
-double MuRecoHTLow_[muRecoHTLow_]={350,500,800,2000};
+double MuRecoHTLow_[muRecoHTLow_]={350,500,800,9000};
 const int muRecoMHTLow_=7;
-double MuRecoMHTLow_[muRecoMHTLow_]={0,50,100,200,450,600,2500};
+double MuRecoMHTLow_[muRecoMHTLow_]={0,50,100,200,450,600,9500};
 const int muRecoHT0_=6;
-double MuRecoHT0_[muRecoHT0_]={350,500,800,1000,1250,2000};
+double MuRecoHT0_[muRecoHT0_]={350,500,800,1000,1250,9000};
 const int muRecoMHT0_=8;
-double MuRecoMHT0_[muRecoMHT0_]={0,50,100,200,300,450,600,2500};
+double MuRecoMHT0_[muRecoMHT0_]={0,50,100,200,300,450,600,9500};
 const int muRecoHT1_=7;
-double MuRecoHT1_[muRecoHT1_]={350,500,800,1000,1250,1500,2000};
+double MuRecoHT1_[muRecoHT1_]={350,500,800,1000,1250,1500,9000};
 const int muRecoMHT1_=7;
-double MuRecoMHT1_[muRecoMHT1_]={0,50,100,200,300,450,2500};
+double MuRecoMHT1_[muRecoMHT1_]={0,50,100,200,300,450,9500};
 const int muRecoHT2_=7;
-double MuRecoHT2_[muRecoHT2_]={350,500,800,1000,1250,1500,2000};
+double MuRecoHT2_[muRecoHT2_]={350,500,800,1000,1250,1500,9000};
 const int muRecoMHT2_=5;
-double MuRecoMHT2_[muRecoMHT2_]={0,50,100,200,2500};
+double MuRecoMHT2_[muRecoMHT2_]={0,50,100,200,9500};
 
 
 const int muAccMht_ = 7;
-double MuAccMht_ [muAccMht_]={0,50,100,200,300,450,2600};
+double MuAccMht_ [muAccMht_]={0,50,100,200,300,450,9600};
 const int muAccNJets_ = 6;
 double MuAccNJets_ [muAccNJets_]={2,3,4,6,7,14};
 
@@ -118,44 +124,49 @@ const int mumtwNjet_ = 5;
 double muMtwNjet_[mumtwNjet_] ={2,3,4,5,14};
 
 const int mumtwMHT_ = 5;
-double muMtwMHT_[mumtwMHT_] ={0,100,200,400,1600};
+double muMtwMHT_[mumtwMHT_] ={0,100,200,400,9600};
+
+const int mupurityMHT_ = 7;
+double muPurityMHT_[mupurityMHT_] ={0,100,200,400,800,1200,9600};
+const int mupurityNJet_ = 5;
+double muPurityNJet_[mupurityNJet_] ={2,3,4,5,14};
 
 const int elecIsoHTLow_=4;
-double ElecIsoHTLow_[elecIsoHTLow_]={350,500,800,2000};
+double ElecIsoHTLow_[elecIsoHTLow_]={350,500,800,9000};
 const int elecIsoMHTLow_=7;
-double ElecIsoMHTLow_[elecIsoMHTLow_]={0,100,200,300,450,600,2500};
+double ElecIsoMHTLow_[elecIsoMHTLow_]={0,100,200,300,450,600,9500};
 const int elecIsoHT0_=6;
-double ElecIsoHT0_[elecIsoHT0_]={350,500,800,1000,1250,2000};
+double ElecIsoHT0_[elecIsoHT0_]={350,500,800,1000,1250,9000};
 const int elecIsoMHT0_=8;
-double ElecIsoMHT0_[elecIsoMHT0_]={0,50,100,200,300,450,600,2500};
+double ElecIsoMHT0_[elecIsoMHT0_]={0,50,100,200,300,450,600,9500};
 const int elecIsoHT1_=7;
-double ElecIsoHT1_[elecIsoHT1_]={350,500,800,1000,1250,1500,2000};
+double ElecIsoHT1_[elecIsoHT1_]={350,500,800,1000,1250,1500,9000};
 const int elecIsoMHT1_=7;
-double ElecIsoMHT1_[elecIsoMHT1_]={0,50,100,200,300,450,2500};
+double ElecIsoMHT1_[elecIsoMHT1_]={0,50,100,200,300,450,9500};
 const int elecIsoHT2_=7;
-double ElecIsoHT2_[elecIsoHT2_]={350,500,800,1000,1250,1500,2000};
+double ElecIsoHT2_[elecIsoHT2_]={350,500,800,1000,1250,1500,9000};
 const int elecIsoMHT2_=5;
-double ElecIsoMHT2_[elecIsoMHT2_]={0,50,100,200,2500};
+double ElecIsoMHT2_[elecIsoMHT2_]={0,50,100,200,9500};
 
 const int elecRecoHTLow_=5;
-double ElecRecoHTLow_[elecRecoHTLow_]={350,500,800,1000,2000};
+double ElecRecoHTLow_[elecRecoHTLow_]={350,500,800,1000,9000};
 const int elecRecoMHTLow_=8;
-double ElecRecoMHTLow_[elecRecoMHTLow_]={0,50,100,200,300,450,600,2500};
+double ElecRecoMHTLow_[elecRecoMHTLow_]={0,50,100,200,300,450,600,9500};
 const int elecRecoHT0_=6;
-double ElecRecoHT0_[elecRecoHT0_]={350,500,800,1000,1250,2000};
+double ElecRecoHT0_[elecRecoHT0_]={350,500,800,1000,1250,9000};
 const int elecRecoMHT0_=8;
-double ElecRecoMHT0_[elecRecoMHT0_]={0,50,100,200,300,450,600,2500};
+double ElecRecoMHT0_[elecRecoMHT0_]={0,50,100,200,300,450,600,9500};
 const int elecRecoHT1_=7;
-double ElecRecoHT1_[elecRecoHT1_]={350,500,800,1000,1250,1500,2000};
+double ElecRecoHT1_[elecRecoHT1_]={350,500,800,1000,1250,1500,9000};
 const int elecRecoMHT1_=7;
-double ElecRecoMHT1_[elecRecoMHT1_]={0,50,100,200,300,450,2500};
+double ElecRecoMHT1_[elecRecoMHT1_]={0,50,100,200,300,450,9500};
 const int elecRecoHT2_=7;
-double ElecRecoHT2_[elecRecoHT2_]={350,500,800,1000,1250,1500,2000};
+double ElecRecoHT2_[elecRecoHT2_]={350,500,800,1000,1250,1500,9000};
 const int elecRecoMHT2_=5;
-double ElecRecoMHT2_[elecRecoMHT2_]={0,50,100,200,2500};
+double ElecRecoMHT2_[elecRecoMHT2_]={0,50,100,200,9500};
 
 const int elecAccMht_ = 7;
-double ElecAccMht_ [elecAccMht_]={0,50,100,200,300,450,2600};
+double ElecAccMht_ [elecAccMht_]={0,50,100,200,300,450,9600};
 const int elecAccNJets_ = 6;
 double ElecAccNJets_ [elecAccNJets_]={2,3,4,6,7,14};
 
@@ -163,7 +174,14 @@ const int elecmtwNjet_ = 5;
 double elecMtwNjet_[elecmtwNjet_] ={2,3,4,5,14};
 
 const int elecmtwMHT_ = 5;
-double elecMtwMHT_[elecmtwMHT_] ={0,100,200,400,1600};
+double elecMtwMHT_[elecmtwMHT_] ={0,100,200,400,9600};
+
+
+const int elecpurityNJet_ = 5;
+double elecPurityNJet_[elecpurityNJet_] ={2,3,4,5,14};
+
+const int elecpurityMHT_ = 7;
+double elecPurityMHT_[elecpurityMHT_] ={0,100,200,400,800,1200,9600};
 // reusable variables
 string line_;
 #endif
