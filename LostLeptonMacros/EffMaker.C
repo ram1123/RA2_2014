@@ -531,6 +531,7 @@ void EffMaker::Terminate()
    // The Terminate() function is the last function to be called during
    // a query. It always runs on the client, it can be used to present
    // the results graphically or save the results to file.
+  //GetOutputList()->Print();
   gStyle->SetPaintTextFormat("5.2f");
   gStyle->SetStatW(0.1);
   gStyle->SetStatH(0.1);
@@ -540,7 +541,7 @@ void EffMaker::Terminate()
    outPutFile_->cd();
    tExpectation_->Write();
    outPutFile_->mkdir("Efficiencies");
- 
+   std::cout<<"1"<<std::endl;
    TDirectory *dEfficiencies = (TDirectory*)outPutFile_->Get("Efficiencies");
    dEfficiencies->cd();   std::cout<<"1"<<std::endl;
    

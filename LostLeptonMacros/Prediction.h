@@ -14,7 +14,7 @@
 #include <TSelector.h>
 #include "TProofServ.h"
 #include <TH2F.h>
-#include "GlobalVars.h"
+#include "/afs/desy.de/user/a/adraeger/xxl-af-cms/csa14/RA2_2014/LostLeptonMacros/GlobalVars.h"
 // Header file for the classes stored in the TTree if any.
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
@@ -31,6 +31,7 @@ public :
    double effUp(double eff, double up);
    double effDown(double eff, double down);
    std::vector<Float_t> GetEff(TH2F *TH2Eff, Float_t XValue, Float_t YValue);
+   // efficiencies
    
    // variables
    TTree	*tPrediction;
@@ -273,7 +274,7 @@ public :
    TBranch        *b_Filter_logErrorTooManyClusters;   //!
    TBranch        *b_Filter_RA2HONoiseFilter;   //!
 
-   Prediction(TTree * /*tree*/ =0) : fChain(0) { }
+   Prediction(TTree * /*tree*/ =0) : TSelector(),fChain(0) {}
    virtual ~Prediction() { }
    virtual Int_t   Version() const { return 2; }
    virtual void    Begin(TTree *tree);

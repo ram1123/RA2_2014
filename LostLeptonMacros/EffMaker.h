@@ -14,7 +14,7 @@
 #include <TSelector.h>
 #include "TProofServ.h"
 #include <TH2F.h>
-#include "GlobalVars.h"
+#include "/afs/desy.de/user/a/adraeger/xxl-af-cms/csa14/RA2_2014/LostLeptonMacros/GlobalVars.h"
 
 // Header file for the classes stored in the TTree if any.
 

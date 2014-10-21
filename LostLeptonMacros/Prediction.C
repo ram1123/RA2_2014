@@ -34,9 +34,39 @@ void Prediction::Begin(TTree * /*tree*/)
    // When running with PROOF Begin() is only called on the client.
    // The tree argument is deprecated (on PROOF 0 is passed).
 
+   
    TString option = GetOption();
    tPrediction = NULL;
 
+   std::cout << "input:" << GetInputList() << '\n';
+   //TList* list = new TList;
+   TList* list = GetInputList();
+   TH2F* temp = new TH2F("Test","test",10,1,20,10,2,10);
+   list->Add(temp);
+   list->Add(MuonIso0_);
+   list->Add(MuonIso1_);
+   list->Add(MuonIso2_);
+   list->Add(MuonRecoLow_);
+   list->Add(MuonReco0_);
+   list->Add(MuonReco1_);
+   list->Add(MuonReco2_);
+   list->Add(MuonAcc_);
+   list->Add(MuMTWMHTNJet_);
+
+   list->Add(ElecIsoLow_);
+   list->Add(ElecIso0_);
+   list->Add(ElecIso1_);
+   list->Add(ElecIso2_);
+   list->Add(ElecRecoLow_);
+   list->Add(ElecReco0_);
+   list->Add(ElecReco1_);
+   list->Add(ElecReco2_);
+   list->Add(ElecAcc_);
+   list->Add(ElecMTWMHTNJet_);
+   list->Add(MuonIsoLow_);  
+   list->Print();
+   //SetInputList(list);
+   std::cout << "done" << '\n';
 }
 
 void Prediction::SlaveBegin(TTree * /*tree*/)
@@ -44,7 +74,6 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    // The SlaveBegin() function is called after the Begin() function.
    // When running with PROOF SlaveBegin() is called on each slave server.
    // The tree argument is deprecated (on PROOF 0 is passed).
-
    TString option = GetOption();
    tPrediction = new TTree("LostLeptonPrediction","LostLeptonPrediction");
    tPrediction->Branch("HT",&HT,"HT/F");
@@ -99,6 +128,31 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    tPrediction->Branch("elecRecoEff",&elecRecoEff_,"elecRecoEff/F");
    tPrediction->Branch("elecAccEff",&elecAccEff_,"elecAccEff/F");
    GetOutputList()->Add(tPrediction);
+
+
+   GetInputList()->Print();
+   MuonIso0_ = (TH2F*)GetInputList()->At(1);
+   MuonIso1_ = (TH2F*)GetInputList()->At(2);
+   MuonIso2_ = (TH2F*)GetInputList()->At(3);
+   MuonRecoLow_ = (TH2F*)GetInputList()->At(4);
+   MuonReco0_ = (TH2F*)GetInputList()->At(5);
+   MuonReco1_ = (TH2F*)GetInputList()->At(6);
+   MuonReco2_ = (TH2F*)GetInputList()->At(7);
+   MuonAcc_ = (TH2F*)GetInputList()->At(8);
+   MuMTWMHTNJet_ = (TH2F*)GetInputList()->At(9);
+   ElecIsoLow_ = (TH2F*)GetInputList()->At(10);
+   ElecIso0_ = (TH2F*)GetInputList()->At(11);
+   ElecIso1_ = (TH2F*)GetInputList()->At(12);
+   ElecIso2_ = (TH2F*)GetInputList()->At(13);
+   ElecRecoLow_ = (TH2F*)GetInputList()->At(14);
+   ElecReco0_ =  (TH2F*)GetInputList()->At(15);
+   ElecReco1_ =  (TH2F*)GetInputList()->At(16);
+   ElecReco2_ =  (TH2F*)GetInputList()->At(17);
+   ElecAcc_ =  (TH2F*)GetInputList()->At(18);
+   MuMTWMHTNJet_ =  (TH2F*)GetInputList()->At(19);
+   MuonIsoLow_ = (TH2F*)GetInputList()->At(20);
+
+
    std::cout<<"Prepartion of prediction done!"<<std::endl;
 }
 
@@ -111,19 +165,24 @@ Bool_t Prediction::Process(Long64_t entry)
   if(RecoIsoMuonNum!=1 || RecoIsoElecNum!=0) return kTRUE;
   mtw =  MTWCalculator(METPt,METPhi, RecoIsoMuonPt[0], RecoIsoMuonPhi[0]);
 //  std::cout<<"HT "<<HT<<" MHT "<<MHT<<std::endl;
-  GetEff(MuonIso0_,HT,MHT);
-  if( NJets==NJetsLow_)
+//  GetEff(MuonIso0_,HT,MHT);
+  std::cout << "-------------------------------------------------------------------------------------" <<NJetsLow_ << '\n'; 
+  std::cout << "HT: " <<HT << " MHT: " <<MHT << " NJets: "<<NJets <<  '\n'; 
+  std::cout << "low:" <<NJetsLow_ << '\n'; 
+  if( NJets==NJetsLow_ )
   {
-    muIsoEff_ = MuonIsoLow_->GetBinContent(MuonIsoLow_->GetXaxis()->FindBin(HT),MuonIsoLow_->GetYaxis()->FindBin(MHT));
-    muIsoEffError_= MuonIsoLow_->GetBinError(MuonIsoLow_->GetXaxis()->FindBin(HT),MuonIsoLow_->GetYaxis()->FindBin(MHT));
-    muRecoEff_ = MuonRecoLow_->GetBinContent(MuonRecoLow_->GetXaxis()->FindBin(HT),MuonRecoLow_->GetYaxis()->FindBin(MHT));
-    muRecoEffError_= MuonRecoLow_->GetBinError(MuonRecoLow_->GetXaxis()->FindBin(HT),MuonRecoLow_->GetYaxis()->FindBin(MHT));
+	  std::cout<<"one"<<std::endl;
+	  muIsoEff_ = MuonIsoLow_->GetBinContent(MuonIsoLow_->GetXaxis()->FindBin(HT),MuonIsoLow_->GetYaxis()->FindBin(MHT));    std::cout<<"one"<<std::endl;
+	  muIsoEffError_= MuonIsoLow_->GetBinError(MuonIsoLow_->GetXaxis()->FindBin(HT),MuonIsoLow_->GetYaxis()->FindBin(MHT));    std::cout<<"two"<<std::endl;
+	  muRecoEff_ = MuonRecoLow_->GetBinContent(MuonRecoLow_->GetXaxis()->FindBin(HT),MuonRecoLow_->GetYaxis()->FindBin(MHT));    std::cout<<"three"<<std::endl;
+	  muRecoEffError_= MuonRecoLow_->GetBinError(MuonRecoLow_->GetXaxis()->FindBin(HT),MuonRecoLow_->GetYaxis()->FindBin(MHT));    std::cout<<"four"<<std::endl;
     
-    elecIsoEff_ = ElecIso0_->GetBinContent(ElecIso0_->GetXaxis()->FindBin(HT),ElecIso0_->GetYaxis()->FindBin(MHT));
-    elecIsoEffError_= ElecIso0_->GetBinError(ElecIso0_->GetXaxis()->FindBin(HT),ElecIso0_->GetYaxis()->FindBin(MHT));
-    elecRecoEff_ = ElecReco0_->GetBinContent(ElecReco0_->GetXaxis()->FindBin(HT),ElecReco0_->GetYaxis()->FindBin(MHT));
-    elecRecoEffError_= ElecReco0_->GetBinError(ElecReco0_->GetXaxis()->FindBin(HT),ElecReco0_->GetYaxis()->FindBin(MHT));
+	  elecIsoEff_ = ElecIsoLow_->GetBinContent(ElecIsoLow_->GetXaxis()->FindBin(HT),ElecIsoLow_->GetYaxis()->FindBin(MHT));    std::cout<<"five"<<std::endl;
+	  elecIsoEffError_= ElecIsoLow_->GetBinError(ElecIsoLow_->GetXaxis()->FindBin(HT),ElecIsoLow_->GetYaxis()->FindBin(MHT));    std::cout<<"six"<<std::endl;
+	  elecRecoEff_ = ElecRecoLow_->GetBinContent(ElecRecoLow_->GetXaxis()->FindBin(HT),ElecRecoLow_->GetYaxis()->FindBin(MHT));    std::cout<<"seven"<<std::endl;
+	  elecRecoEffError_= ElecRecoLow_->GetBinError(ElecRecoLow_->GetXaxis()->FindBin(HT),ElecRecoLow_->GetYaxis()->FindBin(MHT));    std::cout<<"eight"<<std::endl;
   }
+  std::cout << "medium:" <<NJetsMedium_ << '\n'; 
   if (NJetsLow_<NJets &&NJets <= NJetsMedium_ )
   {
     muIsoEff_ = MuonIso0_->GetBinContent(MuonIso0_->GetXaxis()->FindBin(HT),MuonIso0_->GetYaxis()->FindBin(MHT));
@@ -137,6 +196,7 @@ Bool_t Prediction::Process(Long64_t entry)
     elecRecoEffError_= ElecReco0_->GetBinError(ElecReco0_->GetXaxis()->FindBin(HT),ElecReco0_->GetYaxis()->FindBin(MHT));
     
   }
+  std::cout << "medium:" <<NJetsMedium2_ << '\n'; 
   if (NJetsMedium_ < NJets && NJets <= NJetsMedium2_)
   {
     muIsoEff_ = MuonIso1_->GetBinContent(MuonIso1_->GetXaxis()->FindBin(HT),MuonIso1_->GetYaxis()->FindBin(MHT));
@@ -161,6 +221,7 @@ Bool_t Prediction::Process(Long64_t entry)
     elecRecoEff_ = ElecReco2_->GetBinContent(ElecReco2_->GetXaxis()->FindBin(HT),ElecReco2_->GetYaxis()->FindBin(MHT));
     elecRecoEffError_= ElecReco2_->GetBinError(ElecReco2_->GetXaxis()->FindBin(HT),ElecReco2_->GetYaxis()->FindBin(MHT));
   }
+  std::cout << "after njets\n";
   if(muIsoEffError_ + muIsoEff_ >1.00) muIsoEffError_ = (1 - muIsoEff_)*0.5;
   if(muRecoEffError_ + muRecoEff_ >1.00) muRecoEffError_ = (1 - muRecoEff_)*0.5;
   if(elecIsoEffError_ + elecIsoEff_ >1.00) elecIsoEffError_ = (1 - elecIsoEff_)*0.5;
@@ -318,12 +379,13 @@ double Prediction::effDown(double eff, double down)
 std::vector<Float_t> Prediction::GetEff(TH2F *TH2Eff, Float_t XValue, Float_t YValue)
 {
   std::vector<Float_t> result;
+  std::cout << "hist:" << TH2Eff << '\n';
   Float_t maxX = TH2Eff->GetXaxis()->GetXmax();
   Float_t minX = TH2Eff->GetXaxis()->GetXmin();
   Float_t maxY = TH2Eff->GetYaxis()->GetXmax();
   Float_t minY = TH2Eff->GetYaxis()->GetXmin();
-// std::cout<<"Hist x: "<<minX<<" "<<maxX<<std::endl;
-//  std::cout<<"Hist y: "<<minY<<" "<<maxY<<std::endl;
+  std::cout<<"Hist x: "<<minX<<" "<<maxX<<std::endl;
+  std::cout<<"Hist y: "<<minY<<" "<<maxY<<std::endl;
   if(XValue>maxX) XValue=maxX-0.0001;
   if(XValue<minX) XValue=minX+0.0001;
   if(YValue>maxY) YValue=maxY-0.0001;
@@ -331,7 +393,7 @@ std::vector<Float_t> Prediction::GetEff(TH2F *TH2Eff, Float_t XValue, Float_t YV
 //  std::cout<<"Bin[3,3]: "<<TH2Eff->GetBinContent(3,3)<<std::endl;
 //  std::cout<<"Bin[2,5]: "<<TH2Eff->GetBinContent(2,5)<<std::endl;
 //  std::cout<<"Bin[4,3]: "<<TH2Eff->GetBinContent(4,3)<<std::endl;
-  result.push_back(TH2Eff->GetBinContent(MuonIsoLow_->GetXaxis()->FindBin(XValue),MuonIsoLow_->GetYaxis()->FindBin(YValue)));
-  result.push_back(TH2Eff->GetBinError(MuonIsoLow_->GetXaxis()->FindBin(XValue),MuonIsoLow_->GetYaxis()->FindBin(YValue)));
+  result.push_back(TH2Eff->GetBinContent(TH2Eff->GetXaxis()->FindBin(XValue),TH2Eff->GetYaxis()->FindBin(YValue)));
+  result.push_back(TH2Eff->GetBinError(TH2Eff->GetXaxis()->FindBin(XValue),TH2Eff->GetYaxis()->FindBin(YValue)));
   return result;
 }

@@ -35,7 +35,7 @@
 #include "TROOT.h"
 #include "TProofServ.h"
 #include "TProof.h"
-
+#include "TSystem.h"
 
 #include "GlobalVars.h"
 #include "EffMaker.h"
@@ -53,11 +53,13 @@ void LostLepton()
 	// trees to analyse
 	toBeProcessedEvents_= 1.0; // in percent use this value to determine how much of the samples you want to process! 1.00 = 100%
 	saveCutsToFile(llLogFile_);
+	//TString connect = gSystem.GetFromPipe("pod-info -c");
+	//TProof *proof = TProof::Open("adraeger@naf-uhhcms03.desy.de:21002");
+	TProof *proof = TProof::Open("workers=7");
+	//TProof *proof = TProof::Open(connect);
 	outPutFileName_ = "LostLepton.root";
 	outPutFile_ = new TFile(outPutFileName_,"RECREATE");
 	// analyse the trees
-	TProof *proof = TProof::Open("workers=8");
-	//TProof *proof = TProof::Open();
 	TChain *Effchain = new TChain("RA2TreeMaker2/RA2PreSelection");
 	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauolaPU20bx250_V5-v2/*.root");
 	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-200to400/*root");
@@ -67,19 +69,21 @@ void LostLepton()
 	//Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu*/*.root");
 	Effchain->SetProof(proof);
 	// run the selector
+//	Effchain->Process("EffMaker.C+g",0,800000);
 	Effchain->Process("EffMaker.C+");
 	Effchain->SetProof(0);
 	delete proof;
-	delete Effchain;
+	//delete Effchain;
 	outPutFile_->Close();
 	std::cout<<"outPutFileName_ "<<outPutFileName_<<std::endl;
 	outPutFile2_= new TFile("LostLepton.root","UPDATE");
 	std::cout<<"Done opening..."<<std::endl;
 	getEfficiencies((TDirectory*)outPutFile2_->Get("Efficiencies"));
-	std::cout<<"Got eff opening..."<<std::endl;
+	std::cout<<"Eff updated"<<std::endl;
 	// do prediction
-//	TProof *proofPre = TProof::Open("workers=8");
+//	TProof *proofPre = TProof::Open("workers=6");
 	//TProof *proof = TProof::Open();
+	proof = TProof::Open("workers=7");
 	TChain *Prechain = new TChain("RA2TreeMaker2/RA2PreSelection");
 	Prechain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauolaPU20bx250_V5-v2/*.root");
 	Prechain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-200to400/*root");
@@ -87,12 +91,12 @@ void LostLepton()
 	Prechain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-600toInf/*root");
 	
 	//Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu*/*.root");
-//	Prechain->SetProof(proofPre);
+	Prechain->SetProof(1);
 	// run the selector
 	Prechain->Process("Prediction.C+"); 
 //	Prechain->SetProof(0);
 //	delete proofPre;
-	delete Prechain;
+	//delete Prechain;
 	outPutFile2_->Close();
 	// print out report file
 	std::cout<<"Processing done finishing macro"<<std::endl;
@@ -127,7 +131,7 @@ void saveCutsToFile(fstream *llLogFile)
   *llLogFile <<"Min electron pT: "<<minElecPt_<<"\n";
   *llLogFile <<"Max electron eta: "<<maxElecEta_<<"\n";
   *llLogFile <<"\n---------------------------Search and Efficiency bins-------------------------\n";
-  *llLogFile <<"NJet: ["<<NjetLowLow_<<","<<NjetHighLow_<<","<<NjetLow0_<<","<<NjetHigh0_<<","<<NjetLow1_<<","<<NjetHigh1_<<","<<NjetLow2_<<","<<NjetHigh2_<<"]"<<"\n";
+ // *llLogFile <<"NJet: ["<<NjetLowLow_<<","<<NjetHighLow_<<","<<NjetLow0_<<","<<NjetHigh0_<<","<<NjetLow1_<<","<<NjetHigh1_<<","<<NjetLow2_<<","<<NjetHigh2_<<"]"<<"\n";
   *llLogFile <<"\n--------------------------------------------------------End---------------------------------------------------------------\n\n";
   
 }
