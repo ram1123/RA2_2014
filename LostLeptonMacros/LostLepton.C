@@ -55,24 +55,24 @@ void LostLepton()
 	saveCutsToFile(llLogFile_);
 	//TString connect = gSystem.GetFromPipe("pod-info -c");
 	//TProof *proof = TProof::Open("adraeger@naf-uhhcms03.desy.de:21002");
-//	TProof *proof = TProof::Open("workers=7");
+	TProof *proof = TProof::Open("workers=7");
 	//TProof *proof = TProof::Open(connect);
 	outPutFileName_ = "LostLepton.root";
 	outPutFile_ = new TFile(outPutFileName_,"RECREATE");
 	// analyse the trees
 	TChain *Effchain = new TChain("RA2TreeMaker2/RA2PreSelection");
-	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauolaPU20bx250_V5-v2/*.root");
+	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauolaPU20bx25_V5-v2/*.root");
 	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-200to400/*root");
 	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-400to600/*root");
 	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-600toInf/*root");
 	
 	//Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu*/*.root");
-//	Effchain->SetProof(proof);
+	Effchain->SetProof(proof);
 	// run the selector
 //	Effchain->Process("EffMaker.C+g",0,800000);
 	Effchain->Process("EffMaker.C+");
 	Effchain->SetProof(0);
-//	delete proof;
+	delete proof;
 	//delete Effchain;
 	outPutFile_->Close();
 	std::cout<<"outPutFileName_ "<<outPutFileName_<<std::endl;
@@ -83,9 +83,9 @@ void LostLepton()
 	// do prediction
 //	TProof *proofPre = TProof::Open("workers=6");
 	//TProof *proof = TProof::Open();
-//	proof = TProof::Open("workers=7");
+	//proof = TProof::Open("workers=7");
 	TChain *Prechain = new TChain("RA2TreeMaker2/RA2PreSelection");
-	Prechain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauolaPU20bx250_V5-v2/*.root");
+	Prechain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauolaPU20bx25_V5-v2/*.root");
 	Prechain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-200to400/*root");
 	Prechain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-400to600/*root");
 	Prechain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-600toInf/*root");
