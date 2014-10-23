@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Wed Oct  8 10:13:52 2014 by ROOT version 5.34/10
+// Tue Oct 21 16:10:25 2014 by ROOT version 5.34/10
 // from TTree RA2PreSelection/RA2PreSelection
-// found on file: RA2ReducedSelection.root
+// found on file: job_83_RA2ReducedSelection.root
 //////////////////////////////////////////////////////////
 
 #ifndef EffMaker_h
@@ -12,53 +12,211 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <TSelector.h>
-#include "TProofServ.h"
 #include <TH2F.h>
-#include "GlobalVars.h"
-
+#include "TVector2.h"
+#include <cmath>
+#include <iostream>
 // Header file for the classes stored in the TTree if any.
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
+const UShort_t NJetsLow_=2;
+const UShort_t NJetsMedium_=5;
+const UShort_t NJetsMedium2_=7;
+const UShort_t NJetsHigh_=8;
+const double NjetLowLow_=1.6;
+const double NjetHighLow_ = 2.6;
+const double NjetLow0_=2.6;
+const double NjetHigh0_=5.6;
+const double NjetLow1_=5.6;
+const double NjetHigh1_=7.6;
+const double NjetLow2_=7.6;
+const double NjetHigh2_=9999;
+const int muIsoHTLow_=5;
+double MuIsoHTLow_[muIsoHTLow_]={350,500,800,2000,9000};
+const int muIsoMHTLow_=8;
+double MuIsoMHTLow_[muIsoMHTLow_]={0,50,100,200,450,600,750,9500};
+const int muIsoHT0_=6;
+double MuIsoHT0_[muIsoHT0_]={350,500,800,1000,1250,9000};
+const int muIsoMHT0_=8;
+double MuIsoMHT0_[muIsoMHT0_]={0,50,100,200,300,450,600,9500};
+const int muIsoHT1_=7;
+double MuIsoHT1_[muIsoHT1_]={350,500,800,1000,1250,1500,9000};
+const int muIsoMHT1_=7;
+double MuIsoMHT1_[muIsoMHT1_]={0,50,100,200,300,450,9500};
+const int muIsoHT2_=7;
+double MuIsoHT2_[muIsoHT2_]={350,500,800,1000,1250,1500,9000};
+const int muIsoMHT2_=5;
+double MuIsoMHT2_[muIsoMHT2_]={0,50,100,200,9500};
+
+const int muRecoHTLow_=4;
+double MuRecoHTLow_[muRecoHTLow_]={350,500,800,9000};
+const int muRecoMHTLow_=7;
+double MuRecoMHTLow_[muRecoMHTLow_]={0,50,100,200,450,600,9500};
+const int muRecoHT0_=6;
+double MuRecoHT0_[muRecoHT0_]={350,500,800,1000,1250,9000};
+const int muRecoMHT0_=8;
+double MuRecoMHT0_[muRecoMHT0_]={0,50,100,200,300,450,600,9500};
+const int muRecoHT1_=7;
+double MuRecoHT1_[muRecoHT1_]={350,500,800,1000,1250,1500,9000};
+const int muRecoMHT1_=7;
+double MuRecoMHT1_[muRecoMHT1_]={0,50,100,200,300,450,9500};
+const int muRecoHT2_=7;
+double MuRecoHT2_[muRecoHT2_]={350,500,800,1000,1250,1500,9000};
+const int muRecoMHT2_=5;
+double MuRecoMHT2_[muRecoMHT2_]={0,50,100,200,9500};
+
+
+const int muAccMht_ = 7;
+double MuAccMht_ [muAccMht_]={0,50,100,200,300,450,9600};
+const int muAccNJets_ = 6;
+double MuAccNJets_ [muAccNJets_]={2,3,4,6,7,14};
+
+const int mumtwNjet_ = 5;
+double muMtwNjet_[mumtwNjet_] ={2,3,4,5,14};
+
+const int mumtwMHT_ = 5;
+double muMtwMHT_[mumtwMHT_] ={0,100,200,400,9600};
+
+const int mupurityMHT_ = 7;
+double muPurityMHT_[mupurityMHT_] ={0,100,200,400,800,1200,9600};
+const int mupurityNJet_ = 5;
+double muPurityNJet_[mupurityNJet_] ={2,3,4,5,14};
+
+const int elecIsoHTLow_=4;
+double ElecIsoHTLow_[elecIsoHTLow_]={350,500,800,9000};
+const int elecIsoMHTLow_=7;
+double ElecIsoMHTLow_[elecIsoMHTLow_]={0,100,200,300,450,600,9500};
+const int elecIsoHT0_=6;
+double ElecIsoHT0_[elecIsoHT0_]={350,500,800,1000,1250,9000};
+const int elecIsoMHT0_=8; 
+double ElecIsoMHT0_[elecIsoMHT0_]={0,50,100,200,300,450,600,9500};
+const int elecIsoHT1_=7;
+double ElecIsoHT1_[elecIsoHT1_]={350,500,800,1000,1250,1500,9000};
+const int elecIsoMHT1_=7;
+double ElecIsoMHT1_[elecIsoMHT1_]={0,50,100,200,300,450,9500};
+const int elecIsoHT2_=7;
+double ElecIsoHT2_[elecIsoHT2_]={350,500,800,1000,1250,1500,9000};
+const int elecIsoMHT2_=5;
+double ElecIsoMHT2_[elecIsoMHT2_]={0,50,100,200,9500};
+
+const int elecRecoHTLow_=5;
+double ElecRecoHTLow_[elecRecoHTLow_]={350,500,800,1000,9000};
+const int elecRecoMHTLow_=8;
+double ElecRecoMHTLow_[elecRecoMHTLow_]={0,50,100,200,300,450,600,9500};
+const int elecRecoHT0_=6;
+double ElecRecoHT0_[elecRecoHT0_]={350,500,800,1000,1250,9000};
+const int elecRecoMHT0_=8;
+double ElecRecoMHT0_[elecRecoMHT0_]={0,50,100,200,300,450,600,9500};
+const int elecRecoHT1_=7;
+double ElecRecoHT1_[elecRecoHT1_]={350,500,800,1000,1250,1500,9000};
+const int elecRecoMHT1_=7;
+double ElecRecoMHT1_[elecRecoMHT1_]={0,50,100,200,300,450,9500};
+const int elecRecoHT2_=7;
+double ElecRecoHT2_[elecRecoHT2_]={350,500,800,1000,1250,1500,9000};
+const int elecRecoMHT2_=5;
+double ElecRecoMHT2_[elecRecoMHT2_]={0,50,100,200,9500};
+
+const int elecAccMht_ = 7;
+double ElecAccMht_ [elecAccMht_]={0,50,100,200,300,450,9600};
+const int elecAccNJets_ = 6;
+double ElecAccNJets_ [elecAccNJets_]={2,3,4,6,7,14};
+
+const int elecmtwNjet_ = 5;
+double elecMtwNjet_[elecmtwNjet_] ={2,3,4,5,14};
+
+const int elecmtwMHT_ = 5;
+double elecMtwMHT_[elecmtwMHT_] ={0,100,200,400,9600};
+
+
+const int elecpurityNJet_ = 5;
+double elecPurityNJet_[elecpurityNJet_] ={2,3,4,5,14};
+
+const int elecpurityMHT_ = 7;
+double elecPurityMHT_[elecpurityMHT_] ={0,100,200,400,800,1200,9600};
+
 
 class EffMaker : public TSelector {
 public :
+	void resetValues();
+	bool FiltersPass();
+	double deltaR(double eta1, double phi1, double eta2, double phi2);
+	double MTWCalculator(double metPt,double  metPhi,double  lepPt,double  lepPhi);
+	TH2F* ratioCalculator(TH2F* passTH2, TH2F* failTH2);
+	TH1F* ratioCalculator(TH1F* passTH1, TH1F* failTH1);
+	// stroing variables
+	TFile *outPutFile_;
+	TString outPutFileName_;
+	TTree	*tExpectation_;
+	// cuts baseline
+	double minHT_;
+	double minMHT_;
+	unsigned int minNJets_;
+	double deltaPhi1_;
+	double deltaPhi2_;
+	double deltaPhi3_;
+	bool applyFilters_;
+	// lepton cuts
+	double minMuPt_;
+	double maxMuEta_;
+	double minElecPt_;
+	double maxElecEta_;
+	double mtwCut_;
+	// lepton matching
+	double maxDeltaRGenToRecoMu_ ;
+	double maxDiffPtGenToRecoMu_ ;
+	double maxDeltaRRecoToIsoMu_ ;
+	double maxDiffPtRecoToIsoMu_ ;
+	double maxDeltaRIsoToGenMu_ ;
+	double maxDiffPtIsoToGenMu_ ;
+	
+	double maxDeltaRGenToRecoElec_ ;
+	double maxDiffPtGenToRecoElec_ ;
+	double maxDeltaRRecoToIsoElec_ ;
+	double maxDiffPtRecoToIsoElec_ ;
+	double maxDeltaRIsoToGenElec_ ;
+	double maxDiffPtIsoToGenElec_ ;
+	
+	UShort_t NJetsRegionHigh1_;
+	UShort_t NJetsRegionHigh2_;
+	UShort_t NJetsRegionHigh3_;
+	UShort_t NJetsRegionHigh4_;
+	
+	// TH2F efficiencies
+	TH2F *MuonIsoLow, *MuonIso0, *MuonIso1, *MuonIso2; 
+	TH2F *MuonRecoLow, *MuonReco0, *MuonReco1, *MuonReco2; 
+	TH2F *MuonAcc;
+	TH1F *MuMTWNJet;
+	TH2F *MuMTWMHTNJet;
+	TH2F *ElecIsoLow, *ElecIso0, *ElecIso1, *ElecIso2; 
+	TH2F *ElecRecoLow, *ElecReco0, *ElecReco1, *ElecReco2; 
+	TH2F *ElecAcc;
+	TH1F *ElecMTWNJet;
+	TH2F *ElecMTWMHTNJet;
+	
+	TH2F *MuonPurityMHTNJet, *ElecPurityMHTNJet;
+	TH2F *MuonPurityMHTNJetFail, *ElecPurityMHTNJetFail;
+	
+	// eff binning parameters
+	// borders for the njet bins
+	
+	
+	TH2F *MuonIso0Fail, *MuonIsoLowFail, *MuonIso1Fail, *MuonIso2Fail, *MuonAccFail, *MuonReco0Fail, *MuonRecoLowFail, *MuonReco1Fail, *MuonReco2Fail;
+	TH2F *ElecIso0Fail, *ElecIsoLowFail, *ElecIso1Fail, *ElecIso2Fail, *ElecAccFail, *ElecReco0Fail, *ElecRecoLowFail, *ElecReco1Fail, *ElecReco2Fail;
+	TH1F *MuMTWNJetFail, *ElecMTWNJetFail;
+	TH2F *MuMTWMHTNJetFail, *ElecMTWMHTNJetFail;
+	// eff variables for the tree
+	UShort_t Expectation;
+	UShort_t muIso, muReco, muAcc, muMTW, muTotal;
+	UShort_t elecIso, elecReco, elecAcc, elecMTW, elecTotal;
+	UShort_t         RecoIsoMuonPromtMatched[10];
+	Float_t         RecoIsoMuonPromtMatchedDeltaR[10];
+	Float_t         RecoIsoMuonPromtMatchedRelPt[10];
+	UShort_t         RecoIsoElecPromtMatched[10];
+	Float_t         RecoIsoElecPromtMatchedDeltaR[10];
+	Float_t         RecoIsoElecPromtMatchedRelPt[10];
+	Float_t mtw;
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
-   // functions
-   void resetValues();
-   bool FiltersPass();
-   double deltaR(double eta1, double phi1, double eta2, double phi2);
-   double MTWCalculator(double metPt,double  metPhi,double  lepPt,double  lepPhi);
-   TH2F* ratioCalculator(TH2F* passTH2, TH2F* failTH2);
-   TH1F* ratioCalculator(TH1F* passTH1, TH1F* failTH1);
-   // Declaration of the TH2Fs
-   // eff TH2F
-   TH2F *MuonIsoLow_, *MuonIso0_, *MuonIso1_, *MuonIso2_; 
-   TH2F *MuonRecoLow_, *MuonReco0_, *MuonReco1_, *MuonReco2_; 
-   TH2F *MuonAcc_;
-   TH2F *ElecIsoLow_, *ElecIso0_, *ElecIso1_, *ElecIso2_; 
-   TH2F *ElecRecoLow_, *ElecReco0_, *ElecReco1_, *ElecReco2_; 
-   TH2F *ElecAcc_;
-   TH1F *MTWNJet_;
-   TH2F *MTWMHTNJet_;
-   TH1F *TauDecayCorrectionHT_, *TauDecayCorrectionMHT_, *TauDecayCorrectionNJet_;
-   TH2F *TauDecayNJetMHT_;
-   
-   TH2F *MC_TAP_mu_iso_eff, *Data_TAP_mu_iso_eff, *MC_TAP_mu_reco_eff, *Data_TAP_mu_reco_eff;
-   TH2F *MC_TAP_elec_iso_eff, *Data_TAP_elec_iso_eff, *MC_TAP_elec_reco_eff, *Data_TAP_elec_reco_eff;
-   // eff binning parameters
-   // borders for the njet bins
 
-   
-   TH2F *MuonIso0Fail, *MuonIsoLowFail, *MuonIso1Fail, *MuonIso2Fail, *MuonAccFail, *MuonReco0Fail, *MuonRecoLowFail, *MuonReco1Fail, *MuonReco2Fail;
-   TH2F *ElecIso0Fail, *ElecIsoLowFail, *ElecIso1Fail, *ElecIso2Fail, *ElecAccFail, *ElecReco0Fail, *ElecRecoLowFail, *ElecReco1Fail, *ElecReco2Fail;
-   TH1F *MTWNJetFail;
-   TH2F *MTWMHTNJetFail;
-   // eff variables for tree
-   UShort_t Expectation;
-   UShort_t muIso, muReco, muAcc, muMTW, muTotal;
-   UShort_t elecIso, elecReco, elecAcc, elecMTW, elecTotal;
-   // end of Eff definitions
-   TTree	*tExpectation_;
    // Declaration of leaf types
    UInt_t          RunNum;
    UInt_t          LumiBlockNum;
@@ -67,9 +225,14 @@ public :
    Float_t         WeightProducer;
    Float_t         HT;
    Float_t         MHT;
+   Float_t         MHTEta;
+   Float_t         MHTPhi;
    UShort_t        NJets;
    UShort_t        BTags;
    UShort_t        Leptons;
+   Float_t         METPt;
+   Float_t         METEta;
+   Float_t         METPhi;
    Float_t         Jet1Pt;
    Float_t         Jet2Pt;
    Float_t         Jet3Pt;
@@ -93,22 +256,22 @@ public :
    Float_t         ak4DeltaPhi2;
    Float_t         ak4DeltaPhi3;
    UShort_t        ak4Num;
-   Float_t         ak4Pt[60];   //[ak4Num]
-   Float_t         ak4Eta[60];   //[ak4Num]
-   Float_t         ak4Phi[60];   //[ak4Num]
-   Float_t         ak4E[60];   //[ak4Num]
-   Float_t         ak4BTagValue[60];   //[ak4Num]
-   UShort_t        ak4BTag[60];   //[ak4Num]
+   Float_t         ak4Pt[48];   //[ak4Num]
+   Float_t         ak4Eta[48];   //[ak4Num]
+   Float_t         ak4Phi[48];   //[ak4Num]
+   Float_t         ak4E[48];   //[ak4Num]
+   Float_t         ak4BTagValue[48];   //[ak4Num]
+   UShort_t        ak4BTag[48];   //[ak4Num]
    UShort_t        RecoIsoMuonNum;
-   Float_t         RecoIsoMuonPt[2];   //[RecoIsoMuonNum]
-   Float_t         RecoIsoMuonEta[2];   //[RecoIsoMuonNum]
-   Float_t         RecoIsoMuonPhi[2];   //[RecoIsoMuonNum]
-   Float_t         RecoIsoMuonE[2];   //[RecoIsoMuonNum]
+   Float_t         RecoIsoMuonPt[3];   //[RecoIsoMuonNum]
+   Float_t         RecoIsoMuonEta[3];   //[RecoIsoMuonNum]
+   Float_t         RecoIsoMuonPhi[3];   //[RecoIsoMuonNum]
+   Float_t         RecoIsoMuonE[3];   //[RecoIsoMuonNum]
    UShort_t        RecoMuonNum;
-   Float_t         RecoMuonPt[4];   //[RecoMuonNum]
-   Float_t         RecoMuonEta[4];   //[RecoMuonNum]
-   Float_t         RecoMuonPhi[4];   //[RecoMuonNum]
-   Float_t         RecoMuonE[4];   //[RecoMuonNum]
+   Float_t         RecoMuonPt[6];   //[RecoMuonNum]
+   Float_t         RecoMuonEta[6];   //[RecoMuonNum]
+   Float_t         RecoMuonPhi[6];   //[RecoMuonNum]
+   Float_t         RecoMuonE[6];   //[RecoMuonNum]
    UShort_t        RecoIsoElecNum;
    Float_t         RecoIsoElecPt[4];   //[RecoIsoElecNum]
    Float_t         RecoIsoElecEta[4];   //[RecoIsoElecNum]
@@ -149,6 +312,23 @@ public :
    Float_t         genDeltaPhi1;
    Float_t         genDeltaPhi2;
    Float_t         genDeltaPhi3;
+   UChar_t         Filter_HBHENoiseFilterRA2;
+   UChar_t         Filter_beamHaloFilter;
+   UChar_t         Filter_eeNoiseFilter;
+   UChar_t         Filter_trackingFailureFilter;
+   UChar_t         Filter_inconsistentMuons;
+   UChar_t         Filter_greedyMuons;
+   UChar_t         Filter_ra2EcalTPFilter;
+   UChar_t         Filter_ra2EcalBEFilter;
+   UChar_t         Filter_hcalLaserEventFilter;
+   UChar_t         Filter_ecalLaserCorrFilter;
+   UChar_t         Filter_eeBadScFilter;
+   UChar_t         Filter_PBNRFilter;
+   UChar_t         Filter_HCALLaserEvtFilterList2012;
+   UChar_t         Filter_manystripclus53X;
+   UChar_t         Filter_toomanystripclus53X;
+   UChar_t         Filter_logErrorTooManyClusters;
+   UChar_t         Filter_RA2HONoiseFilter;
 
    // List of branches
    TBranch        *b_RunNum;   //!
@@ -158,9 +338,14 @@ public :
    TBranch        *b_WeightProducer;   //!
    TBranch        *b_HT;   //!
    TBranch        *b_MHT;   //!
+   TBranch        *b_MHTEta;   //!
+   TBranch        *b_MHTPhi;   //!
    TBranch        *b_NJets;   //!
    TBranch        *b_BTags;   //!
    TBranch        *b_Leptons;   //!
+   TBranch        *b_METPt;   //!
+   TBranch        *b_METEta;   //!
+   TBranch        *b_METPhi;   //!
    TBranch        *b_Jet1Pt;   //!
    TBranch        *b_Jet2Pt;   //!
    TBranch        *b_Jet3Pt;   //!
@@ -240,20 +425,37 @@ public :
    TBranch        *b_genDeltaPhi1;   //!
    TBranch        *b_genDeltaPhi2;   //!
    TBranch        *b_genDeltaPhi3;   //!
+   TBranch        *b_Filter_HBHENoiseFilterRA2;   //!
+   TBranch        *b_Filter_beamHaloFilter;   //!
+   TBranch        *b_Filter_eeNoiseFilter;   //!
+   TBranch        *b_Filter_trackingFailureFilter;   //!
+   TBranch        *b_Filter_inconsistentMuons;   //!
+   TBranch        *b_Filter_greedyMuons;   //!
+   TBranch        *b_Filter_ra2EcalTPFilter;   //!
+   TBranch        *b_Filter_ra2EcalBEFilter;   //!
+   TBranch        *b_Filter_hcalLaserEventFilter;   //!
+   TBranch        *b_Filter_ecalLaserCorrFilter;   //!
+   TBranch        *b_Filter_eeBadScFilter;   //!
+   TBranch        *b_Filter_PBNRFilter;   //!
+   TBranch        *b_Filter_HCALLaserEvtFilterList2012;   //!
+   TBranch        *b_Filter_manystripclus53X;   //!
+   TBranch        *b_Filter_toomanystripclus53X;   //!
+   TBranch        *b_Filter_logErrorTooManyClusters;   //!
+   TBranch        *b_Filter_RA2HONoiseFilter;   //!
 
    EffMaker(TTree * /*tree*/ =0) : fChain(0) { }
    virtual ~EffMaker() { }
-   virtual Int_t   Version() const { return 2; }
+   virtual Int_t   Version() { return 2; }
    virtual void    Begin(TTree *tree);
    virtual void    SlaveBegin(TTree *tree);
    virtual void    Init(TTree *tree);
    virtual Bool_t  Notify();
    virtual Bool_t  Process(Long64_t entry);
    virtual Int_t   GetEntry(Long64_t entry, Int_t getall = 0) { return fChain ? fChain->GetTree()->GetEntry(entry, getall) : 0; }
-   virtual void    SetOption(const char *option) { fOption = option; }
+   virtual void    SetOption(char *option) { fOption = option; }
    virtual void    SetObject(TObject *obj) { fObject = obj; }
    virtual void    SetInputList(TList *input) { fInput = input; }
-   virtual TList  *GetOutputList() const { return fOutput; }
+   virtual TList  *GetOutputList() { return fOutput; }
    virtual void    SlaveTerminate();
    virtual void    Terminate();
 
@@ -285,9 +487,14 @@ void EffMaker::Init(TTree *tree)
    fChain->SetBranchAddress("WeightProducer", &WeightProducer, &b_WeightProducer);
    fChain->SetBranchAddress("HT", &HT, &b_HT);
    fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
+   fChain->SetBranchAddress("MHTEta", &MHTEta, &b_MHTEta);
+   fChain->SetBranchAddress("MHTPhi", &MHTPhi, &b_MHTPhi);
    fChain->SetBranchAddress("NJets", &NJets, &b_NJets);
    fChain->SetBranchAddress("BTags", &BTags, &b_BTags);
    fChain->SetBranchAddress("Leptons", &Leptons, &b_Leptons);
+   fChain->SetBranchAddress("METPt", &METPt, &b_METPt);
+   fChain->SetBranchAddress("METEta", &METEta, &b_METEta);
+   fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);
    fChain->SetBranchAddress("Jet1Pt", &Jet1Pt, &b_Jet1Pt);
    fChain->SetBranchAddress("Jet2Pt", &Jet2Pt, &b_Jet2Pt);
    fChain->SetBranchAddress("Jet3Pt", &Jet3Pt, &b_Jet3Pt);
@@ -367,6 +574,23 @@ void EffMaker::Init(TTree *tree)
    fChain->SetBranchAddress("genDeltaPhi1", &genDeltaPhi1, &b_genDeltaPhi1);
    fChain->SetBranchAddress("genDeltaPhi2", &genDeltaPhi2, &b_genDeltaPhi2);
    fChain->SetBranchAddress("genDeltaPhi3", &genDeltaPhi3, &b_genDeltaPhi3);
+   fChain->SetBranchAddress("Filter_HBHENoiseFilterRA2", &Filter_HBHENoiseFilterRA2, &b_Filter_HBHENoiseFilterRA2);
+   fChain->SetBranchAddress("Filter_beamHaloFilter", &Filter_beamHaloFilter, &b_Filter_beamHaloFilter);
+   fChain->SetBranchAddress("Filter_eeNoiseFilter", &Filter_eeNoiseFilter, &b_Filter_eeNoiseFilter);
+   fChain->SetBranchAddress("Filter_trackingFailureFilter", &Filter_trackingFailureFilter, &b_Filter_trackingFailureFilter);
+   fChain->SetBranchAddress("Filter_inconsistentMuons", &Filter_inconsistentMuons, &b_Filter_inconsistentMuons);
+   fChain->SetBranchAddress("Filter_greedyMuons", &Filter_greedyMuons, &b_Filter_greedyMuons);
+   fChain->SetBranchAddress("Filter_ra2EcalTPFilter", &Filter_ra2EcalTPFilter, &b_Filter_ra2EcalTPFilter);
+   fChain->SetBranchAddress("Filter_ra2EcalBEFilter", &Filter_ra2EcalBEFilter, &b_Filter_ra2EcalBEFilter);
+   fChain->SetBranchAddress("Filter_hcalLaserEventFilter", &Filter_hcalLaserEventFilter, &b_Filter_hcalLaserEventFilter);
+   fChain->SetBranchAddress("Filter_ecalLaserCorrFilter", &Filter_ecalLaserCorrFilter, &b_Filter_ecalLaserCorrFilter);
+   fChain->SetBranchAddress("Filter_eeBadScFilter", &Filter_eeBadScFilter, &b_Filter_eeBadScFilter);
+   fChain->SetBranchAddress("Filter_PBNRFilter", &Filter_PBNRFilter, &b_Filter_PBNRFilter);
+   fChain->SetBranchAddress("Filter_HCALLaserEvtFilterList2012", &Filter_HCALLaserEvtFilterList2012, &b_Filter_HCALLaserEvtFilterList2012);
+   fChain->SetBranchAddress("Filter_manystripclus53X", &Filter_manystripclus53X, &b_Filter_manystripclus53X);
+   fChain->SetBranchAddress("Filter_toomanystripclus53X", &Filter_toomanystripclus53X, &b_Filter_toomanystripclus53X);
+   fChain->SetBranchAddress("Filter_logErrorTooManyClusters", &Filter_logErrorTooManyClusters, &b_Filter_logErrorTooManyClusters);
+   fChain->SetBranchAddress("Filter_RA2HONoiseFilter", &Filter_RA2HONoiseFilter, &b_Filter_RA2HONoiseFilter);
 }
 
 Bool_t EffMaker::Notify()
