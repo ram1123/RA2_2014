@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Tue Oct 21 16:10:25 2014 by ROOT version 5.34/10
+// Thu Oct 23 17:21:53 2014 by ROOT version 5.34/04
 // from TTree RA2PreSelection/RA2PreSelection
-// found on file: job_83_RA2ReducedSelection.root
+// found on file: wjetHT600-Inf.root
 //////////////////////////////////////////////////////////
 
 #ifndef EffMaker_h
@@ -13,12 +13,41 @@
 #include <TFile.h>
 #include <TSelector.h>
 #include <TH2F.h>
+#include <TH1F.h>
 #include "TVector2.h"
 #include <cmath>
-#include <iostream>
-// Header file for the classes stored in the TTree if any.
+// cuts baseline
+const double minHT_=350;
+const double minMHT_=100;
+const double minNJets_=1.9;
+const double deltaPhi1_=0.5;
+const double deltaPhi2_=0.5;
+const double deltaPhi3_=0.3;
+const bool applyFilters_=false;
+// lepton cuts
+const double minMuPt_=10;
+const double maxMuEta_=2.4;
+const double minElecPt_=10;
+const double maxElecEta_=2.4;
+const double mtwCut_=100;
 
-// Fixed size dimensions of array or collections stored in the TTree if any.
+// lepton matching
+const double maxDeltaRGenToRecoMu_ =0.3;
+const double maxDiffPtGenToRecoMu_ =0.3;
+const double maxDeltaRRecoToIsoMu_ =0.1;
+const double maxDiffPtRecoToIsoMu_ =0.1;
+const double maxDeltaRIsoToGenMu_ = 0.3;
+const double maxDiffPtIsoToGenMu_ = 0.3;
+
+const double maxDeltaRGenToRecoElec_ =0.3;
+const double maxDiffPtGenToRecoElec_ =0.3;
+const double maxDeltaRRecoToIsoElec_ =0.1;
+const double maxDiffPtRecoToIsoElec_ =0.1;
+const double maxDeltaRIsoToGenElec_ = 0.3;
+const double maxDiffPtIsoToGenElec_ = 0.3;
+
+
+
 const UShort_t NJetsLow_=2;
 const UShort_t NJetsMedium_=5;
 const UShort_t NJetsMedium2_=7;
@@ -69,10 +98,10 @@ double MuRecoMHT2_[muRecoMHT2_]={0,50,100,200,9500};
 const int muAccMht_ = 7;
 double MuAccMht_ [muAccMht_]={0,50,100,200,300,450,9600};
 const int muAccNJets_ = 6;
-double MuAccNJets_ [muAccNJets_]={2,3,4,6,7,14};
+double MuAccNJets_ [muAccNJets_]={2,3,4,6,7,22};
 
 const int mumtwNjet_ = 5;
-double muMtwNjet_[mumtwNjet_] ={2,3,4,5,14};
+double muMtwNjet_[mumtwNjet_] ={2,3,4,5,22};
 
 const int mumtwMHT_ = 5;
 double muMtwMHT_[mumtwMHT_] ={0,100,200,400,9600};
@@ -80,7 +109,7 @@ double muMtwMHT_[mumtwMHT_] ={0,100,200,400,9600};
 const int mupurityMHT_ = 7;
 double muPurityMHT_[mupurityMHT_] ={0,100,200,400,800,1200,9600};
 const int mupurityNJet_ = 5;
-double muPurityNJet_[mupurityNJet_] ={2,3,4,5,14};
+double muPurityNJet_[mupurityNJet_] ={2,3,4,5,22};
 
 const int elecIsoHTLow_=4;
 double ElecIsoHTLow_[elecIsoHTLow_]={350,500,800,9000};
@@ -119,103 +148,66 @@ double ElecRecoMHT2_[elecRecoMHT2_]={0,50,100,200,9500};
 const int elecAccMht_ = 7;
 double ElecAccMht_ [elecAccMht_]={0,50,100,200,300,450,9600};
 const int elecAccNJets_ = 6;
-double ElecAccNJets_ [elecAccNJets_]={2,3,4,6,7,14};
+double ElecAccNJets_ [elecAccNJets_]={2,3,4,6,7,22};
 
 const int elecmtwNjet_ = 5;
-double elecMtwNjet_[elecmtwNjet_] ={2,3,4,5,14};
+double elecMtwNjet_[elecmtwNjet_] ={2,3,4,5,22};
 
 const int elecmtwMHT_ = 5;
 double elecMtwMHT_[elecmtwMHT_] ={0,100,200,400,9600};
 
 
 const int elecpurityNJet_ = 5;
-double elecPurityNJet_[elecpurityNJet_] ={2,3,4,5,14};
+double elecPurityNJet_[elecpurityNJet_] ={2,3,4,5,22};
 
 const int elecpurityMHT_ = 7;
 double elecPurityMHT_[elecpurityMHT_] ={0,100,200,400,800,1200,9600};
 
+// Header file for the classes stored in the TTree if any.
+
+// Fixed size dimensions of array or collections stored in the TTree if any.
 
 class EffMaker : public TSelector {
 public :
-	void resetValues();
-	bool FiltersPass();
-	double deltaR(double eta1, double phi1, double eta2, double phi2);
-	double MTWCalculator(double metPt,double  metPhi,double  lepPt,double  lepPhi);
-	TH2F* ratioCalculator(TH2F* passTH2, TH2F* failTH2);
-	TH1F* ratioCalculator(TH1F* passTH1, TH1F* failTH1);
-	// stroing variables
-	TFile *outPutFile_;
-	TString outPutFileName_;
-	TTree	*tExpectation_;
-	// cuts baseline
-	double minHT_;
-	double minMHT_;
-	unsigned int minNJets_;
-	double deltaPhi1_;
-	double deltaPhi2_;
-	double deltaPhi3_;
-	bool applyFilters_;
-	// lepton cuts
-	double minMuPt_;
-	double maxMuEta_;
-	double minElecPt_;
-	double maxElecEta_;
-	double mtwCut_;
-	// lepton matching
-	double maxDeltaRGenToRecoMu_ ;
-	double maxDiffPtGenToRecoMu_ ;
-	double maxDeltaRRecoToIsoMu_ ;
-	double maxDiffPtRecoToIsoMu_ ;
-	double maxDeltaRIsoToGenMu_ ;
-	double maxDiffPtIsoToGenMu_ ;
-	
-	double maxDeltaRGenToRecoElec_ ;
-	double maxDiffPtGenToRecoElec_ ;
-	double maxDeltaRRecoToIsoElec_ ;
-	double maxDiffPtRecoToIsoElec_ ;
-	double maxDeltaRIsoToGenElec_ ;
-	double maxDiffPtIsoToGenElec_ ;
-	
-	UShort_t NJetsRegionHigh1_;
-	UShort_t NJetsRegionHigh2_;
-	UShort_t NJetsRegionHigh3_;
-	UShort_t NJetsRegionHigh4_;
-	
-	// TH2F efficiencies
-	TH2F *MuonIsoLow, *MuonIso0, *MuonIso1, *MuonIso2; 
-	TH2F *MuonRecoLow, *MuonReco0, *MuonReco1, *MuonReco2; 
-	TH2F *MuonAcc;
-	TH1F *MuMTWNJet;
-	TH2F *MuMTWMHTNJet;
-	TH2F *ElecIsoLow, *ElecIso0, *ElecIso1, *ElecIso2; 
-	TH2F *ElecRecoLow, *ElecReco0, *ElecReco1, *ElecReco2; 
-	TH2F *ElecAcc;
-	TH1F *ElecMTWNJet;
-	TH2F *ElecMTWMHTNJet;
-	
-	TH2F *MuonPurityMHTNJet, *ElecPurityMHTNJet;
-	TH2F *MuonPurityMHTNJetFail, *ElecPurityMHTNJetFail;
-	
-	// eff binning parameters
-	// borders for the njet bins
-	
-	
-	TH2F *MuonIso0Fail, *MuonIsoLowFail, *MuonIso1Fail, *MuonIso2Fail, *MuonAccFail, *MuonReco0Fail, *MuonRecoLowFail, *MuonReco1Fail, *MuonReco2Fail;
-	TH2F *ElecIso0Fail, *ElecIsoLowFail, *ElecIso1Fail, *ElecIso2Fail, *ElecAccFail, *ElecReco0Fail, *ElecRecoLowFail, *ElecReco1Fail, *ElecReco2Fail;
-	TH1F *MuMTWNJetFail, *ElecMTWNJetFail;
-	TH2F *MuMTWMHTNJetFail, *ElecMTWMHTNJetFail;
-	// eff variables for the tree
-	UShort_t Expectation;
-	UShort_t muIso, muReco, muAcc, muMTW, muTotal;
-	UShort_t elecIso, elecReco, elecAcc, elecMTW, elecTotal;
-	UShort_t         RecoIsoMuonPromtMatched[10];
-	Float_t         RecoIsoMuonPromtMatchedDeltaR[10];
-	Float_t         RecoIsoMuonPromtMatchedRelPt[10];
-	UShort_t         RecoIsoElecPromtMatched[10];
-	Float_t         RecoIsoElecPromtMatchedDeltaR[10];
-	Float_t         RecoIsoElecPromtMatchedRelPt[10];
-	Float_t mtw;
+  void resetValues();
+  bool FiltersPass();
+  double deltaR(double eta1, double phi1, double eta2, double phi2);
+  double MTWCalculator(double metPt,double  metPhi,double  lepPt,double  lepPhi);
+  TH2F* ratioCalculator(TH2F* passTH2, TH2F* failTH2);
+  TH1F* ratioCalculator(TH1F* passTH1, TH1F* failTH1);
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
+   // Storing stuff
+   TTree	*tExpectation_;
+   // TH2F efficiencies
+   TH2F *MuonIsoLow, *MuonIso0, *MuonIso1, *MuonIso2; 
+   TH2F *MuonRecoLow, *MuonReco0, *MuonReco1, *MuonReco2; 
+   TH2F *MuonAcc;
+   TH1F *MuMTWNJet;
+   TH2F *MuMTWMHTNJet;
+   TH2F *ElecIsoLow, *ElecIso0, *ElecIso1, *ElecIso2; 
+   TH2F *ElecRecoLow, *ElecReco0, *ElecReco1, *ElecReco2; 
+   TH2F *ElecAcc;
+   TH1F *ElecMTWNJet;
+   TH2F *ElecMTWMHTNJet;
+   
+   TH2F *MuonPurityMHTNJet, *ElecPurityMHTNJet;
+   TH2F *MuonPurityMHTNJetFail, *ElecPurityMHTNJetFail;
+   
+   TH2F *MuonIso0Fail, *MuonIsoLowFail, *MuonIso1Fail, *MuonIso2Fail, *MuonAccFail, *MuonReco0Fail, *MuonRecoLowFail, *MuonReco1Fail, *MuonReco2Fail;
+   TH2F *ElecIso0Fail, *ElecIsoLowFail, *ElecIso1Fail, *ElecIso2Fail, *ElecAccFail, *ElecReco0Fail, *ElecRecoLowFail, *ElecReco1Fail, *ElecReco2Fail;
+   TH1F *MuMTWNJetFail, *ElecMTWNJetFail;
+   TH2F *MuMTWMHTNJetFail, *ElecMTWMHTNJetFail;
+   // eff variables fot the tree
+   UShort_t Expectation;
+   UShort_t muIso, muReco, muAcc, muMTW, muTotal;
+   UShort_t elecIso, elecReco, elecAcc, elecMTW, elecTotal;
+   UShort_t         RecoIsoMuonPromtMatched[10];
+   Float_t         RecoIsoMuonPromtMatchedDeltaR[10];
+   Float_t         RecoIsoMuonPromtMatchedRelPt[10];
+   UShort_t         RecoIsoElecPromtMatched[10];
+   Float_t         RecoIsoElecPromtMatchedDeltaR[10];
+   Float_t         RecoIsoElecPromtMatchedRelPt[10];
+   Float_t mtw;
 
    // Declaration of leaf types
    UInt_t          RunNum;
@@ -256,12 +248,12 @@ public :
    Float_t         ak4DeltaPhi2;
    Float_t         ak4DeltaPhi3;
    UShort_t        ak4Num;
-   Float_t         ak4Pt[48];   //[ak4Num]
-   Float_t         ak4Eta[48];   //[ak4Num]
-   Float_t         ak4Phi[48];   //[ak4Num]
-   Float_t         ak4E[48];   //[ak4Num]
-   Float_t         ak4BTagValue[48];   //[ak4Num]
-   UShort_t        ak4BTag[48];   //[ak4Num]
+   Float_t         ak4Pt[53];   //[ak4Num]
+   Float_t         ak4Eta[53];   //[ak4Num]
+   Float_t         ak4Phi[53];   //[ak4Num]
+   Float_t         ak4E[53];   //[ak4Num]
+   Float_t         ak4BTagValue[53];   //[ak4Num]
+   UShort_t        ak4BTag[53];   //[ak4Num]
    UShort_t        RecoIsoMuonNum;
    Float_t         RecoIsoMuonPt[3];   //[RecoIsoMuonNum]
    Float_t         RecoIsoMuonEta[3];   //[RecoIsoMuonNum]
@@ -283,23 +275,23 @@ public :
    Float_t         RecoElecPhi[9];   //[RecoElecNum]
    Float_t         RecoElecE[9];   //[RecoElecNum]
    UShort_t        GenWNum;
-   Float_t         GenWPt[2];   //[GenWNum]
-   Float_t         GenWEta[2];   //[GenWNum]
-   Float_t         GenWPhi[2];   //[GenWNum]
+   Float_t         GenWPt[1];   //[GenWNum]
+   Float_t         GenWEta[1];   //[GenWNum]
+   Float_t         GenWPhi[1];   //[GenWNum]
    UShort_t        GenMuNum;
-   UShort_t        GenMuFromTau[2];   //[GenMuNum]
-   Float_t         GenMuPt[2];   //[GenMuNum]
-   Float_t         GenMuEta[2];   //[GenMuNum]
-   Float_t         GenMuPhi[2];   //[GenMuNum]
+   UShort_t        GenMuFromTau[1];   //[GenMuNum]
+   Float_t         GenMuPt[1];   //[GenMuNum]
+   Float_t         GenMuEta[1];   //[GenMuNum]
+   Float_t         GenMuPhi[1];   //[GenMuNum]
    UShort_t        GenElecNum;
-   UShort_t        GenElecFromTau[2];   //[GenElecNum]
-   Float_t         GenElecPt[2];   //[GenElecNum]
-   Float_t         GenElecEta[2];   //[GenElecNum]
-   Float_t         GenElecPhi[2];   //[GenElecNum]
+   UShort_t        GenElecFromTau[1];   //[GenElecNum]
+   Float_t         GenElecPt[1];   //[GenElecNum]
+   Float_t         GenElecEta[1];   //[GenElecNum]
+   Float_t         GenElecPhi[1];   //[GenElecNum]
    UShort_t        GenTauNum;
-   Float_t         GenTauPt[2];   //[GenTauNum]
-   Float_t         GenTauEta[2];   //[GenTauNum]
-   Float_t         GenTauPhi[2];   //[GenTauNum]
+   Float_t         GenTauPt[1];   //[GenTauNum]
+   Float_t         GenTauEta[1];   //[GenTauNum]
+   Float_t         GenTauPhi[1];   //[GenTauNum]
    Float_t         genHT;
    Float_t         genMHT;
    UShort_t        genNJets;
@@ -445,17 +437,17 @@ public :
 
    EffMaker(TTree * /*tree*/ =0) : fChain(0) { }
    virtual ~EffMaker() { }
-   virtual Int_t   Version() { return 2; }
+   virtual Int_t   Version() const { return 2; }
    virtual void    Begin(TTree *tree);
    virtual void    SlaveBegin(TTree *tree);
    virtual void    Init(TTree *tree);
    virtual Bool_t  Notify();
    virtual Bool_t  Process(Long64_t entry);
    virtual Int_t   GetEntry(Long64_t entry, Int_t getall = 0) { return fChain ? fChain->GetTree()->GetEntry(entry, getall) : 0; }
-   virtual void    SetOption(char *option) { fOption = option; }
+   virtual void    SetOption(const char *option) { fOption = option; }
    virtual void    SetObject(TObject *obj) { fObject = obj; }
    virtual void    SetInputList(TList *input) { fInput = input; }
-   virtual TList  *GetOutputList() { return fOutput; }
+   virtual TList  *GetOutputList() const { return fOutput; }
    virtual void    SlaveTerminate();
    virtual void    Terminate();
 
