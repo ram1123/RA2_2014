@@ -296,7 +296,6 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    tExpectation_->Branch("RecoIsoElecPhi", RecoIsoElecPhi, "RecoIsoElecPhi[RecoIsoElecNum]/F");
    tExpectation_->Branch("RecoIsoElecE", RecoIsoElecE, "RecoIsoElecE[RecoIsoElecNum]/F");
    GetOutputList()->Add(tExpectation_);
-   GetOutputList()->Add(tExpectation_);
 
 }
 
