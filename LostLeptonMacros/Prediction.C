@@ -167,11 +167,11 @@ Bool_t Prediction::Process(Long64_t entry)
 	if(RecoIsoMuonNum!=1 || RecoIsoElecNum!=0) return kTRUE;
 	if(useGenInfoToMatchCSMuonToGen_)
 	{
-		if(GenMuNum!=1 || GenElecNum!=0) return kTRUE;
-		if(deltaR(GenMuEta[0],GenMuPhi[0],RecoIsoMuonEta[0],RecoIsoMuonPhi[0])<maxDeltaRGenToRecoIsoMuon_ || std::abs(GenMuPt[0]-RecoIsoMuonPt[0])/GenMuPt[0]<maxDiffPtGenToRecoIsoMuon_)
+		if(GenMuNum!=0)if(deltaR(GenMuEta[0],GenMuPhi[0],RecoIsoMuonEta[0],RecoIsoMuonPhi[0])<maxDeltaRGenToRecoIsoMuon_ || std::abs(GenMuPt[0]-RecoIsoMuonPt[0])/GenMuPt[0]<maxDiffPtGenToRecoIsoMuon_)
 		{
 			Matched_=1;
 		}
+		if(GenMuNum!=1 || GenElecNum!=0) Matched_=0;
 	}
 	deltaRGenToRecoIsoMuon_=deltaR(GenMuEta[0],GenMuPhi[0],RecoIsoMuonEta[0],RecoIsoMuonPhi[0]);
 	diffPtGenToRecoIsoMuon_=std::abs(GenMuPt[0]-RecoIsoMuonPt[0])/GenMuPt[0];

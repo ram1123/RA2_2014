@@ -276,9 +276,21 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    
    ElecDiLepControlSampleMHTNJetMTW = new TH2F("EleconDiLepMTW","EleconDiLepMTW",elecdilepMHT_-1,elecDilepMHT_,elecdilepNJet_-1,elecDilepNJet_);
    GetOutputList()->Add(ElecDiLepControlSampleMHTNJetMTW);
-   ElecDiLepControlSampleMHTNJetMTWFail = (TH2F*)ElecDiLepControlSampleMHTNJet->Clone();
+   ElecDiLepControlSampleMHTNJetMTWFail = (TH2F*)ElecDiLepControlSampleMHTNJetMTW->Clone();
    ElecDiLepControlSampleMHTNJetMTWFail->SetName("ElecDiLepMTWFail");
    GetOutputList()->Add(ElecDiLepControlSampleMHTNJetMTWFail); 
+   
+   MuDiLepEffNJets = new TH1F("MuonDiLepEff","MuonDiLepEff",muilepEffNJet_-1,muiLepEffNJet_);
+   GetOutputList()->Add(MuDiLepEffNJets);
+   MuDiLepEffNJetsFail = (TH1F*)MuDiLepEffNJets->Clone();
+   MuDiLepEffNJetsFail->SetName("MuDiLepEffNJetsFail");
+   GetOutputList()->Add(MuDiLepEffNJetsFail); 
+   
+   ElecDiLepEffNJets = new TH1F("EleconDiLepEff","EleconDiLepEff",muilepEffNJet_-1,muiLepEffNJet_);
+   GetOutputList()->Add(ElecDiLepEffNJets);
+   ElecDiLepEffNJetsFail = (TH1F*)ElecDiLepEffNJets->Clone();
+   ElecDiLepEffNJetsFail->SetName("ElecDiLepEffNJetsFail");
+   GetOutputList()->Add(ElecDiLepEffNJetsFail); 
 
    // tree
    tExpectation_ = new TTree("LostLeptonExpectation","a simple Tree with simple variables");
@@ -357,6 +369,36 @@ Bool_t EffMaker::Process(Long64_t entry)
   fChain->GetTree()->GetEntry(entry);
   if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_||  DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ ) return kTRUE;
   if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
+  
+  if(GenMuNum==2)// di muon event
+  {
+	  if(RecoIsoMuonNum>0)
+	  {
+		  MuDiLepEffNJets->Fill(NJets,WeightProducer);
+	  }
+	  else MuDiLepEffNJetsFail->Fill(NJets,WeightProducer);
+  }
+  if(GenElecNum==2)// di elec event
+  {
+	  if(RecoIsoElecNum>0)
+	  {
+		  ElecDiLepEffNJets->Fill(NJets,WeightProducer);
+	  }
+	  else ElecDiLepEffNJetsFail->Fill(NJets,WeightProducer);
+  }
+  if(GenMuNum==1 && GenElecNum==1) // di lepton with one elec one muon
+  {
+	  if(RecoIsoMuonNum>0)
+	  {
+		  MuDiLepEffNJets->Fill(NJets,WeightProducer);
+	  }
+	  else MuDiLepEffNJetsFail->Fill(NJets,WeightProducer);
+	  if(RecoIsoElecNum>0)
+	  {
+		  ElecDiLepEffNJets->Fill(NJets,WeightProducer);
+	  }
+	  else ElecDiLepEffNJetsFail->Fill(NJets,WeightProducer);
+  }
   
   if( (GenMuNum+GenElecNum)==2)
   {
@@ -722,6 +764,14 @@ void EffMaker::Terminate()
   MuDiLepControlSampleMHTNJetMTW->Write();
   SaveEfficiency(MuDiLepControlSampleMHTNJetMTW);
   
+  MuDiLepEffNJets = ratioCalculator(MuDiLepEffNJets,MuDiLepEffNJetsFail);   
+  // MuMTWMHTNJetFail->Delete("all");
+  MuDiLepEffNJets->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu di lep eff; N_{Jets}");
+  MuDiLepEffNJets->SetMarkerSize(2.0);
+  MuDiLepEffNJets->UseCurrentStyle();
+  MuDiLepEffNJets->Write();
+  SaveEfficiency(MuDiLepEffNJets);
+  
   
   ElecAcc = ratioCalculator(ElecAcc,ElecAccFail);   
   //  ElecAccFail->Delete("all");
@@ -815,6 +865,14 @@ void EffMaker::Terminate()
   ElecDiLepControlSampleMHTNJetMTW->UseCurrentStyle();
   ElecDiLepControlSampleMHTNJetMTW->Write();
   SaveEfficiency(ElecDiLepControlSampleMHTNJetMTW);
+  
+  ElecDiLepEffNJets = ratioCalculator(ElecDiLepEffNJets,ElecDiLepEffNJetsFail);   
+  // elecMTWMHTNJetFail->Delete("all");
+  ElecDiLepEffNJets->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec di lep eff; N_{Jets}");
+  ElecDiLepEffNJets->SetMarkerSize(2.0);
+  ElecDiLepEffNJets->UseCurrentStyle();
+  ElecDiLepEffNJets->Write();
+  SaveEfficiency(ElecDiLepEffNJets);
    // The Terminate() function is the last function to be called during
    // a query. It always runs on the client, it can be used to present
    // the results graphically or save the results to file.
@@ -891,6 +949,26 @@ void EffMaker::SaveEfficiency(TH2F *input)
 	c1->cd();
 	c1->SetLogx();
 	c1->SetLogy();
+	input->SetMarkerSize(2.0);
+	input->UseCurrentStyle();
+	input->Draw("ColZ,Text,E");
+	// c1->SaveAs(s+"MuonAccEff3"+".png");
+	if(saveEffToPDF_) c1->SaveAs(th2Name+".pdf");
+	if(saveEffToPNG_) c1->SaveAs(th2Name+".png");
+	delete c1;
+	gROOT->SetBatch(false);
+	
+}
+
+void EffMaker::SaveEfficiency(TH1F *input)
+{
+	gROOT->SetBatch(true);
+	const TString th2Name = input->GetName();
+	const TString th2Title = input->GetTitle();
+	TCanvas *c1 = new TCanvas(th2Name,th2Title,1);
+	c1->cd();
+	//c1->SetLogx();
+	//c1->SetLogy();
 	input->SetMarkerSize(2.0);
 	input->UseCurrentStyle();
 	input->Draw("ColZ,Text,E");

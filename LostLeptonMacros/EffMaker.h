@@ -175,6 +175,12 @@ double elecDilepMHT_[elecdilepMHT_] ={0,100,200,400,800,1200,9600};
 const int elecdilepNJet_ = 5;
 double elecDilepNJet_[elecdilepNJet_] ={2,3,4,5,22};
 
+const int muilepEffNJet_ = 5;
+double muiLepEffNJet_[muilepEffNJet_] ={2,3,5,7,22};
+
+const int elecilepEffNJet_ = 5;
+double eleciLepEffNJet_[elecilepEffNJet_] ={2,3,5,7,22};
+
 // Header file for the classes stored in the TTree if any.
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
@@ -188,6 +194,7 @@ public :
   TH2F* ratioCalculator(TH2F* passTH2, TH2F* failTH2);
   TH1F* ratioCalculator(TH1F* passTH1, TH1F* failTH1);
   void SaveEfficiency(TH2F *input);
+  void SaveEfficiency(TH1F *input);
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    // Storing stuff
    TTree	*tExpectation_;
@@ -205,6 +212,7 @@ public :
    
    TH2F *MuonPurityMHTNJet, *ElecPurityMHTNJet, *MuDiLepControlSampleMHTNJet, *MuDiLepControlSampleMHTNJetMTW, *ElecDiLepControlSampleMHTNJet, *ElecDiLepControlSampleMHTNJetMTW;
    TH2F *MuonPurityMHTNJetFail, *ElecPurityMHTNJetFail, *MuDiLepControlSampleMHTNJetFail, *ElecDiLepControlSampleMHTNJetFail, *MuDiLepControlSampleMHTNJetMTWFail, *ElecDiLepControlSampleMHTNJetMTWFail;
+   TH1F *MuDiLepEffNJets, *ElecDiLepEffNJets, *MuDiLepEffNJetsFail, *ElecDiLepEffNJetsFail;
    
    TH2F *MuonIso0Fail, *MuonIsoLowFail, *MuonIso1Fail, *MuonIso2Fail, *MuonAccFail, *MuonReco0Fail, *MuonRecoLowFail, *MuonReco1Fail, *MuonReco2Fail;
    TH2F *ElecIso0Fail, *ElecIsoLowFail, *ElecIso1Fail, *ElecIso2Fail, *ElecAccFail, *ElecReco0Fail, *ElecRecoLowFail, *ElecReco1Fail, *ElecReco2Fail;
