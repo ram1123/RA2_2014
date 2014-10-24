@@ -30,6 +30,7 @@ const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;
 const double deltaPhi3_=0.3;
 const bool applyFilters_=false;
+const bool applyDiLepCorrection_=true;
 
 const UShort_t NJetsLow_=2;
 const UShort_t NJetsMedium_=5;
@@ -50,7 +51,7 @@ public :
    double effUp(double eff, double up);
    double effDown(double eff, double down);
    // output variables
-   bool useGenInfoToMatchCSMuonToGen; Float_t deltaRGenToRecoIsoMuon_, diffPtGenToRecoIsoMuon_;
+   bool useGenInfoToMatchCSMuonToGen, applyDiLepCorrection; Float_t deltaRGenToRecoIsoMuon_, diffPtGenToRecoIsoMuon_;
    UShort_t Matched_;
    TTree *tPrediction_;
    Float_t mtw;
@@ -66,6 +67,7 @@ public :
    
    Float_t totalWeight_, totalWeightMTW_, totalWeightMTWDiLep_;
    Float_t muIsoUp_, muIsoDown_, muAccUp_, muAccDown_, elecAccUp_, elecAccDown_, totalWeightMTWDiLepDiBosonDown_, totalWeightMTWDiLepDiNonCloUp_, totalWeightMTWDiLepDiNonCloDown_;
+   Float_t diLepCorrectionEff_, diLepCorrectionEffError_, diLepEff_, diLepEffError_;
    // TH2F efficiencies
    TH2F *MuonIsoLow_, *MuonIso0_, *MuonIso1_, *MuonIso2_; 
    TH2F *MuonRecoLow_, *MuonReco0_, *MuonReco1_, *MuonReco2_; 
@@ -78,6 +80,8 @@ public :
    TH1F *ElecMTWNJet_;
    TH2F *ElecMTWMHTNJet_;
    TH2F *MuonPurityMHTNJet_, *ElecPurityMHTNJet_;
+   TH2F *MuDiLepMTW_, *ElecDiLepMTW_;
+   TH1F *MuDiLepEff_, *ElecDiLepEff_;
    // Declaration of leaf types
    UInt_t          RunNum;
    UInt_t          LumiBlockNum;

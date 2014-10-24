@@ -60,6 +60,10 @@ void Prediction::Begin(TTree * /*tree*/)
    ElecMTWMHTNJet_=NULL;
    MuonPurityMHTNJet_=NULL;
    ElecPurityMHTNJet_=NULL;
+   MuDiLepMTW_=NULL;
+   MuDiLepEff_=NULL;
+   ElecDiLepMTW_=NULL;
+   ElecDiLepEff_=NULL;
    tPrediction_=NULL;
    if(useGenInfoToMatchCSMuonToGen_)std::cout<<"WARNING USING GEN INFORMATION TO MAKE SURE THIS IS A SINGLE MUON ELEC EVENT AND DO MATCHING TO HAVE 100% PURITY OF MUON CONTROL SAMPLE"<<std::endl;
 
@@ -84,6 +88,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    MuonAcc_ = (TH2F*)EffInputFolder->Get("MuonAcc");
    MuMTWNJet_ = (TH1F*)EffInputFolder->Get("MuMTW");
    MuMTWMHTNJet_ = (TH2F*)EffInputFolder->Get("MuMTWMHTNjet");
+   MuDiLepMTW_ = (TH2F*)EffInputFolder->Get("MuonDiLepMTW");
+   MuDiLepEff_ = (TH1F*)EffInputFolder->Get("MuonDiLepEff");
    
    ElecIsoLow_ = (TH2F*)EffInputFolder->Get("ElecIsoNJet2Jet");
    ElecIso0_ = (TH2F*)EffInputFolder->Get("ElecIsoNJetLow");
@@ -96,6 +102,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    ElecAcc_ = (TH2F*)EffInputFolder->Get("ElecAcc");
    MuMTWNJet_ = (TH1F*)EffInputFolder->Get("MuMTW");
    MuMTWMHTNJet_ = (TH2F*)EffInputFolder->Get("MuMTWMHTNjet");
+   ElecDiLepMTW_ = (TH2F*)EffInputFolder->Get("ElecDiLepMTW");
+   ElecDiLepEff_ = (TH1F*)EffInputFolder->Get("EleconDiLepEff");
    
    TString option = GetOption();
    useGenInfoToMatchCSMuonToGen=useGenInfoToMatchCSMuonToGen_;
@@ -124,6 +132,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    tPrediction_->Branch("RecoIsoElecPhi", RecoIsoElecPhi, "RecoIsoElecPhi[RecoIsoElecNum]/F");
    tPrediction_->Branch("RecoIsoElecE", RecoIsoElecE, "RecoIsoElecE[RecoIsoElecNum]/F");
    tPrediction_->Branch("MTW",&mtw,"MTW/F"); 
+   applyDiLepCorrection=applyDiLepCorrection_;
+   tPrediction_->Branch("applyDiLepCorrection",&applyDiLepCorrection,"applyDiLepCorrection/O");
    tPrediction_->Branch("totalPrediction",&totalWeight_,"totalPrediction/F");
    tPrediction_->Branch("totalPredictionMTW",&totalWeightMTW_,"totalPredictionMTW/F");
    tPrediction_->Branch("totalWeightMTWDiLep",&totalWeightMTWDiLep_,"totalWeightMTWDiLep/F");
@@ -155,6 +165,13 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    tPrediction_->Branch("elecIsoEff",&elecIsoEff_,"elecIsoEff/F");
    tPrediction_->Branch("elecRecoEff",&elecRecoEff_,"elecRecoEff/F");
    tPrediction_->Branch("elecAccEff",&elecAccEff_,"elecAccEff/F");
+   if(applyDiLepCorrection_)
+   {
+	   tPrediction_->Branch("diLepCorrectionEff",&diLepCorrectionEff_,"diLepCorrectionEff/F");
+	   tPrediction_->Branch("diLepCorrectionEffErro_",&diLepCorrectionEffError_,"diLepCorrectionEffError/F");
+	   tPrediction_->Branch("diLepEff",&diLepEff_,"diLepEff/F");
+	   tPrediction_->Branch("diLepEffError",&diLepEffError_,"diLepEffError/F");
+   }
    GetOutputList()->Add(tPrediction_);
 }
 
@@ -240,26 +257,39 @@ Bool_t Prediction::Process(Long64_t entry)
 	elecAccEff_ = ElecAcc_->GetBinContent(ElecAcc_->GetXaxis()->FindBin(MHT),ElecAcc_->GetYaxis()->FindBin(NJets+0.01) );
 	elecAccEffError_ = ElecAcc_->GetBinError(ElecAcc_->GetXaxis()->FindBin(MHT),ElecAcc_->GetYaxis()->FindBin(NJets+0.01) );
 	if(elecAccEffError_ + elecAccEff_ >1.00) elecAccEffError_ = .95 - elecAccEff_;
-	// muon iso weight & uncertainty
-	muIsoWeight_ = WeightProducer* (1 - muIsoEff_)/muIsoEff_;	
-	muIsoWeightErrorUp_ = muIsoWeight_ - WeightProducer* (1 - effUp(muIsoEff_, muIsoEffError_))/ (effUp(muIsoEff_, muIsoEffError_));
-	muIsoWeightErrorDown_ = WeightProducer* (1 - effDown(muIsoEff_, muIsoEffError_))/ (effDown(muIsoEff_, muIsoEffError_)) - muIsoWeight_;
+	// di lepton
+	if(applyDiLepCorrection_)
+	{
+		diLepCorrectionEff_ = MuDiLepMTW_->GetBinContent(MuDiLepMTW_->GetXaxis()->FindBin(MHT),MuDiLepMTW_->GetYaxis()->FindBin(NJets+0.01));
+		diLepCorrectionEffError_ = MuDiLepMTW_->GetBinError(MuDiLepMTW_->GetXaxis()->FindBin(MHT),MuDiLepMTW_->GetYaxis()->FindBin(NJets+0.01));
+		diLepEff_ = MuDiLepEff_->GetBinContent(MuDiLepEff_->GetXaxis()->FindBin(NJets+0.01)) * ElecDiLepEff_->GetBinContent(ElecDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
+		diLepEffError_ = std::sqrt( (MuDiLepEff_->GetBinError(MuDiLepEff_->GetXaxis()->FindBin(NJets+0.01)) * MuDiLepEff_->GetBinError(MuDiLepEff_->GetXaxis()->FindBin(NJets+0.01)) ) + (ElecDiLepEff_->GetBinError(ElecDiLepEff_->GetXaxis()->FindBin(NJets+0.01)) * ElecDiLepEff_->GetBinError(ElecDiLepEff_->GetXaxis()->FindBin(NJets+0.01)) ) ) ;
+	}
+	double diLepCorrectedWeight =WeightProducer;
+	if(applyDiLepCorrection_)
+	{
+		diLepCorrectedWeight = WeightProducer * diLepCorrectionEff_;
+	}
+	// muon iso weight & uncertaint
+	muIsoWeight_ = diLepCorrectedWeight* (1 - muIsoEff_)/muIsoEff_;	
+	muIsoWeightErrorUp_ = muIsoWeight_ - diLepCorrectedWeight* (1 - effUp(muIsoEff_, muIsoEffError_))/ (effUp(muIsoEff_, muIsoEffError_));
+	muIsoWeightErrorDown_ = diLepCorrectedWeight* (1 - effDown(muIsoEff_, muIsoEffError_))/ (effDown(muIsoEff_, muIsoEffError_)) - muIsoWeight_;
 	//		cout<<"muIsoWeight_:"<<muIsoWeight_ <<"+"<<muIsoWeightErrorUp_<<"-"<<muIsoWeightErrorDown_<<endl;
 	// muon reco weight & uncertainty
-	muRecoWeight_ = WeightProducer* 1 / muIsoEff_ * (1-muRecoEff_)/muRecoEff_;
-	muRecoWeightErrorUp_ = muRecoWeight_ - WeightProducer* 1 / muIsoEff_ * (1-effUp(muRecoEff_, muRecoEffError_))/(effUp(muRecoEff_, muRecoEffError_));
-	muRecoWeightErrorDown_ = WeightProducer* 1 / muIsoEff_ * (1-effDown(muRecoEff_, muRecoEffError_))/(effDown(muRecoEff_, muRecoEffError_))- muRecoWeight_;
+	muRecoWeight_ = diLepCorrectedWeight* 1 / muIsoEff_ * (1-muRecoEff_)/muRecoEff_;
+	muRecoWeightErrorUp_ = muRecoWeight_ - diLepCorrectedWeight* 1 / muIsoEff_ * (1-effUp(muRecoEff_, muRecoEffError_))/(effUp(muRecoEff_, muRecoEffError_));
+	muRecoWeightErrorDown_ = diLepCorrectedWeight* 1 / muIsoEff_ * (1-effDown(muRecoEff_, muRecoEffError_))/(effDown(muRecoEff_, muRecoEffError_))- muRecoWeight_;
 	//		cout<<"muRecoWeight_:"<<muRecoWeight_ <<"+"<<muRecoWeightErrorUp_<<"-"<<muRecoWeightErrorDown_<<endl;
 	// muon acc weight & uncertainty
-	muAccWeight_ = WeightProducer* 1/muIsoEff_ * 1/muRecoEff_ *(1-muAccEff_)/muAccEff_;
-	muAccWeightErrorUp_ = muAccWeight_ - WeightProducer* 1/muIsoEff_ * 1/muRecoEff_ *(1-effUp(muAccEff_,muAccEffError_))/(effUp(muAccEff_,muAccEffError_));
-	muAccUp_ = WeightProducer* 1 / muIsoEff_ * 1/ muRecoEff_ * (1 - effUp(muAccEff_,muAccEffError_ )) / effUp(muAccEff_,muAccEffError_ );
-	muAccWeightErrorDown_ = WeightProducer* 1/muIsoEff_ * 1/muRecoEff_ *(1-effDown(muAccEff_,muAccEffError_))/(effDown(muAccEff_,muAccEffError_)) - muAccWeight_;
-	muAccDown_ = WeightProducer* 1 / muIsoEff_ * 1/ muRecoEff_ * (1 - effDown(muAccEff_,muAccEffError_ )) / effDown(muAccEff_,muAccEffError_ + muAccEff_*MuAccUncertaintyDown_ / 100);
+	muAccWeight_ = diLepCorrectedWeight* 1/muIsoEff_ * 1/muRecoEff_ *(1-muAccEff_)/muAccEff_;
+	muAccWeightErrorUp_ = muAccWeight_ - diLepCorrectedWeight* 1/muIsoEff_ * 1/muRecoEff_ *(1-effUp(muAccEff_,muAccEffError_))/(effUp(muAccEff_,muAccEffError_));
+	muAccUp_ = diLepCorrectedWeight* 1 / muIsoEff_ * 1/ muRecoEff_ * (1 - effUp(muAccEff_,muAccEffError_ )) / effUp(muAccEff_,muAccEffError_ );
+	muAccWeightErrorDown_ = diLepCorrectedWeight* 1/muIsoEff_ * 1/muRecoEff_ *(1-effDown(muAccEff_,muAccEffError_))/(effDown(muAccEff_,muAccEffError_)) - muAccWeight_;
+	muAccDown_ = diLepCorrectedWeight* 1 / muIsoEff_ * 1/ muRecoEff_ * (1 - effDown(muAccEff_,muAccEffError_ )) / effDown(muAccEff_,muAccEffError_ + muAccEff_*MuAccUncertaintyDown_ / 100);
 	//		cout<<"muAccWeight_:"<<muAccWeight_ <<"+"<<muAccWeightErrorUp_<<"-"<<muAccWeightErrorDown_<<endl;
 	
 	muTotalWeight_ = muIsoWeight_ + muRecoWeight_ + muAccWeight_;
-	totalMuons_ = WeightProducer/ (muIsoEff_ * muRecoEff_ * muAccEff_);
+	totalMuons_ = diLepCorrectedWeight/ (muIsoEff_ * muRecoEff_ * muAccEff_);
 	
 	// elec acc weight & uncertainty
 	elecAccWeight_ = totalMuons_ * (1 - elecAccEff_);
@@ -297,6 +327,7 @@ Bool_t Prediction::Process(Long64_t entry)
 	}
 	totalWeightMTW_ = totalWeight_ / MuMTWMHTNJet_->GetBinContent(MTWBinX,MTWBinY);
 	totalMuonsMTW_= totalMuons_ / MuMTWMHTNJet_->GetBinContent(MTWBinX,MTWBinY);
+	totalWeightMTWDiLep_ = totalWeightMTW_ + (1-diLepCorrectionEff_)*WeightProducer *(1-diLepEff_)/diLepEff_;
 	tPrediction_->Fill();
    return kTRUE;
 }
@@ -356,6 +387,11 @@ void Prediction::resetValues()
 	elecAccWeight_=0;
 	elecAccWeightErrorUp_=0;	
 	elecAccWeightErrorDown_=0;	
+	diLepCorrectionEff_=0.;
+	diLepCorrectionEffError_=0.;
+	diLepEff_=0.;
+	diLepEffError_=0.;
+	totalWeightMTWDiLep_=0.;
 }
 bool Prediction::FiltersPass()
 {
