@@ -67,7 +67,7 @@ public :
    
    Float_t totalWeight_, totalWeightMTW_, totalWeightMTWDiLep_;
    Float_t muIsoUp_, muIsoDown_, muAccUp_, muAccDown_, elecAccUp_, elecAccDown_, totalWeightMTWDiLepDiBosonDown_, totalWeightMTWDiLepDiNonCloUp_, totalWeightMTWDiLepDiNonCloDown_;
-   Float_t diLepCorrectionEff_, diLepCorrectionEffError_, diLepEff_, diLepEffError_;
+   Float_t diLepCorrectionEff_, diLepCorrectionEffError_, diLepMuEff_, diLepMuEffError_, diLepElecEff_, diLepElecEffError_;
    // TH2F efficiencies
    TH2F *MuonIsoLow_, *MuonIso0_, *MuonIso1_, *MuonIso2_; 
    TH2F *MuonRecoLow_, *MuonReco0_, *MuonReco1_, *MuonReco2_; 

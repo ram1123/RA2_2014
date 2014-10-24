@@ -103,7 +103,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    MuMTWNJet_ = (TH1F*)EffInputFolder->Get("MuMTW");
    MuMTWMHTNJet_ = (TH2F*)EffInputFolder->Get("MuMTWMHTNjet");
    ElecDiLepMTW_ = (TH2F*)EffInputFolder->Get("ElecDiLepMTW");
-   ElecDiLepEff_ = (TH1F*)EffInputFolder->Get("EleconDiLepEff");
+   ElecDiLepEff_ = (TH1F*)EffInputFolder->Get("ElecDiLepEff");
    
    TString option = GetOption();
    useGenInfoToMatchCSMuonToGen=useGenInfoToMatchCSMuonToGen_;
@@ -169,8 +169,10 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    {
 	   tPrediction_->Branch("diLepCorrectionEff",&diLepCorrectionEff_,"diLepCorrectionEff/F");
 	   tPrediction_->Branch("diLepCorrectionEffErro_",&diLepCorrectionEffError_,"diLepCorrectionEffError/F");
-	   tPrediction_->Branch("diLepEff",&diLepEff_,"diLepEff/F");
-	   tPrediction_->Branch("diLepEffError",&diLepEffError_,"diLepEffError/F");
+	   tPrediction_->Branch("diLepMuEff",&diLepMuEff_,"diLepMuEff/F");
+	   tPrediction_->Branch("diLepMuEffError",&diLepMuEffError_,"diLepMuEffError/F");
+	   tPrediction_->Branch("diLepElecEff",&diLepElecEff_,"diLepElecEff/F");
+	   tPrediction_->Branch("diLepElecEffError",&diLepElecEffError_,"diLepElecEffError/F");
    }
    GetOutputList()->Add(tPrediction_);
 }
@@ -262,8 +264,10 @@ Bool_t Prediction::Process(Long64_t entry)
 	{
 		diLepCorrectionEff_ = MuDiLepMTW_->GetBinContent(MuDiLepMTW_->GetXaxis()->FindBin(MHT),MuDiLepMTW_->GetYaxis()->FindBin(NJets+0.01));
 		diLepCorrectionEffError_ = MuDiLepMTW_->GetBinError(MuDiLepMTW_->GetXaxis()->FindBin(MHT),MuDiLepMTW_->GetYaxis()->FindBin(NJets+0.01));
-		diLepEff_ = MuDiLepEff_->GetBinContent(MuDiLepEff_->GetXaxis()->FindBin(NJets+0.01)) * ElecDiLepEff_->GetBinContent(ElecDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
-		diLepEffError_ = std::sqrt( (MuDiLepEff_->GetBinError(MuDiLepEff_->GetXaxis()->FindBin(NJets+0.01)) * MuDiLepEff_->GetBinError(MuDiLepEff_->GetXaxis()->FindBin(NJets+0.01)) ) + (ElecDiLepEff_->GetBinError(ElecDiLepEff_->GetXaxis()->FindBin(NJets+0.01)) * ElecDiLepEff_->GetBinError(ElecDiLepEff_->GetXaxis()->FindBin(NJets+0.01)) ) ) ;
+		diLepMuEff_ = MuDiLepEff_->GetBinContent(MuDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
+		diLepMuEffError_ = MuDiLepEff_->GetBinError(MuDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
+		diLepElecEff_ = ElecDiLepEff_->GetBinContent(ElecDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
+		diLepElecEffError_ = ElecDiLepEff_->GetBinError(ElecDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
 	}
 	double diLepCorrectedWeight =WeightProducer;
 	if(applyDiLepCorrection_)
@@ -327,7 +331,7 @@ Bool_t Prediction::Process(Long64_t entry)
 	}
 	totalWeightMTW_ = totalWeight_ / MuMTWMHTNJet_->GetBinContent(MTWBinX,MTWBinY);
 	totalMuonsMTW_= totalMuons_ / MuMTWMHTNJet_->GetBinContent(MTWBinX,MTWBinY);
-	totalWeightMTWDiLep_ = totalWeightMTW_ + (1-diLepCorrectionEff_)*WeightProducer *(1-diLepEff_)/diLepEff_;
+	totalWeightMTWDiLep_ = totalWeightMTW_ + (1-diLepCorrectionEff_)*WeightProducer *(1-diLepMuEff_)/diLepMuEff_ * (1-diLepElecEff_)/diLepElecEff_;
 	tPrediction_->Fill();
    return kTRUE;
 }
@@ -389,8 +393,10 @@ void Prediction::resetValues()
 	elecAccWeightErrorDown_=0;	
 	diLepCorrectionEff_=0.;
 	diLepCorrectionEffError_=0.;
-	diLepEff_=0.;
-	diLepEffError_=0.;
+	diLepMuEff_=0.;
+	diLepMuEffError_=0.;
+	diLepElecEff_=0.;
+	diLepElecEffError_=0.;
 	totalWeightMTWDiLep_=0.;
 }
 bool Prediction::FiltersPass()

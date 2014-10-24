@@ -286,7 +286,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    MuDiLepEffNJetsFail->SetName("MuDiLepEffNJetsFail");
    GetOutputList()->Add(MuDiLepEffNJetsFail); 
    
-   ElecDiLepEffNJets = new TH1F("EleconDiLepEff","EleconDiLepEff",muilepEffNJet_-1,muiLepEffNJet_);
+   ElecDiLepEffNJets = new TH1F("ElecDiLepEff","ElecDiLepEff",muilepEffNJet_-1,muiLepEffNJet_);
    GetOutputList()->Add(ElecDiLepEffNJets);
    ElecDiLepEffNJetsFail = (TH1F*)ElecDiLepEffNJets->Clone();
    ElecDiLepEffNJetsFail->SetName("ElecDiLepEffNJetsFail");
@@ -392,12 +392,16 @@ Bool_t EffMaker::Process(Long64_t entry)
 	  {
 		  MuDiLepEffNJets->Fill(NJets,WeightProducer);
 	  }
-	  else MuDiLepEffNJetsFail->Fill(NJets,WeightProducer);
+	  
 	  if(RecoIsoElecNum>0)
 	  {
 		  ElecDiLepEffNJets->Fill(NJets,WeightProducer);
 	  }
-	  else ElecDiLepEffNJetsFail->Fill(NJets,WeightProducer);
+	  if(RecoIsoElecNum==0 && RecoIsoMuonNum==0)
+	  {
+		  MuDiLepEffNJetsFail->Fill(NJets,WeightProducer);
+		  ElecDiLepEffNJetsFail->Fill(NJets,WeightProducer);
+	  }
   }
   
   if( (GenMuNum+GenElecNum)==2)
