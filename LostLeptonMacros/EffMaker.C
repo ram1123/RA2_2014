@@ -27,6 +27,7 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <iostream>
+#include "TSystem.h"
 
 void EffMaker::Begin(TTree * /*tree*/)
 {
@@ -47,6 +48,7 @@ void EffMaker::Begin(TTree * /*tree*/)
    MuMTWNJet=NULL;
    MuMTWMHTNJet=NULL;
    MuDiLepControlSampleMHTNJet=NULL;
+   MuDiLepControlSampleMHTNJetMTW=NULL;
    ElecIsoLow=NULL;
    ElecIso0=NULL;
    ElecIso1=NULL;
@@ -59,6 +61,7 @@ void EffMaker::Begin(TTree * /*tree*/)
    ElecMTWNJet=NULL;
    ElecMTWMHTNJet=NULL;
    ElecDiLepControlSampleMHTNJet=NULL;
+   ElecDiLepControlSampleMHTNJetMTW=NULL;
    
    MuonIsoLowFail=NULL;
    MuonIso0Fail=NULL;
@@ -72,6 +75,7 @@ void EffMaker::Begin(TTree * /*tree*/)
    MuMTWNJetFail=NULL;
    MuMTWMHTNJetFail=NULL;
    MuDiLepControlSampleMHTNJetFail=NULL;
+   MuDiLepControlSampleMHTNJetMTWFail=NULL;
    ElecIsoLowFail=NULL;
    ElecIso0Fail=NULL;
    ElecIso1Fail=NULL;
@@ -84,6 +88,7 @@ void EffMaker::Begin(TTree * /*tree*/)
    ElecMTWNJetFail=NULL;
    ElecMTWMHTNJetFail=NULL;
    ElecDiLepControlSampleMHTNJetFail=NULL;
+   ElecDiLepControlSampleMHTNJetMTWFail=NULL;
    MuonPurityMHTNJet=NULL;
    ElecPurityMHTNJet=NULL;
    MuonPurityMHTNJetFail=NULL;
@@ -262,6 +267,18 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    ElecDiLepControlSampleMHTNJetFail = (TH2F*)ElecDiLepControlSampleMHTNJet->Clone();
    ElecDiLepControlSampleMHTNJetFail->SetName("ElecDiLepFail");
    GetOutputList()->Add(ElecDiLepControlSampleMHTNJetFail);  
+   
+   MuDiLepControlSampleMHTNJetMTW = new TH2F("MuonDiLepMTW","MuonDiLepMTW",mudilepMHT_-1,muDilepMHT_,mudilepNJet_-1,muDilepNJet_);
+   GetOutputList()->Add(MuDiLepControlSampleMHTNJetMTW);
+   MuDiLepControlSampleMHTNJetMTWFail = (TH2F*)MuDiLepControlSampleMHTNJetMTW->Clone();
+   MuDiLepControlSampleMHTNJetMTWFail->SetName("MuonDiLepMTWFail");
+   GetOutputList()->Add(MuDiLepControlSampleMHTNJetMTWFail);  
+   
+   ElecDiLepControlSampleMHTNJetMTW = new TH2F("EleconDiLepMTW","EleconDiLepMTW",elecdilepMHT_-1,elecDilepMHT_,elecdilepNJet_-1,elecDilepNJet_);
+   GetOutputList()->Add(ElecDiLepControlSampleMHTNJetMTW);
+   ElecDiLepControlSampleMHTNJetMTWFail = (TH2F*)ElecDiLepControlSampleMHTNJet->Clone();
+   ElecDiLepControlSampleMHTNJetMTWFail->SetName("ElecDiLepMTWFail");
+   GetOutputList()->Add(ElecDiLepControlSampleMHTNJetMTWFail); 
 
    // tree
    tExpectation_ = new TTree("LostLeptonExpectation","a simple Tree with simple variables");
@@ -350,10 +367,14 @@ Bool_t EffMaker::Process(Long64_t entry)
     if(RecoIsoMuonNum==1 && RecoIsoElecNum==0)
     {
 	    MuDiLepControlSampleMHTNJetFail->Fill(MHT,NJets,WeightProducer);
+	    mtw =  MTWCalculator(METPt,METPhi, RecoIsoMuonPt[0], RecoIsoMuonPhi[0]);
+	    if(mtw<mtwCut_)MuDiLepControlSampleMHTNJetMTWFail->Fill(MHT,NJets,WeightProducer);
     }
     if(RecoIsoMuonNum==0 && RecoIsoElecNum==1)
     {
 	    ElecDiLepControlSampleMHTNJetFail->Fill(MHT,NJets,WeightProducer);  
+	    mtw =  MTWCalculator(METPt,METPhi, RecoIsoElecPt[0], RecoIsoElecPhi[0]);
+	    if(mtw<mtwCut_)ElecDiLepControlSampleMHTNJetMTWFail->Fill(MHT,NJets,WeightProducer);
     }
   }
   // start with gen muons consider only single muon events
@@ -400,6 +421,7 @@ Bool_t EffMaker::Process(Long64_t entry)
 	      {
 		MuMTWNJet->Fill(NJets,WeightProducer);
 		MuMTWMHTNJet->Fill(MHT,NJets,WeightProducer);
+		MuDiLepControlSampleMHTNJetMTW->Fill(MHT,NJets,WeightProducer);
 	      }
 	      else
 	      {
@@ -474,6 +496,7 @@ Bool_t EffMaker::Process(Long64_t entry)
 	      {
 		ElecMTWNJet->Fill(NJets,WeightProducer);
 		ElecMTWMHTNJet->Fill(MHT,NJets,WeightProducer);
+		ElecDiLepControlSampleMHTNJetMTW->Fill(MHT,NJets,WeightProducer);
 	      }
 	      else
 	      {
@@ -575,152 +598,223 @@ void EffMaker::Terminate()
   outPutFile->mkdir("Efficiencies");
   TDirectory *dEfficiencies = (TDirectory*)outPutFile->Get("Efficiencies");
   dEfficiencies->cd();
+  gStyle->SetPaintTextFormat("5.2f");
+  gStyle->SetStatW(0.1);
+  gStyle->SetStatH(0.1);
+  gStyle->SetStatY(202);
+  gStyle->SetTitleYOffset(1.3);
   MuonAcc = ratioCalculator(MuonAcc,MuonAccFail);   
   // MuonAccFail->Delete("all");
-  MuonAcc->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu acceptance; #slash{H}_{T} [GeV]; N_{Jets}");
+  MuonAcc->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu acceptance; #slash{H}_{T} [GeV]; N_{Jets}");
   MuonAcc->SetMarkerSize(2.0);
   MuonAcc->UseCurrentStyle();
   MuonAcc->Write();
+  SaveEfficiency(MuonAcc);
+  
   
   MuonRecoLow = ratioCalculator(MuonRecoLow,MuonRecoLowFail);   
   //MuonRecoLowFail->Delete("all");
-  MuonRecoLow->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonRecoLow->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu reco N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   MuonRecoLow->SetMarkerSize(2.0);
   MuonRecoLow->UseCurrentStyle();
   MuonRecoLow->Write();
+  SaveEfficiency(MuonRecoLow);
+  
   MuonReco0 = ratioCalculator(MuonReco0,MuonReco0Fail);   
   // MuonReco0Fail->Delete("all");
-  MuonReco0->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonReco0->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu reco 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   MuonReco0->SetMarkerSize(2.0);
   MuonReco0->UseCurrentStyle();
   MuonReco0->Write();
+  SaveEfficiency(MuonReco0);
+  
   MuonReco1 = ratioCalculator(MuonReco1,MuonReco1Fail);   
   //MuonReco1Fail->Delete("all");
-  MuonReco1->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonReco1->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu reco 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   MuonReco1->SetMarkerSize(2.0);
   MuonReco1->UseCurrentStyle();
   MuonReco1->Write();
+  SaveEfficiency(MuonReco1);
+  
   MuonReco2 = ratioCalculator(MuonReco2,MuonReco2Fail);   
   // MuonReco2Fail->Delete("all");
-  MuonReco2->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu reco 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonReco2->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu reco 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   MuonReco2->SetMarkerSize(2.0);
   MuonReco2->UseCurrentStyle();
   MuonReco2->Write();
+  SaveEfficiency(MuonReco2);
+  
   
   MuonIsoLow = ratioCalculator(MuonIsoLow,MuonIsoLowFail);   
   //  MuonIsoLowFail->Delete("all");
-  MuonIsoLow->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonIsoLow->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu iso N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   MuonIsoLow->SetMarkerSize(2.0);
   MuonIsoLow->UseCurrentStyle();
   MuonIsoLow->Write();
+  SaveEfficiency(MuonIsoLow);
+  
   MuonIso0 = ratioCalculator(MuonIso0,MuonIso0Fail);   
   //  MuonIso0Fail->Delete("all");
-  MuonIso0->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonIso0->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu iso 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   MuonIso0->SetMarkerSize(2.0);
   MuonIso0->UseCurrentStyle();
   MuonIso0->Write();
+  SaveEfficiency(MuonIso0);
+  
   MuonIso1 = ratioCalculator(MuonIso1,MuonIso1Fail);   
   //  MuonIso1Fail->Delete("all");
-  MuonIso1->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonIso1->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu iso 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   MuonIso1->SetMarkerSize(2.0);
   MuonIso1->UseCurrentStyle();
   MuonIso1->Write();
+  SaveEfficiency(MuonIso1);
+  
   MuonIso2 = ratioCalculator(MuonIso2,MuonIso2Fail);   
   //  MuonIso2Fail->Delete("all");
-  MuonIso2->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu iso 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonIso2->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu iso 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   MuonIso2->SetMarkerSize(2.0);
   MuonIso2->UseCurrentStyle();
   MuonIso2->Write();
+  SaveEfficiency(MuonIso2);
   
   MuMTWNJet = ratioCalculator(MuMTWNJet,MuMTWNJetFail);   
   // MuMTWNJetFail->Delete("all");
-  MuMTWNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu M_{T}(W); N_{Jets}");
+  MuMTWNJet->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu M_{T}(W); N_{Jets}");
   MuMTWNJet->UseCurrentStyle();
   MuMTWNJet->Write();
   
   MuMTWMHTNJet = ratioCalculator(MuMTWMHTNJet,MuMTWMHTNJetFail);   
   // MuMTWMHTNJetFail->Delete("all");
-  MuMTWMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu M_{T}(W); #slash{H}_{T} [GeV]; N_{Jets}");
+  MuMTWMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu M_{T}(W); #slash{H}_{T} [GeV]; N_{Jets}");
   MuMTWMHTNJet->SetMarkerSize(2.0);
   MuMTWMHTNJet->UseCurrentStyle();
   MuMTWMHTNJet->Write();
+  SaveEfficiency(MuMTWMHTNJet);
   
   MuonPurityMHTNJet = ratioCalculator(MuonPurityMHTNJet,MuonPurityMHTNJetFail);   
   // MuMTWMHTNJetFail->Delete("all");
-  MuonPurityMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu purity; #slash{H}_{T} [GeV]; N_{Jets}");
+  MuonPurityMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu purity; #slash{H}_{T} [GeV]; N_{Jets}");
   MuonPurityMHTNJet->SetMarkerSize(2.0);
   MuonPurityMHTNJet->UseCurrentStyle();
   MuonPurityMHTNJet->Write();
+  SaveEfficiency(MuonPurityMHTNJet);
+  
   
   MuDiLepControlSampleMHTNJet = ratioCalculator(MuDiLepControlSampleMHTNJet,MuDiLepControlSampleMHTNJetFail);   
   // MuMTWMHTNJetFail->Delete("all");
-  MuDiLepControlSampleMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu diLepCorrection; #slash{H}_{T} [GeV]; N_{Jets}");
+  MuDiLepControlSampleMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu diLepCorrection; #slash{H}_{T} [GeV]; N_{Jets}");
   MuDiLepControlSampleMHTNJet->SetMarkerSize(2.0);
   MuDiLepControlSampleMHTNJet->UseCurrentStyle();
   MuDiLepControlSampleMHTNJet->Write();
+  SaveEfficiency(MuDiLepControlSampleMHTNJet);
+  
+  int n_;
+  char buffer_[300];
+  TString TTemp_;
+  n_ = sprintf(buffer_,"CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu diLepCorrection m_{T}(w)<%.0f; #slash{H}_{T} [GeV]; N_{Jets}",mtwCut_);
+  TTemp_+=buffer_;
+  
+  MuDiLepControlSampleMHTNJetMTW = ratioCalculator(MuDiLepControlSampleMHTNJetMTW,MuDiLepControlSampleMHTNJetMTWFail);   
+  // MuMTWMHTNJetFail->Delete("all");
+  MuDiLepControlSampleMHTNJetMTW->SetTitle(TTemp_);
+  MuDiLepControlSampleMHTNJetMTW->SetMarkerSize(2.0);
+  MuDiLepControlSampleMHTNJetMTW->UseCurrentStyle();
+  MuDiLepControlSampleMHTNJetMTW->Write();
+  SaveEfficiency(MuDiLepControlSampleMHTNJetMTW);
   
   
   ElecAcc = ratioCalculator(ElecAcc,ElecAccFail);   
   //  ElecAccFail->Delete("all");
-  ElecAcc->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec acceptance; #slash{H}_{T} [GeV]; N_{Jets}");
+  ElecAcc->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec acceptance; #slash{H}_{T} [GeV]; N_{Jets}");
   ElecAcc->Write();
+  SaveEfficiency(ElecAcc);
+  
   ElecRecoLow = ratioCalculator(ElecRecoLow,ElecRecoLowFail);   
   //  ElecRecoLowFail->Delete("all");
-  ElecRecoLow->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec reco N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecRecoLow->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec reco N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   ElecRecoLow->Write();
+  SaveEfficiency(ElecRecoLow);
+  
   ElecReco0 = ratioCalculator(ElecReco0,ElecReco0Fail);   
   //   ElecReco0Fail->Delete("all");
-  ElecReco0->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec reco 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecReco0->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec reco 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   ElecReco0->Write();
+  SaveEfficiency(ElecReco0);
+  
   ElecReco1 = ratioCalculator(ElecReco1,ElecReco1Fail);   
   // ElecReco1Fail->Delete("all");
-  ElecReco1->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec reco 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecReco1->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec reco 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   ElecReco1->Write();
+  SaveEfficiency(ElecReco1);
+  
   ElecReco2 = ratioCalculator(ElecReco2,ElecReco2Fail);   
   //  ElecReco2Fail->Delete("all");
-  ElecReco2->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec reco 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecReco2->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec reco 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   ElecReco2->Write();
+  SaveEfficiency(ElecReco2);
   
   ElecIsoLow = ratioCalculator(ElecIsoLow,ElecIsoLowFail);   
   //  ElecIsoLowFail->Delete("all");
-  ElecIsoLow->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec iso N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecIsoLow->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec iso N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   ElecIsoLow->Write();
+  SaveEfficiency(ElecIsoLow);
+  
   ElecIso0 = ratioCalculator(ElecIso0,ElecIso0Fail);   
   //  ElecIso0Fail->Delete("all");
-  ElecIso0->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec iso 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecIso0->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec iso 3#leqN_{Jets}#leq5; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   ElecIso0->Write();
+  SaveEfficiency(ElecIso0);
+  
   ElecIso1 = ratioCalculator(ElecIso1,ElecIso1Fail);   
   //   ElecIso1Fail->Delete("all");
-  ElecIso1->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec iso 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecIso1->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec iso 6#leqN_{Jets}#leq7; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   ElecIso1->Write();
+  SaveEfficiency(ElecIso1);
+  
   ElecIso2 = ratioCalculator(ElecIso2,ElecIso2Fail);   
   //  ElecIso2Fail->Delete("all");
-  ElecIso2->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec iso 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecIso2->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec iso 8#leqlegN_{Jets}; H_{T} [GeV]; #slash{H}_{T} [GeV]");
   ElecIso2->Write();
+  SaveEfficiency(ElecIso2);
   
   ElecMTWNJet = ratioCalculator(ElecMTWNJet,ElecMTWNJetFail);   
   //  ElecMTWNJetFail->Delete("all");
-  ElecMTWNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec M_{T}(W); N_{Jets}");
+  ElecMTWNJet->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec M_{T}(W); N_{Jets}");
   ElecMTWNJet->Write();
   
   ElecMTWMHTNJet = ratioCalculator(ElecMTWMHTNJet,ElecMTWMHTNJetFail);   
   //  ElecMTWMHTNJetFail->Delete("all");
-  ElecMTWMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec M_{T}(W); #slash{H}_{T} [GeV]; N_{Jets}");
+  ElecMTWMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec M_{T}(W); #slash{H}_{T} [GeV]; N_{Jets}");
   ElecMTWMHTNJet->Write();
+  SaveEfficiency(ElecMTWMHTNJet);
   
   ElecPurityMHTNJet = ratioCalculator(ElecPurityMHTNJet,ElecPurityMHTNJetFail);   
   // MuMTWMHTNJetFail->Delete("all");
-  ElecPurityMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec purity; #slash{H}_{T} [GeV]; N_{Jets}");
+  ElecPurityMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec purity; #slash{H}_{T} [GeV]; N_{Jets}");
   ElecPurityMHTNJet->SetMarkerSize(2.0);
   ElecPurityMHTNJet->UseCurrentStyle();
   ElecPurityMHTNJet->Write();
+  SaveEfficiency(ElecPurityMHTNJet);
   
   ElecDiLepControlSampleMHTNJet = ratioCalculator(ElecDiLepControlSampleMHTNJet,ElecDiLepControlSampleMHTNJetFail);   
   // ElecMTWMHTNJetFail->Delete("all");
-  ElecDiLepControlSampleMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec diLepCorrection; #slash{H}_{T} [GeV]; N_{Jets}");
+  ElecDiLepControlSampleMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec diLepCorrection; #slash{H}_{T} [GeV]; N_{Jets}");
   ElecDiLepControlSampleMHTNJet->SetMarkerSize(2.0);
   ElecDiLepControlSampleMHTNJet->UseCurrentStyle();
   ElecDiLepControlSampleMHTNJet->Write();
+  SaveEfficiency(ElecDiLepControlSampleMHTNJet);
+
+  
+  n_ = sprintf(buffer_,"CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec diLepCorrection m_{T}(w)<%.0f; #slash{H}_{T} [GeV]; N_{Jets}",mtwCut_);
+  TTemp_+=buffer_;
+  
+  ElecDiLepControlSampleMHTNJetMTW = ratioCalculator(ElecDiLepControlSampleMHTNJetMTW,ElecDiLepControlSampleMHTNJetMTWFail);   
+  // MuMTWMHTNJetFail->Delete("all");
+  ElecDiLepControlSampleMHTNJetMTW->SetTitle(TTemp_);
+  ElecDiLepControlSampleMHTNJetMTW->SetMarkerSize(2.0);
+  ElecDiLepControlSampleMHTNJetMTW->UseCurrentStyle();
+  ElecDiLepControlSampleMHTNJetMTW->Write();
+  SaveEfficiency(ElecDiLepControlSampleMHTNJetMTW);
    // The Terminate() function is the last function to be called during
    // a query. It always runs on the client, it can be used to present
    // the results graphically or save the results to file.
@@ -788,3 +882,22 @@ double EffMaker::MTWCalculator(double metPt,double  metPhi,double  lepPt,double 
   return sqrt(2*lepPt*metPt*(1-cos(deltaPhi)) );
 }
 
+void EffMaker::SaveEfficiency(TH2F *input)
+{
+	gROOT->SetBatch(true);
+	const TString th2Name = input->GetName();
+	const TString th2Title = input->GetTitle();
+	TCanvas *c1 = new TCanvas(th2Name,th2Title,1);
+	c1->cd();
+	c1->SetLogx();
+	c1->SetLogy();
+	input->SetMarkerSize(2.0);
+	input->UseCurrentStyle();
+	input->Draw("ColZ,Text,E");
+	// c1->SaveAs(s+"MuonAccEff3"+".png");
+	if(saveEffToPDF_) c1->SaveAs(th2Name+".pdf");
+	if(saveEffToPNG_) c1->SaveAs(th2Name+".png");
+	delete c1;
+	gROOT->SetBatch(false);
+	
+}

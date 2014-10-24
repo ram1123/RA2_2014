@@ -19,6 +19,10 @@
 // Header file for the classes stored in the TTree if any.
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
+// use gen infomation to fix purityy of muon controlsample
+const bool useGenInfoToMatchCSMuonToGen_=1;
+const double maxDeltaRGenToRecoIsoMuon_=0.3;
+const double maxDiffPtGenToRecoIsoMuon_=0.3;
 const double minHT_=350;
 const double minMHT_=100;
 const double minNJets_=1.9;
@@ -46,6 +50,8 @@ public :
    double effUp(double eff, double up);
    double effDown(double eff, double down);
    // output variables
+   bool useGenInfoToMatchCSMuonToGen; Float_t deltaRGenToRecoIsoMuon_, diffPtGenToRecoIsoMuon_;
+   UShort_t Matched_;
    TTree *tPrediction_;
    Float_t mtw;
    Float_t muIsoEff_, muIsoEffError_, muIsoWeight_, muIsoWeightErrorUp_, muIsoWeightErrorDown_;

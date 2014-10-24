@@ -16,6 +16,10 @@
 #include <TH1F.h>
 #include "TVector2.h"
 #include <cmath>
+#include "TCanvas.h"
+// output control
+const bool saveEffToPDF_=true;
+const bool saveEffToPNG_=false;
 // cuts baseline
 const double minHT_=350;
 const double minMHT_=100;
@@ -183,6 +187,7 @@ public :
   double MTWCalculator(double metPt,double  metPhi,double  lepPt,double  lepPhi);
   TH2F* ratioCalculator(TH2F* passTH2, TH2F* failTH2);
   TH1F* ratioCalculator(TH1F* passTH1, TH1F* failTH1);
+  void SaveEfficiency(TH2F *input);
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    // Storing stuff
    TTree	*tExpectation_;
@@ -198,8 +203,8 @@ public :
    TH1F *ElecMTWNJet;
    TH2F *ElecMTWMHTNJet;
    
-   TH2F *MuonPurityMHTNJet, *ElecPurityMHTNJet, *MuDiLepControlSampleMHTNJet, *ElecDiLepControlSampleMHTNJet;
-   TH2F *MuonPurityMHTNJetFail, *ElecPurityMHTNJetFail, *MuDiLepControlSampleMHTNJetFail, *ElecDiLepControlSampleMHTNJetFail;
+   TH2F *MuonPurityMHTNJet, *ElecPurityMHTNJet, *MuDiLepControlSampleMHTNJet, *MuDiLepControlSampleMHTNJetMTW, *ElecDiLepControlSampleMHTNJet, *ElecDiLepControlSampleMHTNJetMTW;
+   TH2F *MuonPurityMHTNJetFail, *ElecPurityMHTNJetFail, *MuDiLepControlSampleMHTNJetFail, *ElecDiLepControlSampleMHTNJetFail, *MuDiLepControlSampleMHTNJetMTWFail, *ElecDiLepControlSampleMHTNJetMTWFail;
    
    TH2F *MuonIso0Fail, *MuonIsoLowFail, *MuonIso1Fail, *MuonIso2Fail, *MuonAccFail, *MuonReco0Fail, *MuonRecoLowFail, *MuonReco1Fail, *MuonReco2Fail;
    TH2F *ElecIso0Fail, *ElecIsoLowFail, *ElecIso1Fail, *ElecIso2Fail, *ElecAccFail, *ElecReco0Fail, *ElecRecoLowFail, *ElecReco1Fail, *ElecReco2Fail;

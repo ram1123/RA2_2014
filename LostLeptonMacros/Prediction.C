@@ -61,6 +61,7 @@ void Prediction::Begin(TTree * /*tree*/)
    MuonPurityMHTNJet_=NULL;
    ElecPurityMHTNJet_=NULL;
    tPrediction_=NULL;
+   if(useGenInfoToMatchCSMuonToGen_)std::cout<<"WARNING USING GEN INFORMATION TO MAKE SURE THIS IS A SINGLE MUON ELEC EVENT AND DO MATCHING TO HAVE 100% PURITY OF MUON CONTROL SAMPLE"<<std::endl;
 
 }
 
@@ -97,7 +98,12 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    MuMTWMHTNJet_ = (TH2F*)EffInputFolder->Get("MuMTWMHTNjet");
    
    TString option = GetOption();
+   useGenInfoToMatchCSMuonToGen=useGenInfoToMatchCSMuonToGen_;
    tPrediction_ = new TTree("LostLeptonPrediction","a simple Tree with simple variables");
+   tPrediction_->Branch("MatchedToGenMuonExDiLep",&useGenInfoToMatchCSMuonToGen,"MatchedToGenMuonExDiLep/O");
+   if(useGenInfoToMatchCSMuonToGen_) tPrediction_->Branch("DeltaRGenToRecoIsoMuon",&deltaRGenToRecoIsoMuon_,"DeltaRGenToRecoIsoMuon/F");
+   if(useGenInfoToMatchCSMuonToGen_) tPrediction_->Branch("DiffPtGenToRecoIsoMuon",&diffPtGenToRecoIsoMuon_,"DiffPtGenToRecoIsoMuon/F");
+   if(useGenInfoToMatchCSMuonToGen_)  tPrediction_->Branch("MuonCSMatched",&Matched_,"MuonCSMatched/s");
    tPrediction_->Branch("HT",&HT,"HT/F");
    tPrediction_->Branch("MHT",&MHT,"MHT/F");
    tPrediction_->Branch("NJets",&NJets,"NJets/s");
@@ -159,6 +165,16 @@ Bool_t Prediction::Process(Long64_t entry)
 	if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_||  DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ ) return kTRUE;
 	if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
 	if(RecoIsoMuonNum!=1 || RecoIsoElecNum!=0) return kTRUE;
+	if(useGenInfoToMatchCSMuonToGen_)
+	{
+		if(GenMuNum!=1 || GenElecNum!=0) return kTRUE;
+		if(deltaR(GenMuEta[0],GenMuPhi[0],RecoIsoMuonEta[0],RecoIsoMuonPhi[0])<maxDeltaRGenToRecoIsoMuon_ || std::abs(GenMuPt[0]-RecoIsoMuonPt[0])/GenMuPt[0]<maxDiffPtGenToRecoIsoMuon_)
+		{
+			Matched_=1;
+		}
+	}
+	deltaRGenToRecoIsoMuon_=deltaR(GenMuEta[0],GenMuPhi[0],RecoIsoMuonEta[0],RecoIsoMuonPhi[0]);
+	diffPtGenToRecoIsoMuon_=std::abs(GenMuPt[0]-RecoIsoMuonPt[0])/GenMuPt[0];
 	mtw =  MTWCalculator(METPt,METPhi, RecoIsoMuonPt[0], RecoIsoMuonPhi[0]);
 	if( NJets==NJetsLow_ )
 	{
@@ -305,6 +321,9 @@ void Prediction::Terminate()
 }
 void Prediction::resetValues()
 {
+	deltaRGenToRecoIsoMuon_=0.;
+	diffPtGenToRecoIsoMuon_=0.;
+	Matched_=0;
 	mtw=0.;
 	muIsoEff_=0;
 	muIsoEffError_=0;
