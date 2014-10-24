@@ -6,8 +6,8 @@ void MakeEff()
 {
 	//TString connect = gSystem->GetFromPipe("pod-info -c");
   //TProof *proof = TProof::Open("adraeger@nafhh-cms03.desy.de:21001");
-	//TProof *proof = TProof::Open("workers=7");
-    TProof *proof = TProof::Open("");
+	TProof *proof = TProof::Open("workers=20");
+    //TProof *proof = TProof::Open("");
 	//TProof *proof = TProof::Open(connect);
 	// analyse the trees
 	TChain *Effchain = new TChain("RA2TreeMaker2/RA2PreSelection");

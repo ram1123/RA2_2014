@@ -46,6 +46,7 @@ void EffMaker::Begin(TTree * /*tree*/)
    MuonAcc=NULL;
    MuMTWNJet=NULL;
    MuMTWMHTNJet=NULL;
+   MuDiLepControlSampleMHTNJet=NULL;
    ElecIsoLow=NULL;
    ElecIso0=NULL;
    ElecIso1=NULL;
@@ -57,6 +58,7 @@ void EffMaker::Begin(TTree * /*tree*/)
    ElecAcc=NULL;
    ElecMTWNJet=NULL;
    ElecMTWMHTNJet=NULL;
+   ElecDiLepControlSampleMHTNJet=NULL;
    
    MuonIsoLowFail=NULL;
    MuonIso0Fail=NULL;
@@ -69,6 +71,7 @@ void EffMaker::Begin(TTree * /*tree*/)
    MuonAccFail=NULL;
    MuMTWNJetFail=NULL;
    MuMTWMHTNJetFail=NULL;
+   MuDiLepControlSampleMHTNJetFail=NULL;
    ElecIsoLowFail=NULL;
    ElecIso0Fail=NULL;
    ElecIso1Fail=NULL;
@@ -80,6 +83,7 @@ void EffMaker::Begin(TTree * /*tree*/)
    ElecAccFail=NULL;
    ElecMTWNJetFail=NULL;
    ElecMTWMHTNJetFail=NULL;
+   ElecDiLepControlSampleMHTNJetFail=NULL;
    MuonPurityMHTNJet=NULL;
    ElecPurityMHTNJet=NULL;
    MuonPurityMHTNJetFail=NULL;
@@ -246,6 +250,19 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    ElecPurityMHTNJetFail = (TH2F*)ElecPurityMHTNJet->Clone();
    ElecPurityMHTNJetFail->SetName("ElecPurityFail");
    GetOutputList()->Add(ElecPurityMHTNJetFail); 
+   
+   MuDiLepControlSampleMHTNJet = new TH2F("MuonDiLep","MuonDiLep",mudilepMHT_-1,muDilepMHT_,mudilepNJet_-1,muDilepNJet_);
+   GetOutputList()->Add(MuDiLepControlSampleMHTNJet);
+   MuDiLepControlSampleMHTNJetFail = (TH2F*)MuDiLepControlSampleMHTNJet->Clone();
+   MuDiLepControlSampleMHTNJetFail->SetName("MuonDiLepFail");
+   GetOutputList()->Add(MuDiLepControlSampleMHTNJetFail);  
+   
+   ElecDiLepControlSampleMHTNJet = new TH2F("EleconDiLep","EleconDiLep",elecdilepMHT_-1,elecDilepMHT_,elecdilepNJet_-1,elecDilepNJet_);
+   GetOutputList()->Add(ElecDiLepControlSampleMHTNJet);
+   ElecDiLepControlSampleMHTNJetFail = (TH2F*)ElecDiLepControlSampleMHTNJet->Clone();
+   ElecDiLepControlSampleMHTNJetFail->SetName("ElecDiLepFail");
+   GetOutputList()->Add(ElecDiLepControlSampleMHTNJetFail);  
+
    // tree
    tExpectation_ = new TTree("LostLeptonExpectation","a simple Tree with simple variables");
    tExpectation_->Branch("HT",&HT,"HT/F");
@@ -282,8 +299,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    tExpectation_->Branch("RecoIsoMuonNum",&RecoIsoMuonNum,"RecoIsoMuonNum/s");
    tExpectation_->Branch("RecoIsoMuonPt", RecoIsoMuonPt, "RecoIsoMuonPt[RecoIsoMuonNum]/F");
    tExpectation_->Branch("RecoIsoMuonPromtMatched", RecoIsoMuonPromtMatched, "RecoIsoMuonPromtMatched[RecoIsoMuonNum]/s");
-   //   tExpectation_->Branch("RecoIsoMuonPromtMatchedDeltaR", RecoIsoMuonPromtMatchedDeltaR, "RecoIsoMuonPromtMatchedDeltaR[RecoIsoMuonNum]/F");
-   //   tExpectation_->Branch("RecoIsoMuonPromtMatchedRelPt", RecoIsoMuonPromtMatchedRelPt, "RecoIsoMuonPromtMatchedRelPt[RecoIsoMuonNum]/F");
+   tExpectation_->Branch("RecoIsoMuonPromtMatchedDeltaR", RecoIsoMuonPromtMatchedDeltaR, "RecoIsoMuonPromtMatchedDeltaR[RecoIsoMuonNum]/F");
+   tExpectation_->Branch("RecoIsoMuonPromtMatchedRelPt", RecoIsoMuonPromtMatchedRelPt, "RecoIsoMuonPromtMatchedRelPt[RecoIsoMuonNum]/F");
    tExpectation_->Branch("RecoIsoMuonEta", RecoIsoMuonEta, "RecoIsoMuonEta[RecoIsoMuonNum]/F");
    tExpectation_->Branch("RecoIsoMuonPhi", RecoIsoMuonPhi, "RecoIsoMuonPhi[RecoIsoMuonNum]/F");
    tExpectation_->Branch("RecoIsoMuonE", RecoIsoMuonE, "RecoIsoMuonE[RecoIsoMuonNum]/F");
@@ -326,7 +343,18 @@ Bool_t EffMaker::Process(Long64_t entry)
   
   if( (GenMuNum+GenElecNum)==2)
   {
-    if(RecoIsoMuonNum==0 && RecoIsoElecNum==0)Expectation=1;
+    if(RecoIsoMuonNum==0 && RecoIsoElecNum==0)
+    {
+	    Expectation=1;
+    }
+    if(RecoIsoMuonNum==1 && RecoIsoElecNum==0)
+    {
+	    MuDiLepControlSampleMHTNJetFail->Fill(MHT,NJets,WeightProducer);
+    }
+    if(RecoIsoMuonNum==0 && RecoIsoElecNum==1)
+    {
+	    ElecDiLepControlSampleMHTNJetFail->Fill(MHT,NJets,WeightProducer);  
+    }
   }
   // start with gen muons consider only single muon events
   if(GenMuNum==1 && GenElecNum==0)
@@ -366,6 +394,7 @@ Bool_t EffMaker::Process(Long64_t entry)
 	      if( NjetLow2_ < NJets && NJets < NjetHigh2_) MuonIso2->Fill(HT,MHT,WeightProducer);
 	      muIso=2;
 	      Expectation=2;
+	      MuDiLepControlSampleMHTNJet->Fill(MHT,NJets,WeightProducer);
 	      mtw =  MTWCalculator(METPt,METPhi, RecoIsoMuonPt[ii], RecoIsoMuonPhi[ii]);
 	      if (mtw<mtwCut_)
 	      {
@@ -439,6 +468,7 @@ Bool_t EffMaker::Process(Long64_t entry)
 	      if( NjetLow2_ < NJets && NJets < NjetHigh2_) ElecIso2->Fill(HT,MHT,WeightProducer);
 	      elecIso=2;
 	      Expectation=2;
+	      ElecDiLepControlSampleMHTNJet->Fill(MHT,NJets,WeightProducer);
 	      mtw =  MTWCalculator(METPt,METPhi, RecoIsoElecPt[ii], RecoIsoElecPhi[ii]);
 	      if (mtw<mtwCut_)
 	      {
@@ -622,6 +652,13 @@ void EffMaker::Terminate()
   MuonPurityMHTNJet->UseCurrentStyle();
   MuonPurityMHTNJet->Write();
   
+  MuDiLepControlSampleMHTNJet = ratioCalculator(MuDiLepControlSampleMHTNJet,MuDiLepControlSampleMHTNJetFail);   
+  // MuMTWMHTNJetFail->Delete("all");
+  MuDiLepControlSampleMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV #mu diLepCorrection; #slash{H}_{T} [GeV]; N_{Jets}");
+  MuDiLepControlSampleMHTNJet->SetMarkerSize(2.0);
+  MuDiLepControlSampleMHTNJet->UseCurrentStyle();
+  MuDiLepControlSampleMHTNJet->Write();
+  
   
   ElecAcc = ratioCalculator(ElecAcc,ElecAccFail);   
   //  ElecAccFail->Delete("all");
@@ -677,6 +714,13 @@ void EffMaker::Terminate()
   ElecPurityMHTNJet->SetMarkerSize(2.0);
   ElecPurityMHTNJet->UseCurrentStyle();
   ElecPurityMHTNJet->Write();
+  
+  ElecDiLepControlSampleMHTNJet = ratioCalculator(ElecDiLepControlSampleMHTNJet,ElecDiLepControlSampleMHTNJetFail);   
+  // ElecMTWMHTNJetFail->Delete("all");
+  ElecDiLepControlSampleMHTNJet->SetTitle("CMS Simulation, L=5 fb-1, sqrt(s)=13 TeV elec diLepCorrection; #slash{H}_{T} [GeV]; N_{Jets}");
+  ElecDiLepControlSampleMHTNJet->SetMarkerSize(2.0);
+  ElecDiLepControlSampleMHTNJet->UseCurrentStyle();
+  ElecDiLepControlSampleMHTNJet->Write();
    // The Terminate() function is the last function to be called during
    // a query. It always runs on the client, it can be used to present
    // the results graphically or save the results to file.

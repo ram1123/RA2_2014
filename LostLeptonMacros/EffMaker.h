@@ -111,6 +111,11 @@ double muPurityMHT_[mupurityMHT_] ={0,100,200,400,800,1200,9600};
 const int mupurityNJet_ = 5;
 double muPurityNJet_[mupurityNJet_] ={2,3,4,5,22};
 
+const int mudilepMHT_ = 7;
+double muDilepMHT_[mudilepMHT_] ={0,100,200,400,800,1200,9600};
+const int mudilepNJet_ = 5;
+double muDilepNJet_[mudilepNJet_] ={2,3,4,5,22};
+
 const int elecIsoHTLow_=4;
 double ElecIsoHTLow_[elecIsoHTLow_]={350,500,800,9000};
 const int elecIsoMHTLow_=7;
@@ -156,12 +161,15 @@ double elecMtwNjet_[elecmtwNjet_] ={2,3,4,5,22};
 const int elecmtwMHT_ = 5;
 double elecMtwMHT_[elecmtwMHT_] ={0,100,200,400,9600};
 
-
 const int elecpurityNJet_ = 5;
 double elecPurityNJet_[elecpurityNJet_] ={2,3,4,5,22};
-
 const int elecpurityMHT_ = 7;
 double elecPurityMHT_[elecpurityMHT_] ={0,100,200,400,800,1200,9600};
+
+const int elecdilepMHT_ = 7;
+double elecDilepMHT_[elecdilepMHT_] ={0,100,200,400,800,1200,9600};
+const int elecdilepNJet_ = 5;
+double elecDilepNJet_[elecdilepNJet_] ={2,3,4,5,22};
 
 // Header file for the classes stored in the TTree if any.
 
@@ -190,8 +198,8 @@ public :
    TH1F *ElecMTWNJet;
    TH2F *ElecMTWMHTNJet;
    
-   TH2F *MuonPurityMHTNJet, *ElecPurityMHTNJet;
-   TH2F *MuonPurityMHTNJetFail, *ElecPurityMHTNJetFail;
+   TH2F *MuonPurityMHTNJet, *ElecPurityMHTNJet, *MuDiLepControlSampleMHTNJet, *ElecDiLepControlSampleMHTNJet;
+   TH2F *MuonPurityMHTNJetFail, *ElecPurityMHTNJetFail, *MuDiLepControlSampleMHTNJetFail, *ElecDiLepControlSampleMHTNJetFail;
    
    TH2F *MuonIso0Fail, *MuonIsoLowFail, *MuonIso1Fail, *MuonIso2Fail, *MuonAccFail, *MuonReco0Fail, *MuonRecoLowFail, *MuonReco1Fail, *MuonReco2Fail;
    TH2F *ElecIso0Fail, *ElecIsoLowFail, *ElecIso1Fail, *ElecIso2Fail, *ElecAccFail, *ElecReco0Fail, *ElecRecoLowFail, *ElecReco1Fail, *ElecReco2Fail;
