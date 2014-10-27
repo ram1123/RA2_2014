@@ -70,22 +70,22 @@ def makeRA2TreeTreeFromMiniADO(process,
     # leptons
     process.load("PhysicsTools.PatAlgos.selectionLayer1.muonCountFilter_cfi")
     process.load("PhysicsTools.PatAlgos.selectionLayer1.electronCountFilter_cfi")
-    process.selectedIDIsoMuons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedMuons"), cut = cms.string('''abs(eta)<2.5 && pt>5. &&
+    process.selectedIDIsoMuons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedMuons"), cut = cms.string('''abs(eta)<2.5 && pt>10. &&
     (pfIsolationR04().sumChargedHadronPt+
     max(0.,pfIsolationR04().sumNeutralHadronEt+
     pfIsolationR04().sumPhotonEt-
     0.50*pfIsolationR04().sumPUPt))/pt < 0.20 && 
     (isPFMuon && (isGlobalMuon || isTrackerMuon) )'''))
-    process.selectedIDMuons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedMuons"), cut = cms.string('''abs(eta)<2.5 && pt>5. && 
+    process.selectedIDMuons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedMuons"), cut = cms.string('''abs(eta)<2.5 && pt>10. && 
     (isPFMuon && (isGlobalMuon || isTrackerMuon) )'''))
-    process.selectedIDIsoElectrons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedElectrons"), cut = cms.string('''abs(eta)<2.5 && pt>5. &&
+    process.selectedIDIsoElectrons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedElectrons"), cut = cms.string('''abs(eta)<2.5 && pt>10. &&
     gsfTrack.isAvailable() &&
     gsfTrack.trackerExpectedHitsInner.numberOfLostHits<2 &&
     (pfIsolationVariables().sumChargedHadronPt+
     max(0.,pfIsolationVariables().sumNeutralHadronEt+
     pfIsolationVariables().sumPhotonEt-
     0.5*pfIsolationVariables().sumPUPt))/pt < 0.20'''))
-    process.selectedIDElectrons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedElectrons"), cut = cms.string('''abs(eta)<2.5 && pt>5. &&
+    process.selectedIDElectrons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedElectrons"), cut = cms.string('''abs(eta)<2.5 && pt>10. &&
     gsfTrack.isAvailable() &&
     gsfTrack.trackerExpectedHitsInner.numberOfLostHits<2'''))
     
