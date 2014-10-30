@@ -19,7 +19,7 @@
 #include "TCanvas.h"
 // output control
 const bool saveEffToPDF_=true;
-const bool saveEffToPNG_=false;
+const bool saveEffToPNG_=true;
 // cuts baseline
 const double minHT_=350;
 const double minMHT_=100;

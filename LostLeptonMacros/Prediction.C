@@ -121,6 +121,9 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    tPrediction_->Branch("DeltaPhi2",&DeltaPhi2,"DeltaPhi2/F");
    tPrediction_->Branch("DeltaPhi3",&DeltaPhi3,"DeltaPhi3/F");
    tPrediction_->Branch("WeightProducer", &WeightProducer, "WeightProducer/F");
+   tPrediction_->Branch("METPt",&METPt,"METPt/F");
+   tPrediction_->Branch("METEta",&METEta,"METEta/F");
+   tPrediction_->Branch("METPhi",&METPhi,"METPhi/F");
    tPrediction_->Branch("RecoIsoMuonNum",&RecoIsoMuonNum,"RecoIsoMuonNum/s");
    tPrediction_->Branch("RecoIsoMuonPt", RecoIsoMuonPt, "RecoIsoMuonPt[RecoIsoMuonNum]/F");
    tPrediction_->Branch("RecoIsoMuonEta", RecoIsoMuonEta, "RecoIsoMuonEta[RecoIsoMuonNum]/F");

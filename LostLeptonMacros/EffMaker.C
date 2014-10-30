@@ -303,6 +303,9 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    tExpectation_->Branch("DeltaPhi2",&DeltaPhi2,"DeltaPhi2/F");
    tExpectation_->Branch("DeltaPhi3",&DeltaPhi3,"DeltaPhi3/F");
    tExpectation_->Branch("WeightProducer", &WeightProducer, "WeightProducer/F");
+   tExpectation_->Branch("METPt",&METPt,"METPt/F");
+   tExpectation_->Branch("METEta",&METEta,"METEta/F");
+   tExpectation_->Branch("METPhi",&METPhi,"METPhi/F");
    tExpectation_->Branch("GenMuNum",&GenMuNum,"GenMuNum/s");
    tExpectation_->Branch("GenMuFromTau",GenMuFromTau,"GenMuFromTau[GenMuNum]/s");
    tExpectation_->Branch("GenMuPt", GenMuPt,"GenMuPt[GenMuNum]/F");
@@ -576,6 +579,7 @@ Bool_t EffMaker::Process(Long64_t entry)
   // purity studies:
   for (UShort_t i=0; i< RecoIsoMuonNum;i++)
   {
+	  if(RecoIsoMuonNum>1 || MTWCalculator(METPt,METPhi, RecoIsoMuonPt[0], RecoIsoMuonPhi[0])>mtwCut_) break;
     bool matched=false;
     for(UShort_t ii=0; ii<GenMuNum;ii++)
     {
@@ -601,6 +605,7 @@ Bool_t EffMaker::Process(Long64_t entry)
   }
   for (UShort_t i=0; i< RecoIsoElecNum;i++)
   {
+	  if(RecoIsoElecNum>1 || MTWCalculator(METPt,METPhi, RecoIsoElecPt[0], RecoIsoElecPhi[0])>mtwCut_) break;
     bool matched=false;
     for(UShort_t ii=0; ii<GenElecNum;ii++)
     {
