@@ -45,5 +45,8 @@ ra2JetsBTagValueInput_ = cms.vdouble(),
 # ra2 leptons
 LeptonTag = cms.VInputTag(),
 LeptonTagName = cms.vstring(),
+# iso tracks
+IsoTrackTag = cms.VInputTag(),
+IsoTrackTagName = cms.vstring(),
 GenJetTag = cms.InputTag("slimmedGenJets"),
 )

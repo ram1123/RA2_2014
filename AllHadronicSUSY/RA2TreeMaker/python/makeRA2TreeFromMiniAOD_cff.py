@@ -131,6 +131,8 @@ def makeRA2TreeTreeFromMiniADO(process,
     	debug =debug,
     	LeptonTag = cms.VInputTag(cms.InputTag('selectedIDIsoMuons'),cms.InputTag('selectedIDMuons'),cms.InputTag('selectedIDIsoElectrons'),cms.InputTag('selectedIDElectrons')),
     	LeptonTagName = cms.vstring('RecoIsoMuon','RecoMuon','RecoIsoElec','RecoElec'),
+    	IsoTrackTag = cms.VInputTag(cms.InputTag('IsolatedTracks')),
+        IsoTrackTagName = cms.vstring('SelectedIsoTracks'),  ## if name of isoalted track contains::: SelectedIsoTracks they will be counted as IsolatedTracks for final value in tree
     #RA2JetsTag = cms.InputTag("patJetsAK5PFCHS"),   
     	RA2DefaultJetsTag = cms.InputTag("slimmedJets"),  
     	METTag  = cms.InputTag("slimmedMETs"),
@@ -138,7 +140,21 @@ def makeRA2TreeTreeFromMiniADO(process,
     	ra2JetsCollectionNameInTree = cms.vstring('ak4'),
     	ra2JetsBTagInputTag = cms.vstring('combinedSecondaryVertexBJetTags','combinedSecondaryVertexBJetTags'),
     	ra2JetsBTagValueInput_ = cms.vdouble(0.679,0.679),
-    )
+    ) 
+    
+    ## isotrack producer
+    from AllHadronicSUSY.Utils.trackIsolationMaker_cfi import trackIsolationFilter
+    from AllHadronicSUSY.Utils.trackIsolationMaker_cfi import trackIsolationCounter
+    process.IsolatedTracks = trackIsolationFilter.clone(
+      doTrkIsoVeto= False,
+      vertexInputTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
+      pfCandidatesTag = cms.InputTag("packedPFCandidates"),
+      )
+    process.CountIsoTracks = trackIsolationCounter.clone(
+      src = cms.InputTag("IsolatedTracks"),
+      minNumber = 1,
+      )
+
 
     ## --- Final paths ----------------------------------------------------
 
@@ -149,6 +165,8 @@ def makeRA2TreeTreeFromMiniADO(process,
     	process.selectedIDIsoElectrons *
     	process.selectedIDElectrons *
     	process.WeightProducer *
+    	process.IsolatedTracks *
+ #   	process.CountIsoTracks *
  #   	process.PrintDecay *
     	process.RA2TreeMaker2
 

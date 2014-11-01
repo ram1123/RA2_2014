@@ -77,6 +77,8 @@ RA2TreeMaker::RA2TreeMaker(const edm::ParameterSet& iConfig)
   ra2JetsBTagValueInput_        		= 	iConfig.getParameter< std::vector<double> >  ("ra2JetsBTagValueInput_");
   leptonTag_ 				= 	iConfig.getParameter< std::vector<edm::InputTag> >("LeptonTag");
   leptonTagName_        			= 	iConfig.getParameter< std::vector<std::string> >  ("LeptonTagName");
+  IsoTrackTag_ 				= 	iConfig.getParameter< std::vector<edm::InputTag> >("IsoTrackTag");
+  IsoTrackTagName_        			= 	iConfig.getParameter< std::vector<std::string> >  ("IsoTrackTagName");
   genra2JetsTag_				=	iConfig.getParameter<edm::InputTag>  ("GenJetTag");
   varsDouble_ = std::vector<Float_t>(varsDoubleTags_.size(),1.);
   filterDecisions_ = std::vector<UChar_t>(filterDecisionTags_.size(),0);
@@ -104,6 +106,14 @@ RA2TreeMaker::RA2TreeMaker(const edm::ParameterSet& iConfig)
     leptonPhi_.push_back(new Float_t[25]);
     leptonE_.push_back  (new Float_t[25]);
   }
+  // iso tracks
+  for(unsigned int i = 0; i < leptonTag_.size(); ++i) {
+    isoTrackN_.push_back(0);
+    isoTrackPt_.push_back (new Float_t[25]);
+    isoTrackEta_.push_back(new Float_t[25]);
+    isoTrackPhi_.push_back(new Float_t[25]);
+    isoTrackE_.push_back  (new Float_t[25]);
+  }
 }
 
 
@@ -124,6 +134,13 @@ RA2TreeMaker::~RA2TreeMaker()
     delete []   leptonEta_.at(i);
     delete []   leptonPhi_.at(i);
     delete []   leptonE_.at(i);
+  }
+  for (unsigned int i=0; i < IsoTrackTag_.size();i++)
+  {
+    delete []   isoTrackPt_.at(i);
+    delete []   isoTrackEta_.at(i);
+    delete []   isoTrackPhi_.at(i);
+    delete []   isoTrackE_.at(i);
   }
   // do anything here that needs to be done at desctruction time
   // (e.g. close files, deallocate resources etc.)
@@ -307,6 +324,31 @@ RA2TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	leptonEta_.at(i)[j] = cands->at(j).eta();
 	leptonPhi_.at(i)[j] = cands->at(j).phi();
 	leptonE_.at(i)[j] = cands->at(j).energy();
+      }
+    }
+  }
+  // Isolated Tracks
+  for(unsigned int i = 0; i < IsoTrackTag_.size(); ++i) {
+    edm::Handle< edm::View<pat::PackedCandidate> > cands;
+    iEvent.getByLabel(IsoTrackTag_.at(i),cands);
+    
+    if( cands.isValid() ) {
+      std::string name = IsoTrackTag_.at(i).label();
+      if(IsoTrackTagName_.size()== IsoTrackTag_.size() )
+      {
+	name = IsoTrackTagName_.at(i);
+      }
+	
+      if(name.find("SelectedIsoTracks") !=std::string::npos)
+      {
+	nIsoTracks_+=cands->size();
+      }
+      isoTrackN_[i] = cands->size();
+      for(unsigned int j = 0; j < cands->size(); ++j) {
+	isoTrackPt_.at(i)[j] = cands->at(j).pt();
+	isoTrackEta_.at(i)[j] = cands->at(j).eta();
+	isoTrackPhi_.at(i)[j] = cands->at(j).phi();
+	isoTrackE_.at(i)[j] = cands->at(j).energy();
       }
     }
   }
@@ -499,6 +541,7 @@ RA2TreeMaker::beginJob()
   tree_->Branch("BTags",&BTags_,"BTags/s");
   }
   tree_->Branch("Leptons",&nIsoLeptons_,"Leptons/s");
+  tree_->Branch("IsolatedTracks",&nIsoTracks_,"IsolatedTracks/s");
   tree_->Branch("METPt",&metPt_,"METPt/F");
   tree_->Branch("METEta",&metEta_,"METEta/F");
   tree_->Branch("METPhi",&metPhi_,"METPhi/F");
@@ -557,6 +600,17 @@ RA2TreeMaker::beginJob()
     tree_->Branch((name+"Eta").c_str(),leptonEta_.at(i),(name+"Eta["+name+"Num]/F").c_str());
     tree_->Branch((name+"Phi").c_str(),leptonPhi_.at(i),(name+"Phi["+name+"Num]/F").c_str());
     tree_->Branch((name+"E").c_str(),  leptonE_.at(i),  (name+"E["+name+"Num]/F").c_str());
+  }
+  for(unsigned int i = 0; i < IsoTrackTag_.size(); ++i) {
+    std::string name = IsoTrackTag_.at(i).label();
+    if( i < IsoTrackTagName_.size() ) {
+      name = IsoTrackTagName_.at(i);
+    }
+    tree_->Branch((name+"Num").c_str(),&(isoTrackN_[i]),(name+"Num/s").c_str());
+    tree_->Branch((name+"Pt").c_str(), isoTrackPt_.at(i), (name+"Pt["+name+"Num]/F").c_str());
+    tree_->Branch((name+"Eta").c_str(),isoTrackEta_.at(i),(name+"Eta["+name+"Num]/F").c_str());
+    tree_->Branch((name+"Phi").c_str(),isoTrackPhi_.at(i),(name+"Phi["+name+"Num]/F").c_str());
+    tree_->Branch((name+"E").c_str(),  isoTrackE_.at(i),  (name+"E["+name+"Num]/F").c_str());
   }
   }
   if(MC_)
@@ -684,6 +738,7 @@ RA2TreeMaker::setBranchVariablesToDefault()
   BTags_=0;
   BTags_=0;
   nIsoLeptons_=0;
+  nIsoTracks_=0;
   jet1Pt_=-10;
   jet2Pt_=-10;
   jet3Pt_=-10;
@@ -732,6 +787,15 @@ RA2TreeMaker::setBranchVariablesToDefault()
       leptonEta_.at(i)[j] = -9999.;
       leptonPhi_.at(i)[j] = -9999.;
       leptonE_.at(i)[j]   = -9999.;
+    }
+  }
+  for(unsigned int i = 0; i < IsoTrackTag_.size(); ++i) {
+    isoTrackN_[i] = 0;
+    for(unsigned int j = 0; j < 25; ++j) {
+      isoTrackPt_.at(i)[j]  = -9999.;
+      isoTrackEta_.at(i)[j] = -9999.;
+      isoTrackPhi_.at(i)[j] = -9999.;
+      isoTrackE_.at(i)[j]   = -9999.;
     }
   }
   if(MC_)

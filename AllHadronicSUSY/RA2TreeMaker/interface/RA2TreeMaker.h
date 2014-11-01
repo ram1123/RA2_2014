@@ -22,6 +22,8 @@
 #include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+
+#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 //
 // class declaration
 //
@@ -82,7 +84,7 @@ private:
 	Float_t metPt_, metEta_, metPhi_;
 	
 	UShort_t nJets_, BTags_;
-	UShort_t nIsoLeptons_;
+	UShort_t nIsoLeptons_, nIsoTracks_;
 	Float_t jet1Pt_, jet2Pt_, jet3Pt_;
 	Float_t jet1Eta_, jet2Eta_, jet3Eta_;
 	Float_t deltaPhi1_, deltaPhi2_, deltaPhi3_;
@@ -111,6 +113,15 @@ private:
 	std::vector<Float_t*> leptonEta_;
 	std::vector<Float_t*> leptonPhi_;
 	std::vector<Float_t*> leptonE_;
+	
+	// isotracks stuff
+	std::vector<edm::InputTag> IsoTrackTag_;
+	std::vector<std::string>   IsoTrackTagName_;
+	std::vector<UShort_t> isoTrackN_;
+	std::vector<Float_t*> isoTrackPt_;
+	std::vector<Float_t*> isoTrackEta_;
+	std::vector<Float_t*> isoTrackPhi_;
+	std::vector<Float_t*> isoTrackE_;
 	// MC gen information CMSSW 7
 	edm::InputTag prunedGenToken_;
 	edm::InputTag packedGenToken_;
