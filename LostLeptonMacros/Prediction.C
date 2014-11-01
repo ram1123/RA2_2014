@@ -65,6 +65,24 @@ void Prediction::Begin(TTree * /*tree*/)
    ElecDiLepMTW_=NULL;
    ElecDiLepEff_=NULL;
    tPrediction_=NULL;
+   // btag
+   MuonAccBTag=NULL;
+   MuonIsoBTag0=NULL;
+   MuonIsoBTag1=NULL;
+   MuonIsoBTag2ToInf=NULL;
+   MuonRecoBTag0=NULL;
+   MuonRecoBTag1=NULL;
+   MuonRecoBTag2ToInf=NULL;
+   MuMTWMHTBTag=NULL;
+   
+   ElecAccBTag=NULL;
+   ElecIsoBTag0=NULL;
+   ElecIsoBTag1=NULL;
+   ElecIsoBTag2ToInf=NULL;
+   ElecRecoBTag0=NULL;
+   ElecRecoBTag1=NULL;
+   ElecRecoBTag2ToInf=NULL;
+   MuMTWMHTBTag=NULL;
    if(useGenInfoToMatchCSMuonToGen_)std::cout<<"WARNING USING GEN INFORMATION TO MAKE SURE THIS IS A SINGLE MUON ELEC EVENT AND DO MATCHING TO HAVE 100% PURITY OF MUON CONTROL SAMPLE"<<std::endl;
 
 }
@@ -105,6 +123,26 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    ElecDiLepMTW_ = (TH2F*)EffInputFolder->Get("ElecDiLepMTW");
    ElecDiLepEff_ = (TH1F*)EffInputFolder->Get("ElecDiLepEff");
    
+   // btag information
+   MuonAccBTag = (TH2F*)EffInputFolder->Get("MuonAccBTag");
+   MuonIsoBTag0 = (TH2F*)EffInputFolder->Get("MuonIsoBTag0");
+   MuonIsoBTag1 = (TH2F*)EffInputFolder->Get("MuonIsoBTag1");
+   MuonIsoBTag2ToInf = (TH2F*)EffInputFolder->Get("MuonIsoBTag2ToInf");
+   MuonRecoBTag0 = (TH2F*)EffInputFolder->Get("MuonRecoBTag0");
+   MuonRecoBTag1 = (TH2F*)EffInputFolder->Get("MuonRecoBTag1");
+   MuonRecoBTag2ToInf = (TH2F*)EffInputFolder->Get("MuonRecoBTag2ToInf");
+   MuMTWMHTBTag = (TH2F*)EffInputFolder->Get("MuMTWMHTBTag");
+   
+   ElecAccBTag = (TH2F*)EffInputFolder->Get("ElecAccBTag");
+   ElecIsoBTag0 = (TH2F*)EffInputFolder->Get("ElecIsoBTag0");
+   ElecIsoBTag1 = (TH2F*)EffInputFolder->Get("ElecIsoBTag1");
+   ElecIsoBTag2ToInf = (TH2F*)EffInputFolder->Get("ElecIsoBTag2ToInf");
+   ElecRecoBTag0 = (TH2F*)EffInputFolder->Get("ElecRecoBTag0");
+   ElecRecoBTag1 = (TH2F*)EffInputFolder->Get("ElecRecoBTag1");
+   ElecRecoBTag2ToInf = (TH2F*)EffInputFolder->Get("ElecRecoBTag2ToInf");
+   MuMTWMHTBTag = (TH2F*)EffInputFolder->Get("MuMTWMHTBTag");
+   
+   
    TString option = GetOption();
    useGenInfoToMatchCSMuonToGen=useGenInfoToMatchCSMuonToGen_;
    tPrediction_ = new TTree("LostLeptonPrediction","a simple Tree with simple variables");
@@ -143,7 +181,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    tPrediction_->Branch("muIsoWeight",&muIsoWeight_,"muIsoWeight/F");
    tPrediction_->Branch("muIsoWeightErrorUp",&muIsoWeightErrorUp_,"muIsoWeightErrorUp/F");
    tPrediction_->Branch("muIsoWeightErrorDown",&muIsoWeightErrorDown_,"muIsoWeightErrorDown/F"); 
-   tPrediction_->Branch("muRecoWeight",&muRecoWeight_,"muRecoWeight_/F");
+   tPrediction_->Branch("muRecoWeight",&muRecoWeight_,"muRecoWeight/F");
    tPrediction_->Branch("muRecoWeightErrorUp",&muRecoWeightErrorUp_,"muRecoWeightErrorUp/F");
    tPrediction_->Branch("muRecoWeightErrorDown",&muRecoWeightErrorDown_,"muRecoWeightErrorDown/F");
    tPrediction_->Branch("muAccWeight",&muAccWeight_,"muAccWeight_/F");
@@ -153,15 +191,15 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    tPrediction_->Branch("muIsoEff",&muIsoEff_,"muIsoEff/F");
    tPrediction_->Branch("muRecoEff",&muRecoEff_,"muRecoEff/F");
    tPrediction_->Branch("muAccEff",&muAccEff_,"muAccEff/F");
-   tPrediction_->Branch("totalMuons_",&totalMuons_,"totalMuons_/F");
+   tPrediction_->Branch("totalMuons",&totalMuons_,"totalMuons/F");
    
    tPrediction_->Branch("elecIsoWeight",&elecIsoWeight_,"elecIsoWeight/F");
    tPrediction_->Branch("elecIsoWeightErrorUp",&elecIsoWeightErrorUp_,"elecIsoWeightErrorUp/F");
    tPrediction_->Branch("elecIsoWeightErrorDown",&elecIsoWeightErrorDown_,"elecIsoWeightErrorDown/F");
-   tPrediction_->Branch("elecRecoWeight",&elecRecoWeight_,"elecRecoWeight_/F");
+   tPrediction_->Branch("elecRecoWeight",&elecRecoWeight_,"elecRecoWeight/F");
    tPrediction_->Branch("elecRecoWeightErrorUp",&elecRecoWeightErrorUp_,"elecRecoWeightErrorUp/F");
    tPrediction_->Branch("elecRecoWeightErrorDown",&elecRecoWeightErrorDown_,"elecRecoWeightErrorDown/F");
-   tPrediction_->Branch("elecAccWeight",&elecAccWeight_,"elecAccWeight_/F");
+   tPrediction_->Branch("elecAccWeight",&elecAccWeight_,"elecAccWeight/F");
    tPrediction_->Branch("elecAccWeightErrorUp",&elecAccWeightErrorUp_,"elecAccWeightErrorUp/F");
    tPrediction_->Branch("elecAccWeightErrorDown",&elecAccWeightErrorDown_,"elecAccWeightErrorDown/F");
    tPrediction_->Branch("elecTotalWeight",&elecTotalWeight_,"elecTotalWeight/F");
@@ -177,6 +215,37 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
 	   tPrediction_->Branch("diLepElecEff",&diLepElecEff_,"diLepElecEff/F");
 	   tPrediction_->Branch("diLepElecEffError",&diLepElecEffError_,"diLepElecEffError/F");
    }
+   tPrediction_->Branch("totalPredictionBTag",&totalWeightBTag_,"totalPredictionBTag/F");
+   tPrediction_->Branch("totalPredictionMTWBTag",&totalWeightMTWBTag_,"totalPredictionMTWBTag/F");
+   tPrediction_->Branch("totalWeightMTWDiLepBTag",&totalWeightMTWDiLepBTag_,"totalWeightMTWDiLepBTag/F");
+   tPrediction_->Branch("muIsoWeightBTag",&muIsoWeightBTag_,"muIsoWeightBTag/F");
+   tPrediction_->Branch("muIsoWeightErrorUpBTag",&muIsoWeightErrorUpBTag_,"muIsoWeightErrorUpBTag/F");
+   tPrediction_->Branch("muIsoWeightErrorDownBTag",&muIsoWeightErrorDownBTag_,"muIsoWeightErrorDownBTag/F"); 
+   tPrediction_->Branch("muRecoWeightBTag",&muRecoWeightBTag_,"muRecoWeightBTag/F");
+   tPrediction_->Branch("muRecoWeightErrorUpBTag",&muRecoWeightErrorUpBTag_,"muRecoWeightErrorUpBTag/F");
+   tPrediction_->Branch("muRecoWeightErrorDownBTag",&muRecoWeightErrorDownBTag_,"muRecoWeightErrorDownBTag/F");
+   tPrediction_->Branch("muAccWeightBTag",&muAccWeightBTag_,"muAccWeightBTagBTag_/F");
+   tPrediction_->Branch("muAccWeightErrorUpBTag",&muAccWeightErrorUpBTag_,"muAccWeightErrorUpBTag/F");
+   tPrediction_->Branch("muAccWeightErrorDownBTag",&muAccWeightErrorDownBTag_,"muAccWeightErrorDownBTag/F");
+   tPrediction_->Branch("muTotalWeightBTag",&muTotalWeightBTag_,"muTotalWeightBTag/F");
+   tPrediction_->Branch("muIsoEffBTag",&muIsoEffBTag_,"muIsoEffBTag/F");
+   tPrediction_->Branch("muRecoEffBTag",&muRecoEffBTag_,"muRecoEffBTag/F");
+   tPrediction_->Branch("muAccEffBTag",&muAccEffBTag_,"muAccEffBTag/F");
+   tPrediction_->Branch("totalMuonsBTag",&totalMuonsBTag_,"totalMuonsBTag/F");
+   
+   tPrediction_->Branch("elecIsoWeightBTag",&elecIsoWeightBTag_,"elecIsoWeightBTag/F");
+   tPrediction_->Branch("elecIsoWeightErrorUpBTag",&elecIsoWeightErrorUpBTag_,"elecIsoWeightErrorUpBTag/F");
+   tPrediction_->Branch("elecIsoWeightErrorDownBTag",&elecIsoWeightErrorDownBTag_,"elecIsoWeightErrorDownBTag/F");
+   tPrediction_->Branch("elecRecoWeightBTag",&elecRecoWeightBTag_,"elecRecoWeightBTag/F");
+   tPrediction_->Branch("elecRecoWeightErrorUpBTag",&elecRecoWeightErrorUpBTag_,"elecRecoWeightErrorUpBTag/F");
+   tPrediction_->Branch("elecRecoWeightErrorDownBTag",&elecRecoWeightErrorDownBTag_,"elecRecoWeightErrorDownBTag/F");
+   tPrediction_->Branch("elecAccWeightBTag",&elecAccWeightBTag_,"elecAccWeightBTag/F");
+   tPrediction_->Branch("elecAccWeightErrorUpBTag",&elecAccWeightErrorUpBTag_,"elecAccWeightErrorUpBTag/F");
+   tPrediction_->Branch("elecAccWeightErrorDownBTag",&elecAccWeightErrorDownBTag_,"elecAccWeightErrorDownBTag/F");
+   tPrediction_->Branch("elecTotalWeightBTag",&elecTotalWeightBTag_,"elecTotalWeightBTag/F");
+   tPrediction_->Branch("elecIsoEffBTag",&elecIsoEffBTag_,"elecIsoEffBTag/F");
+   tPrediction_->Branch("elecRecoEffBTag",&elecRecoEffBTag_,"elecRecoEffBTag/F");
+   tPrediction_->Branch("elecAccEffBTag",&elecAccEffBTag_,"elecAccEffBTag/F");
    GetOutputList()->Add(tPrediction_);
 }
 
@@ -334,7 +403,130 @@ Bool_t Prediction::Process(Long64_t entry)
 	}
 	totalWeightMTW_ = totalWeight_ / MuMTWMHTNJet_->GetBinContent(MTWBinX,MTWBinY);
 	totalMuonsMTW_= totalMuons_ / MuMTWMHTNJet_->GetBinContent(MTWBinX,MTWBinY);
-	totalWeightMTWDiLep_ = totalWeightMTW_ + (1-diLepCorrectionEff_)*WeightProducer *(1-diLepMuEff_)/diLepMuEff_ * (1-diLepElecEff_)/diLepElecEff_;
+	//totalWeightMTWDiLep_ = totalWeightMTW_ + (1-diLepCorrectionEff_)*WeightProducer *(1-diLepMuEff_)/diLepMuEff_ * (1-diLepElecEff_)/diLepElecEff_;
+	totalWeightMTWDiLep_ = totalWeightMTW_ + (1-diLepCorrectionEff_)*WeightProducer *(1-diLepMuEff_)/diLepMuEff_ ;
+	// Btag information prediction
+	if(BTags==0)
+	{
+	  muIsoEffBTag_ = MuonIsoBTag0->GetBinContent(MuonIsoBTag0->GetXaxis()->FindBin(HT),MuonIsoBTag0->GetYaxis()->FindBin(MHT));    
+	  muIsoEffError_= MuonIsoBTag0->GetBinError(MuonIsoBTag0->GetXaxis()->FindBin(HT),MuonIsoBTag0->GetYaxis()->FindBin(MHT));    
+	  muRecoEffBTag_ = MuonRecoBTag0->GetBinContent(MuonRecoBTag0->GetXaxis()->FindBin(HT),MuonRecoBTag0->GetYaxis()->FindBin(MHT));    
+	  muRecoEffError_= MuonRecoBTag0->GetBinError(MuonRecoBTag0->GetXaxis()->FindBin(HT),MuonRecoBTag0->GetYaxis()->FindBin(MHT));   
+	  
+	  elecIsoEffBTag_ = ElecIsoBTag0->GetBinContent(ElecIsoBTag0->GetXaxis()->FindBin(HT),ElecIsoBTag0->GetYaxis()->FindBin(MHT));    
+	  elecIsoEffError_= ElecIsoBTag0->GetBinError(ElecIsoBTag0->GetXaxis()->FindBin(HT),ElecIsoBTag0->GetYaxis()->FindBin(MHT));    
+	  elecRecoEffBTag_ = ElecRecoBTag0->GetBinContent(ElecRecoBTag0->GetXaxis()->FindBin(HT),ElecRecoBTag0->GetYaxis()->FindBin(MHT));    
+	  elecRecoEffError_= ElecRecoBTag0->GetBinError(ElecRecoBTag0->GetXaxis()->FindBin(HT),ElecRecoBTag0->GetYaxis()->FindBin(MHT));   
+	}
+	if(BTags==1)
+	{
+	  muIsoEffBTag_ = MuonIsoBTag1->GetBinContent(MuonIsoBTag1->GetXaxis()->FindBin(HT),MuonIsoBTag1->GetYaxis()->FindBin(MHT));    
+	  muIsoEffError_= MuonIsoBTag1->GetBinError(MuonIsoBTag1->GetXaxis()->FindBin(HT),MuonIsoBTag1->GetYaxis()->FindBin(MHT));    
+	  muRecoEffBTag_ = MuonRecoBTag1->GetBinContent(MuonRecoBTag1->GetXaxis()->FindBin(HT),MuonRecoBTag1->GetYaxis()->FindBin(MHT));    
+	  muRecoEffError_= MuonRecoBTag1->GetBinError(MuonRecoBTag1->GetXaxis()->FindBin(HT),MuonRecoBTag1->GetYaxis()->FindBin(MHT));   
+	  
+	  elecIsoEffBTag_ = ElecIsoBTag1->GetBinContent(ElecIsoBTag1->GetXaxis()->FindBin(HT),ElecIsoBTag1->GetYaxis()->FindBin(MHT));    
+	  elecIsoEffError_= ElecIsoBTag1->GetBinError(ElecIsoBTag1->GetXaxis()->FindBin(HT),ElecIsoBTag1->GetYaxis()->FindBin(MHT));    
+	  elecRecoEffBTag_ = ElecRecoBTag1->GetBinContent(ElecRecoBTag1->GetXaxis()->FindBin(HT),ElecRecoBTag1->GetYaxis()->FindBin(MHT));    
+	  elecRecoEffError_= ElecRecoBTag1->GetBinError(ElecRecoBTag1->GetXaxis()->FindBin(HT),ElecRecoBTag1->GetYaxis()->FindBin(MHT));   
+	}
+	if(BTags>=2)
+	{
+	  muIsoEffBTag_ = MuonIsoBTag2ToInf->GetBinContent(MuonIsoBTag2ToInf->GetXaxis()->FindBin(HT),MuonIsoBTag2ToInf->GetYaxis()->FindBin(MHT));    
+	  muIsoEffError_= MuonIsoBTag2ToInf->GetBinError(MuonIsoBTag2ToInf->GetXaxis()->FindBin(HT),MuonIsoBTag2ToInf->GetYaxis()->FindBin(MHT));    
+	  muRecoEffBTag_ = MuonRecoBTag2ToInf->GetBinContent(MuonRecoBTag2ToInf->GetXaxis()->FindBin(HT),MuonRecoBTag2ToInf->GetYaxis()->FindBin(MHT));    
+	  muRecoEffError_= MuonRecoBTag2ToInf->GetBinError(MuonRecoBTag2ToInf->GetXaxis()->FindBin(HT),MuonRecoBTag2ToInf->GetYaxis()->FindBin(MHT));   
+	  
+	  elecIsoEffBTag_ = ElecIsoBTag2ToInf->GetBinContent(ElecIsoBTag2ToInf->GetXaxis()->FindBin(HT),ElecIsoBTag2ToInf->GetYaxis()->FindBin(MHT));    
+	  elecIsoEffError_= ElecIsoBTag2ToInf->GetBinError(ElecIsoBTag2ToInf->GetXaxis()->FindBin(HT),ElecIsoBTag2ToInf->GetYaxis()->FindBin(MHT));    
+	  elecRecoEffBTag_ = ElecRecoBTag2ToInf->GetBinContent(ElecRecoBTag2ToInf->GetXaxis()->FindBin(HT),ElecRecoBTag2ToInf->GetYaxis()->FindBin(MHT));    
+	  elecRecoEffError_= ElecRecoBTag2ToInf->GetBinError(ElecRecoBTag2ToInf->GetXaxis()->FindBin(HT),ElecRecoBTag2ToInf->GetYaxis()->FindBin(MHT));   
+	}
+	if(muIsoEffErrorBTag_ + muIsoEffBTag_ >1.00) muIsoEffErrorBTag_ = (1 - muIsoEffBTag_)*0.5;
+	if(muRecoEffErrorBTag_ + muRecoEffBTag_ >1.00) muRecoEffErrorBTag_ = (1 - muRecoEffBTag_)*0.5;
+	if(elecIsoEffErrorBTag_ + elecIsoEffBTag_ >1.00) elecIsoEffErrorBTag_ = (1 - elecIsoEffBTag_)*0.5;
+	if(elecRecoEffErrorBTag_ + elecRecoEffBTag_ >1.00) elecRecoEffErrorBTag_ = (1 - elecRecoEffBTag_)*0.5;
+	//acceptance
+	muAccEffBTag_ = MuonAccBTag->GetBinContent(MuonAccBTag->GetXaxis()->FindBin(MHT),MuonAccBTag->GetYaxis()->FindBin(BTags+0.01) );
+	muAccEffErrorBTag_ = MuonAccBTag->GetBinError(MuonAccBTag->GetXaxis()->FindBin(MHT),MuonAccBTag->GetYaxis()->FindBin(BTags+0.01) );
+	if(muAccEffErrorBTag_ + muAccEffBTag_ >1.00) muAccEffErrorBTag_ = .95 - muAccEffBTag_;
+	elecAccEffBTag_ = ElecAccBTag->GetBinContent(ElecAccBTag->GetXaxis()->FindBin(MHT),ElecAccBTag->GetYaxis()->FindBin(BTags+0.01) );
+	elecAccEffErrorBTag_ = ElecAccBTag->GetBinError(ElecAccBTag->GetXaxis()->FindBin(MHT),ElecAccBTag->GetYaxis()->FindBin(BTags+0.01) );
+	if(elecAccEffErrorBTag_ + elecAccEffBTag_ >1.00) elecAccEffErrorBTag_ = .95 - elecAccEffBTag_;
+	// di lepton depends on NJETS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	if(applyDiLepCorrection_)
+	{
+	  diLepCorrectionEffBTag_ = MuDiLepMTW_->GetBinContent(MuDiLepMTW_->GetXaxis()->FindBin(MHT),MuDiLepMTW_->GetYaxis()->FindBin(NJets+0.01));
+	  diLepCorrectionEffErrorBTag_ = MuDiLepMTW_->GetBinError(MuDiLepMTW_->GetXaxis()->FindBin(MHT),MuDiLepMTW_->GetYaxis()->FindBin(NJets+0.01));
+	  diLepMuEffBTag_ = MuDiLepEff_->GetBinContent(MuDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
+	  diLepMuEffErrorBTag_ = MuDiLepEff_->GetBinError(MuDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
+	  diLepElecEffBTag_ = ElecDiLepEff_->GetBinContent(ElecDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
+	  diLepElecEffErrorBTag_ = ElecDiLepEff_->GetBinError(ElecDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
+	}
+	if(applyDiLepCorrection_)
+	{
+	  diLepCorrectedWeight = WeightProducer * diLepCorrectionEffBTag_;
+	}
+	// muon iso weight & uncertaint
+	muIsoWeightBTag_ = diLepCorrectedWeight* (1 - muIsoEffBTag_)/muIsoEffBTag_;	
+	muIsoWeightErrorUpBTag_ = muIsoWeightBTag_ - diLepCorrectedWeight* (1 - effUp(muIsoEffBTag_, muIsoEffErrorBTag_))/ (effUp(muIsoEffBTag_, muIsoEffErrorBTag_));
+	muIsoWeightErrorDownBTag_ = diLepCorrectedWeight* (1 - effDown(muIsoEffBTag_, muIsoEffErrorBTag_))/ (effDown(muIsoEffBTag_, muIsoEffErrorBTag_)) - muIsoWeightBTag_;
+	//		cout<<"muIsoWeightBTag_:"<<muIsoWeightBTag_ <<"+"<<muIsoWeightErrorUpBTag_<<"-"<<muIsoWeightErrorDownBTag_<<endl;
+	// muon reco weight & uncertainty
+	muRecoWeightBTag_ = diLepCorrectedWeight* 1 / muIsoEffBTag_ * (1-muRecoEffBTag_)/muRecoEffBTag_;
+	muRecoWeightErrorUpBTag_ = muRecoWeightBTag_ - diLepCorrectedWeight* 1 / muIsoEffBTag_ * (1-effUp(muRecoEffBTag_, muRecoEffErrorBTag_))/(effUp(muRecoEffBTag_, muRecoEffErrorBTag_));
+	muRecoWeightErrorDownBTag_ = diLepCorrectedWeight* 1 / muIsoEffBTag_ * (1-effDown(muRecoEffBTag_, muRecoEffErrorBTag_))/(effDown(muRecoEffBTag_, muRecoEffErrorBTag_))- muRecoWeightBTag_;
+	//		cout<<"muRecoWeightBTag_:"<<muRecoWeightBTag_ <<"+"<<muRecoWeightErrorUpBTag_<<"-"<<muRecoWeightErrorDownBTag_<<endl;
+	// muon acc weight & uncertainty
+	muAccWeightBTag_ = diLepCorrectedWeight* 1/muIsoEffBTag_ * 1/muRecoEffBTag_ *(1-muAccEffBTag_)/muAccEffBTag_;
+	muAccWeightErrorUpBTag_ = muAccWeightBTag_ - diLepCorrectedWeight* 1/muIsoEffBTag_ * 1/muRecoEffBTag_ *(1-effUp(muAccEffBTag_,muAccEffErrorBTag_))/(effUp(muAccEffBTag_,muAccEffErrorBTag_));
+	muAccUpBTag_ = diLepCorrectedWeight* 1 / muIsoEffBTag_ * 1/ muRecoEffBTag_ * (1 - effUp(muAccEffBTag_,muAccEffErrorBTag_ )) / effUp(muAccEffBTag_,muAccEffErrorBTag_ );
+	muAccWeightErrorDownBTag_ = diLepCorrectedWeight* 1/muIsoEffBTag_ * 1/muRecoEffBTag_ *(1-effDown(muAccEffBTag_,muAccEffErrorBTag_))/(effDown(muAccEffBTag_,muAccEffErrorBTag_)) - muAccWeightBTag_;
+	muAccDownBTag_ = diLepCorrectedWeight* 1 / muIsoEffBTag_ * 1/ muRecoEffBTag_ * (1 - effDown(muAccEffBTag_,muAccEffErrorBTag_ )) / effDown(muAccEffBTag_,muAccEffErrorBTag_ + muAccEffBTag_*muAccWeightErrorDownBTag_ / 100);
+	//		cout<<"muAccWeightBTag_:"<<muAccWeightBTag_ <<"+"<<muAccWeightErrorUpBTag_<<"-"<<muAccWeightErrorDownBTag_<<endl;
+	
+	muTotalWeightBTag_ = muIsoWeightBTag_ + muRecoWeightBTag_ + muAccWeightBTag_;
+	totalMuonsBTag_ = diLepCorrectedWeight/ (muIsoEffBTag_ * muRecoEffBTag_ * muAccEffBTag_);
+	
+	// elec acc weight & uncertainty
+	elecAccWeightBTag_ = totalMuonsBTag_ * (1 - elecAccEffBTag_);
+	elecAccWeightErrorUpBTag_ = elecAccWeightBTag_ - totalMuonsBTag_ * (1 - effUp(elecAccEffBTag_,elecAccEffErrorBTag_));
+	elecAccUpBTag_ = totalMuonsBTag_ * (1- effUp(elecAccEffBTag_, elecAccEffErrorBTag_) ) ;
+	elecAccWeightErrorDownBTag_ =  totalMuonsBTag_ * (1 - effDown(elecAccEffBTag_,elecAccEffErrorBTag_)) - elecAccWeightBTag_;
+	elecAccDownBTag_ = totalMuonsBTag_ * (1- effDown(elecAccEffBTag_, elecAccEffErrorBTag_) ) ;
+	//		cout<<"ElecAcc:"<<elecAccWeightBTag_ <<"+"<<elecAccWeightErrorUpBTag_<<"-"<<elecAccWeightErrorDownBTag_<<endl;
+	// elec reco weight & uncertainty
+	elecRecoWeightBTag_ = totalMuonsBTag_ * (elecAccEffBTag_) * (1 - elecRecoEffBTag_);
+	elecRecoWeightErrorUpBTag_ = elecRecoWeightBTag_ - totalMuonsBTag_ * (elecAccEffBTag_) * (1 - effUp(elecRecoEffBTag_,elecRecoEffErrorBTag_)) ;
+	elecRecoWeightErrorDownBTag_ =  totalMuonsBTag_ * (elecAccEffBTag_) * (1 - effDown(elecRecoEffBTag_,elecRecoEffErrorBTag_)) - elecRecoWeightBTag_;
+	//		cout<<"ElecReco:"<<elecRecoWeightBTag_ <<"+"<<elecRecoWeightErrorUpBTag_<<"-"<<elecRecoWeightErrorDownBTag_<<endl;
+	// elec iso weight & uncertainty
+	elecIsoWeightBTag_ = totalMuonsBTag_ * (elecAccEffBTag_) * (elecRecoEffBTag_) * (1 - elecIsoEffBTag_) ;
+	elecIsoWeightErrorUpBTag_ = elecIsoWeightBTag_ - totalMuonsBTag_ * (elecAccEffBTag_) * elecRecoEffBTag_ * (1 - effUp(elecIsoEffBTag_,elecIsoEffErrorBTag_)) ;
+	elecIsoWeightErrorDownBTag_ = totalMuonsBTag_ * (elecAccEffBTag_) * elecRecoEffBTag_ * (1 - effDown(elecIsoEffBTag_,elecIsoEffErrorBTag_)) - elecIsoWeightBTag_;
+	//		cout<<"ElecIso:"<<elecIsoWeightBTag_ <<"+"<<elecIsoWeightErrorUpBTag_<<"-"<<elecIsoWeightErrorDownBTag_<<endl;
+	
+	elecTotalWeightBTag_ = elecAccWeightBTag_ + elecRecoWeightBTag_ + elecIsoWeightBTag_;
+	totalWeightBTag_ = muTotalWeightBTag_ + elecTotalWeightBTag_;
+	
+	// MTW cut and uncertainty
+	MTWBinX = MuMTWMHTBTag->GetXaxis()->FindBin(BTags+0.01);
+	if(MTWBinX > MuMTWMHTBTag->GetXaxis()->GetNbins() )
+	{
+	  MTWBinX=MTWBinX-1;
+	  cout<<"MTWBinX btag out of range:"<<MuMTWMHTBTag->GetXaxis()->GetNbins() <<", was "<<MuMTWMHTBTag->GetXaxis()->FindBin(BTags+0.01)<<", set to"<<MTWBinX<<endl;
+	}
+	MTWBinY = MuMTWMHTBTag->GetYaxis()->FindBin(MHT);
+	if(MTWBinY>MuMTWMHTBTag->GetYaxis()->GetNbins() )
+	{
+	  MTWBinY=MTWBinY-1;
+	  cout<<"MTWBinY out of range:"<<MuMTWMHTBTag->GetYaxis()->GetNbins() <<", was "<<MuMTWMHTBTag->GetYaxis()->FindBin(MHT)<<", set to"<<MTWBinY<<endl;
+	}
+	totalWeightMTWBTag_ = totalWeightBTag_ / MuMTWMHTBTag->GetBinContent(MTWBinX,MTWBinY);
+	totalMuonsMTWBTag_= totalMuonsBTag_ / MuMTWMHTBTag->GetBinContent(MTWBinX,MTWBinY);
+//	totalWeightMTWDiLepBTag_ = totalWeightMTWBTag_ + (1-diLepCorrectionEffBTag_)*WeightProducer *(1-diLepMuEffBTag_)/diLepMuEffBTag_ * (1-diLepElecEffBTag_)/diLepElecEffBTag_;
+	totalWeightMTWDiLepBTag_ = totalWeightMTWBTag_ + (1-diLepCorrectionEff_)*WeightProducer *(1-diLepMuEff_)/diLepMuEff_ ;
+	
 	tPrediction_->Fill();
    return kTRUE;
 }
@@ -401,6 +593,45 @@ void Prediction::resetValues()
 	diLepElecEff_=0.;
 	diLepElecEffError_=0.;
 	totalWeightMTWDiLep_=0.;
+	
+	muIsoEffBTag_=0;
+	muIsoEffErrorBTag_=0;
+	muIsoWeightBTag_=0;
+	muIsoWeightErrorUpBTag_=0;
+	muIsoWeightErrorDownBTag_=0;
+	muRecoEffBTag_=0;
+	muRecoEffErrorBTag_=0;
+	muRecoWeightBTag_=0;	
+	muRecoWeightErrorUpBTag_=0;
+	muRecoWeightErrorDownBTag_=0;
+	muAccEffBTag_=0;
+	muAccEffErrorBTag_=0;
+	muAccWeightBTag_=0;
+	muAccWeightErrorUpBTag_=0;	
+	muAccWeightErrorDownBTag_=0;	
+	
+	elecIsoEffBTag_=0;
+	elecIsoEffErrorBTag_=0;
+	elecIsoWeightBTag_=0;
+	elecIsoWeightErrorUpBTag_=0;
+	elecIsoWeightErrorDownBTag_=0;
+	elecRecoEffBTag_=0;
+	elecRecoEffErrorBTag_=0;
+	elecRecoWeightBTag_=0;	
+	elecRecoWeightErrorUpBTag_=0;
+	elecRecoWeightErrorDownBTag_=0;
+	elecAccEffBTag_=0;
+	elecAccEffErrorBTag_=0;
+	elecAccWeightBTag_=0;
+	elecAccWeightErrorUpBTag_=0;	
+	elecAccWeightErrorDownBTag_=0;	
+	diLepCorrectionEffBTag_=0.;
+	diLepCorrectionEffErrorBTag_=0.;
+	diLepMuEffBTag_=0.;
+	diLepMuEffErrorBTag_=0.;
+	diLepElecEffBTag_=0.;
+	diLepElecEffErrorBTag_=0.;
+	totalWeightMTWDiLepBTag_=0.;
 }
 bool Prediction::FiltersPass()
 {

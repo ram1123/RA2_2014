@@ -82,6 +82,25 @@ public :
    TH2F *MuonPurityMHTNJet_, *ElecPurityMHTNJet_;
    TH2F *MuDiLepMTW_, *ElecDiLepMTW_;
    TH1F *MuDiLepEff_, *ElecDiLepEff_;
+   
+   // btag included instaed of njets
+   Float_t muIsoEffBTag_, muIsoEffErrorBTag_, muIsoWeightBTag_, muIsoWeightErrorUpBTag_, muIsoWeightErrorDownBTag_;
+   Float_t muRecoEffBTag_, muRecoEffErrorBTag_, muRecoWeightBTag_, muRecoWeightErrorUpBTag_, muRecoWeightErrorDownBTag_;
+   Float_t muAccEffBTag_, muAccEffErrorBTag_, muAccWeightBTag_, muAccWeightErrorUpBTag_, muAccWeightErrorDownBTag_;
+   Float_t muTotalWeightBTag_, totalMuonsBTag_, totalMuonsMTWBTag_;
+   
+   Float_t elecIsoEffBTag_, elecIsoEffErrorBTag_, elecIsoWeightBTag_, elecIsoWeightErrorUpBTag_, elecIsoWeightErrorDownBTag_;
+   Float_t elecRecoEffBTag_, elecRecoEffErrorBTag_, elecRecoWeightBTag_, elecRecoWeightErrorUpBTag_, elecRecoWeightErrorDownBTag_;
+   Float_t elecAccEffBTag_, elecAccEffErrorBTag_, elecAccWeightBTag_, elecAccWeightErrorUpBTag_, elecAccWeightErrorDownBTag_;
+   Float_t elecTotalWeightBTag_;
+   
+   Float_t totalWeightBTag_, totalWeightMTWBTag_, totalWeightMTWDiLepBTag_;
+   Float_t muIsoUpBTag_, muIsoDownBTag_, muAccUpBTag_, muAccDownBTag_, elecAccUpBTag_, elecAccDownBTag_, totalWeightMTWDiLepDiBosonDownBTag_, totalWeightMTWDiLepDiNonCloUpBTag_, totalWeightMTWDiLepDiNonCloDownBTag_;
+   Float_t diLepCorrectionEffBTag_, diLepCorrectionEffErrorBTag_, diLepMuEffBTag_, diLepMuEffErrorBTag_, diLepElecEffBTag_, diLepElecEffErrorBTag_;
+   
+   
+   TH2F *MuonAccBTag, *MuonIsoBTag0, *MuonIsoBTag1, *MuonIsoBTag2ToInf, *MuonRecoBTag0, *MuonRecoBTag1, *MuonRecoBTag2ToInf, *MuMTWMHTBTag;
+   TH2F *ElecAccBTag, *ElecIsoBTag0, *ElecIsoBTag1, *ElecIsoBTag2ToInf, *ElecRecoBTag0, *ElecRecoBTag1, *ElecRecoBTag2ToInf, *ElecMTWMHTBTag; 
    // Declaration of leaf types
    UInt_t          RunNum;
    UInt_t          LumiBlockNum;

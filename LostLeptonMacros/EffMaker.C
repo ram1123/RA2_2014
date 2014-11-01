@@ -94,6 +94,40 @@ void EffMaker::Begin(TTree * /*tree*/)
    MuonPurityMHTNJetFail=NULL;
    ElecPurityMHTNJetFail=NULL;
    
+   MuonAccBTag=NULL;
+   MuonIsoBTag0=NULL;
+   MuonIsoBTag1=NULL;
+   MuonIsoBTag2ToInf=NULL;  
+   MuonRecoBTag0=NULL;
+   MuonRecoBTag1=NULL;
+   MuonRecoBTag2ToInf=NULL;  
+   MuMTWMHTBTag=NULL;
+   ElecAccBTag=NULL;
+   ElecIsoBTag0=NULL;
+   ElecIsoBTag1=NULL;
+   ElecIsoBTag2ToInf=NULL;  
+   ElecRecoBTag0=NULL;
+   ElecRecoBTag1=NULL;
+   ElecRecoBTag2ToInf=NULL;  
+   ElecMTWMHTBTag=NULL;
+   
+   MuonAccBTagFail=NULL;
+   MuonIsoBTag0Fail=NULL;
+   MuonIsoBTag1Fail=NULL;
+   MuonIsoBTag2ToInfFail=NULL;  
+   MuonRecoBTag0Fail=NULL;
+   MuonRecoBTag1Fail=NULL;
+   MuonRecoBTag2ToInfFail=NULL;  
+   MuMTWMHTBTagFail=NULL;
+   ElecAccBTagFail=NULL;
+   ElecIsoBTag0Fail=NULL;
+   ElecIsoBTag1Fail=NULL;
+   ElecIsoBTag2ToInfFail=NULL;  
+   ElecRecoBTag0Fail=NULL;
+   ElecRecoBTag1Fail=NULL;
+   ElecRecoBTag2ToInfFail=NULL;  
+   ElecMTWMHTBTagFail=NULL;
+   
    
    tExpectation_=NULL;
 //   tExpectation_ = new TTree("LostLeptonExpectation","a simple Tree with simple variables");
@@ -291,6 +325,104 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    ElecDiLepEffNJetsFail = (TH1F*)ElecDiLepEffNJets->Clone();
    ElecDiLepEffNJetsFail->SetName("ElecDiLepEffNJetsFail");
    GetOutputList()->Add(ElecDiLepEffNJetsFail); 
+   
+   // btag instead of njets
+   MuonAccBTag = new TH2F("MuonAccBTag","MuonAccBTag",muonAccBTagMHT_-1,MuAccBTagMHT_,muonAccBTagB_-1,MuAccBTagB_);
+   GetOutputList()->Add(MuonAccBTag);
+   MuonAccBTagFail = (TH2F*)MuonAccBTag->Clone();
+   MuonAccBTagFail->SetName("MuonAccBTagFail");
+   GetOutputList()->Add(MuonAccBTagFail); 
+   
+   MuonIsoBTag0 = new TH2F("MuonIsoBTag0","MuonIsoBTag0",muIsoBTagHT0_-1,MuIsoBTagHT0_,muIsoBTagMHT0_-1,MuIsoBTagMHT0_);
+   GetOutputList()->Add(MuonIsoBTag0);
+   MuonIsoBTag0Fail = (TH2F*)MuonIsoBTag0->Clone();
+   MuonIsoBTag0Fail->SetName("MuonIsoBTag0Fail");
+   GetOutputList()->Add(MuonIsoBTag0Fail); 
+   
+   MuonIsoBTag1 = new TH2F("MuonIsoBTag1","MuonIsoBTag1",muIsoBTagHT1_-1,MuIsoBTagHT1_,muIsoBTagMHT1_-1,MuIsoBTagMHT1_);
+   GetOutputList()->Add(MuonIsoBTag1);
+   MuonIsoBTag1Fail = (TH2F*)MuonIsoBTag1->Clone();
+   MuonIsoBTag1Fail->SetName("MuonIsoBTag1Fail");
+   GetOutputList()->Add(MuonIsoBTag1Fail); 
+   
+   MuonIsoBTag2ToInf = new TH2F("MuonIsoBTag2ToInf","MuonIsoBTag2ToInf",muIsoBTagHT2ToInf_-1,MuIsoBTagHT2ToInf_,muIsoBTagMHT2ToInf_-1,MuIsoBTagMHT2ToInf_);
+   GetOutputList()->Add(MuonIsoBTag2ToInf);
+   MuonIsoBTag2ToInfFail = (TH2F*)MuonIsoBTag2ToInf->Clone();
+   MuonIsoBTag2ToInfFail->SetName("MuonIsoBTag2ToInfFail");
+   GetOutputList()->Add(MuonIsoBTag2ToInfFail); 
+   
+   MuonRecoBTag0 = new TH2F("MuonRecoBTag0","MuonRecoBTag0",muRecoBTagHT0_-1,MuRecoBTagHT0_,muRecoBTagMHT0_-1,MuRecoBTagMHT0_);
+   GetOutputList()->Add(MuonRecoBTag0);
+   MuonRecoBTag0Fail = (TH2F*)MuonRecoBTag0->Clone();
+   MuonRecoBTag0Fail->SetName("MuonRecoBTag0Fail");
+   GetOutputList()->Add(MuonRecoBTag0Fail); 
+   
+   MuonRecoBTag1 = new TH2F("MuonRecoBTag1","MuonRecoBTag1",muRecoBTagHT1_-1,MuRecoBTagHT1_,muRecoBTagMHT1_-1,MuRecoBTagMHT1_);
+   GetOutputList()->Add(MuonRecoBTag1);
+   MuonRecoBTag1Fail = (TH2F*)MuonRecoBTag1->Clone();
+   MuonRecoBTag1Fail->SetName("MuonRecoBTag1Fail");
+   GetOutputList()->Add(MuonRecoBTag1Fail); 
+   
+   MuonRecoBTag2ToInf = new TH2F("MuonRecoBTag2ToInf","MuonRecoBTag2ToInf",muRecoBTagHT2ToInf_-1,MuRecoBTagHT2ToInf_,muRecoBTagMHT2ToInf_-1,MuRecoBTagMHT2ToInf_);
+   GetOutputList()->Add(MuonRecoBTag2ToInf);
+   MuonRecoBTag2ToInfFail = (TH2F*)MuonRecoBTag2ToInf->Clone();
+   MuonRecoBTag2ToInfFail->SetName("MuonRecoBTag2ToInfFail");
+   GetOutputList()->Add(MuonRecoBTag2ToInfFail); 
+   
+   MuMTWMHTBTag = new TH2F("MuMTWMHTBTag","MuMTWMHTBTag",mumtwBTagB_-1,muMtwBTagB_,mumtwMHTBTag_-1,muMtwMHTBTag_);
+   GetOutputList()->Add(MuMTWMHTBTag);
+   MuMTWMHTBTagFail = (TH2F*)MuMTWMHTBTag->Clone();
+   MuMTWMHTBTagFail->SetName("MuMTWMHTBTagFail");
+   GetOutputList()->Add(MuMTWMHTBTagFail); 
+   
+   
+   ElecAccBTag = new TH2F("ElecAccBTag","ElecAccBTag",elecAccBTagMHT_-1,ElecAccBTagMHT_,elecAccBTagB_-1,ElecAccBTagB_);
+   GetOutputList()->Add(ElecAccBTag);
+   ElecAccBTagFail = (TH2F*)ElecAccBTag->Clone();
+   ElecAccBTagFail->SetName("ElecAccBTagFail");
+   GetOutputList()->Add(ElecAccBTagFail); 
+   
+   ElecIsoBTag0 = new TH2F("ElecIsoBTag0","ElecIsoBTag0",elecIsoBTagHT0_-1,ElecIsoBTagHT0_,elecIsoBTagMHT0_-1,ElecIsoBTagMHT0_);
+   GetOutputList()->Add(ElecIsoBTag0);
+   ElecIsoBTag0Fail = (TH2F*)ElecIsoBTag0->Clone();
+   ElecIsoBTag0Fail->SetName("ElecIsoBTag0Fail");
+   GetOutputList()->Add(ElecIsoBTag0Fail); 
+   
+   ElecIsoBTag1 = new TH2F("ElecIsoBTag1","ElecIsoBTag1",elecIsoBTagHT1_-1,ElecIsoBTagHT1_,elecIsoBTagMHT1_-1,ElecIsoBTagMHT1_);
+   GetOutputList()->Add(ElecIsoBTag1);
+   ElecIsoBTag1Fail = (TH2F*)ElecIsoBTag1->Clone();
+   ElecIsoBTag1Fail->SetName("ElecIsoBTag1Fail");
+   GetOutputList()->Add(ElecIsoBTag1Fail); 
+   
+   ElecIsoBTag2ToInf = new TH2F("ElecIsoBTag2ToInf","ElecIsoBTag2ToInf",elecIsoBTagHT2ToInf_-1,ElecIsoBTagHT2ToInf_,elecIsoBTagMHT2ToInf_-1,ElecIsoBTagMHT2ToInf_);
+   GetOutputList()->Add(ElecIsoBTag2ToInf);
+   ElecIsoBTag2ToInfFail = (TH2F*)ElecIsoBTag2ToInf->Clone();
+   ElecIsoBTag2ToInfFail->SetName("ElecIsoBTag2ToInfFail");
+   GetOutputList()->Add(ElecIsoBTag2ToInfFail); 
+   
+   ElecRecoBTag0 = new TH2F("ElecRecoBTag0","ElecRecoBTag0",elecRecoBTagHT0_-1,ElecRecoBTagHT0_,elecRecoBTagMHT0_-1,ElecRecoBTagMHT0_);
+   GetOutputList()->Add(ElecRecoBTag0);
+   ElecRecoBTag0Fail = (TH2F*)ElecRecoBTag0->Clone();
+   ElecRecoBTag0Fail->SetName("ElecRecoBTag0Fail");
+   GetOutputList()->Add(ElecRecoBTag0Fail); 
+   
+   ElecRecoBTag1 = new TH2F("ElecRecoBTag1","ElecRecoBTag1",elecRecoBTagHT1_-1,ElecRecoBTagHT1_,elecRecoBTagMHT1_-1,ElecRecoBTagMHT1_);
+   GetOutputList()->Add(ElecRecoBTag1);
+   ElecRecoBTag1Fail = (TH2F*)ElecRecoBTag1->Clone();
+   ElecRecoBTag1Fail->SetName("ElecRecoBTag1Fail");
+   GetOutputList()->Add(ElecRecoBTag1Fail); 
+   
+   ElecRecoBTag2ToInf = new TH2F("ElecRecoBTag2ToInf","ElecRecoBTag2ToInf",elecRecoBTagHT2ToInf_-1,ElecRecoBTagHT2ToInf_,elecRecoBTagMHT2ToInf_-1,ElecRecoBTagMHT2ToInf_);
+   GetOutputList()->Add(ElecRecoBTag2ToInf);
+   ElecRecoBTag2ToInfFail = (TH2F*)ElecRecoBTag2ToInf->Clone();
+   ElecRecoBTag2ToInfFail->SetName("ElecRecoBTag2ToInfFail");
+   GetOutputList()->Add(ElecRecoBTag2ToInfFail); 
+   
+   ElecMTWMHTBTag = new TH2F("ElecMTWMHTBTag","ElecMTWMHTBTag",elecmtwBTagB_-1,elecMtwBTagB_,elecmtwMHTBTag_-1,elecMtwMHTBTag_);
+   GetOutputList()->Add(ElecMTWMHTBTag);
+   ElecMTWMHTBTagFail = (TH2F*)ElecMTWMHTBTag->Clone();
+   ElecMTWMHTBTagFail->SetName("ElecMTWMHTBTagFail");
+   GetOutputList()->Add(ElecMTWMHTBTagFail); 
 
    // tree
    tExpectation_ = new TTree("LostLeptonExpectation","a simple Tree with simple variables");
@@ -373,7 +505,7 @@ Bool_t EffMaker::Process(Long64_t entry)
   if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_||  DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ ) return kTRUE;
   if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
   
-  if(GenMuNum==2)// di muon event
+/*  if(GenMuNum==2)// di muon event
   {
 	  if(RecoIsoMuonNum>0)
 	  {
@@ -406,6 +538,12 @@ Bool_t EffMaker::Process(Long64_t entry)
 		  ElecDiLepEffNJetsFail->Fill(NJets,WeightProducer);
 	  }
   }
+  */
+  if((GenMuNum+GenElecNum)==2)
+  {
+	  if(RecoIsoElecNum==0 && RecoIsoMuonNum==1) MuDiLepEffNJets->Fill(NJets,WeightProducer);
+	  if(RecoIsoElecNum==0 && RecoIsoMuonNum==0) MuDiLepEffNJetsFail->Fill(NJets,WeightProducer);
+  }
   
   if( (GenMuNum+GenElecNum)==2)
   {
@@ -431,12 +569,14 @@ Bool_t EffMaker::Process(Long64_t entry)
   {
     if ( GenMuPt[0] < minMuPt_ || std::abs(GenMuEta[0]) > maxMuEta_)
     {
+      MuonAccBTagFail->Fill(MHT,BTags,WeightProducer);
       MuonAccFail->Fill(MHT,NJets,WeightProducer);
       muAcc=0;
       Expectation=1;
     }
     else
     {
+      MuonAccBTag->Fill(MHT,BTags,WeightProducer);
       MuonAcc->Fill(MHT,NJets,WeightProducer);
       muAcc=2;
       bool RecoNotMatched=true;
@@ -451,6 +591,9 @@ Bool_t EffMaker::Process(Long64_t entry)
 	  if( NjetLow0_ < NJets && NJets < NjetHigh0_) MuonReco0->Fill(HT,MHT,WeightProducer);
 	  if( NjetLow1_ < NJets && NJets < NjetHigh1_) MuonReco1->Fill(HT,MHT,WeightProducer);
 	  if( NjetLow2_ < NJets && NJets < NjetHigh2_) MuonReco2->Fill(HT,MHT,WeightProducer);
+	  if( BTags <1) MuonRecoBTag0->Fill(HT,MHT,WeightProducer);
+	  if( BTags <2) MuonRecoBTag1->Fill(HT,MHT,WeightProducer);
+	  if( BTags >1) MuonRecoBTag2ToInf->Fill(HT,MHT,WeightProducer);
 	  muReco =2;
 	  bool IsoNotMatched=true;
 	  for (UShort_t ii=0; ii < RecoIsoMuonNum; ii++)
@@ -462,18 +605,23 @@ Bool_t EffMaker::Process(Long64_t entry)
 	      if( NjetLow0_ < NJets && NJets < NjetHigh0_) MuonIso0->Fill(HT,MHT,WeightProducer);
 	      if( NjetLow1_ < NJets && NJets < NjetHigh1_) MuonIso1->Fill(HT,MHT,WeightProducer);
 	      if( NjetLow2_ < NJets && NJets < NjetHigh2_) MuonIso2->Fill(HT,MHT,WeightProducer);
+	      if( BTags <1) MuonIsoBTag0->Fill(HT,MHT,WeightProducer);
+	      if( BTags <2) MuonIsoBTag1->Fill(HT,MHT,WeightProducer);
+	      if( BTags >1) MuonIsoBTag2ToInf->Fill(HT,MHT,WeightProducer);
 	      muIso=2;
 	      Expectation=2;
 	      MuDiLepControlSampleMHTNJet->Fill(MHT,NJets,WeightProducer);
 	      mtw =  MTWCalculator(METPt,METPhi, RecoIsoMuonPt[ii], RecoIsoMuonPhi[ii]);
 	      if (mtw<mtwCut_)
 	      {
+		MuMTWMHTBTag->Fill(BTags,MHT,WeightProducer);
 		MuMTWNJet->Fill(NJets,WeightProducer);
 		MuMTWMHTNJet->Fill(MHT,NJets,WeightProducer);
 		MuDiLepControlSampleMHTNJetMTW->Fill(MHT,NJets,WeightProducer);
 	      }
 	      else
 	      {
+		MuMTWMHTBTagFail->Fill(BTags,MHT,WeightProducer);
 		MuMTWNJetFail->Fill(NJets,WeightProducer);
 		MuMTWMHTNJetFail->Fill(MHT,NJets,WeightProducer);
 	      }
@@ -485,6 +633,9 @@ Bool_t EffMaker::Process(Long64_t entry)
 	    if( NjetLow0_ < NJets && NJets < NjetHigh0_) MuonIso0Fail->Fill(HT,MHT,WeightProducer);
 	    if( NjetLow1_ < NJets && NJets < NjetHigh1_) MuonIso1Fail->Fill(HT,MHT,WeightProducer);
 	    if( NjetLow2_ < NJets && NJets < NjetHigh2_) MuonIso2Fail->Fill(HT,MHT,WeightProducer);
+	    if( BTags <1) MuonIsoBTag0Fail->Fill(HT,MHT,WeightProducer);
+	    if( BTags <2) MuonIsoBTag1Fail->Fill(HT,MHT,WeightProducer);
+	    if( BTags >1) MuonIsoBTag2ToInfFail->Fill(HT,MHT,WeightProducer);
 	    muIso=0;
 	    Expectation=1;
 	  }
@@ -496,6 +647,9 @@ Bool_t EffMaker::Process(Long64_t entry)
 	if( NjetLow0_ < NJets && NJets < NjetHigh0_) MuonReco0Fail->Fill(HT,MHT,WeightProducer);
 	if( NjetLow1_ < NJets && NJets < NjetHigh1_) MuonReco1Fail->Fill(HT,MHT,WeightProducer);
 	if( NjetLow2_ < NJets && NJets < NjetHigh2_) MuonReco2Fail->Fill(HT,MHT,WeightProducer);
+	if( BTags <1) MuonRecoBTag0Fail->Fill(HT,MHT,WeightProducer);
+	if( BTags <2) MuonRecoBTag1Fail->Fill(HT,MHT,WeightProducer);
+	if( BTags >1) MuonRecoBTag2ToInfFail->Fill(HT,MHT,WeightProducer);
 	muReco=0;
 	Expectation=1;
       }
@@ -506,12 +660,14 @@ Bool_t EffMaker::Process(Long64_t entry)
   {
     if ( GenElecPt[0] < minElecPt_ || std::abs(GenElecEta[0]) > maxElecEta_)
     {
+      ElecAccBTagFail->Fill(MHT,BTags,WeightProducer);
       ElecAccFail->Fill(MHT,NJets,WeightProducer);
       elecAcc=0;
       Expectation=1;
     }
     else
     {
+      ElecAccBTag->Fill(MHT,BTags,WeightProducer);
       ElecAcc->Fill(MHT,NJets,WeightProducer);
       elecAcc=2;
       bool RecoNotMatched=true;
@@ -526,6 +682,9 @@ Bool_t EffMaker::Process(Long64_t entry)
 	  if( NjetLow0_ < NJets && NJets < NjetHigh0_) ElecReco0->Fill(HT,MHT,WeightProducer);
 	  if( NjetLow1_ < NJets && NJets < NjetHigh1_) ElecReco1->Fill(HT,MHT,WeightProducer);
 	  if( NjetLow2_ < NJets && NJets < NjetHigh2_) ElecReco2->Fill(HT,MHT,WeightProducer);
+	  if( BTags <1) ElecRecoBTag0->Fill(HT,MHT,WeightProducer);
+	  if( BTags <2) ElecRecoBTag1->Fill(HT,MHT,WeightProducer);
+	  if( BTags >1) ElecRecoBTag2ToInf->Fill(HT,MHT,WeightProducer);
 	  elecReco =2;
 	  bool IsoNotMatched=true;
 	  for (UShort_t ii=0; ii < RecoIsoElecNum; ii++)
@@ -537,18 +696,23 @@ Bool_t EffMaker::Process(Long64_t entry)
 	      if( NjetLow0_ < NJets && NJets < NjetHigh0_) ElecIso0->Fill(HT,MHT,WeightProducer);
 	      if( NjetLow1_ < NJets && NJets < NjetHigh1_) ElecIso1->Fill(HT,MHT,WeightProducer);
 	      if( NjetLow2_ < NJets && NJets < NjetHigh2_) ElecIso2->Fill(HT,MHT,WeightProducer);
+	      if( BTags <1) ElecIsoBTag0->Fill(HT,MHT,WeightProducer);
+	      if( BTags <2) ElecIsoBTag1->Fill(HT,MHT,WeightProducer);
+	      if( BTags >1) ElecIsoBTag2ToInf->Fill(HT,MHT,WeightProducer);
 	      elecIso=2;
 	      Expectation=2;
 	      ElecDiLepControlSampleMHTNJet->Fill(MHT,NJets,WeightProducer);
 	      mtw =  MTWCalculator(METPt,METPhi, RecoIsoElecPt[ii], RecoIsoElecPhi[ii]);
 	      if (mtw<mtwCut_)
 	      {
+		ElecMTWMHTBTag->Fill(BTags,MHT,WeightProducer);
 		ElecMTWNJet->Fill(NJets,WeightProducer);
 		ElecMTWMHTNJet->Fill(MHT,NJets,WeightProducer);
 		ElecDiLepControlSampleMHTNJetMTW->Fill(MHT,NJets,WeightProducer);
 	      }
 	      else
 	      {
+		ElecMTWMHTBTagFail->Fill(BTags,MHT,WeightProducer);
 		ElecMTWNJetFail->Fill(NJets,WeightProducer);
 		ElecMTWMHTNJetFail->Fill(MHT,NJets,WeightProducer);
 	      }
@@ -560,6 +724,9 @@ Bool_t EffMaker::Process(Long64_t entry)
 	    if( NjetLow0_ < NJets && NJets < NjetHigh0_) ElecIso0Fail->Fill(HT,MHT,WeightProducer);
 	    if( NjetLow1_ < NJets && NJets < NjetHigh1_) ElecIso1Fail->Fill(HT,MHT,WeightProducer);
 	    if( NjetLow2_ < NJets && NJets < NjetHigh2_) ElecIso2Fail->Fill(HT,MHT,WeightProducer);
+	    if( BTags <1) ElecIsoBTag0Fail->Fill(HT,MHT,WeightProducer);
+	    if( BTags <2) ElecIsoBTag1Fail->Fill(HT,MHT,WeightProducer);
+	    if( BTags >1) ElecIsoBTag2ToInfFail->Fill(HT,MHT,WeightProducer);
 	    elecIso=0;
 	    Expectation=1;
 	  }
@@ -571,11 +738,14 @@ Bool_t EffMaker::Process(Long64_t entry)
 	if( NjetLow0_ < NJets && NJets < NjetHigh0_) ElecReco0Fail->Fill(HT,MHT,WeightProducer);
 	if( NjetLow1_ < NJets && NJets < NjetHigh1_) ElecReco1Fail->Fill(HT,MHT,WeightProducer);
 	if( NjetLow2_ < NJets && NJets < NjetHigh2_) ElecReco2Fail->Fill(HT,MHT,WeightProducer);
+	if( BTags <1) ElecRecoBTag0Fail->Fill(HT,MHT,WeightProducer);
+	if( BTags <2) ElecRecoBTag1Fail->Fill(HT,MHT,WeightProducer);
+	if( BTags >1) ElecRecoBTag2ToInfFail->Fill(HT,MHT,WeightProducer);
 	elecReco=0;
 	Expectation=1;
       }
     }
-  }
+  } 
   // purity studies:
   for (UShort_t i=0; i< RecoIsoMuonNum;i++)
   {
@@ -781,6 +951,73 @@ void EffMaker::Terminate()
   MuDiLepEffNJets->Write();
   SaveEfficiency(MuDiLepEffNJets);
   
+  //Btag
+  MuonAccBTag = ratioCalculator(MuonAccBTag,MuonAccBTagFail);   
+  MuonAccBTag->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu acceptance; #slash{H}_{T} [GeV]; BTag");
+  MuonAccBTag->SetMarkerSize(2.0);
+  MuonAccBTag->UseCurrentStyle();
+  MuonAccBTag->Write();
+  SaveEfficiency(MuonAccBTag);
+  
+  MuonRecoBTag0 = ratioCalculator(MuonRecoBTag0,MuonRecoBTag0Fail);   
+  //MuonRecoLowFail->Delete("all");
+  MuonRecoBTag0->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu reco BTag=0; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonRecoBTag0->SetMarkerSize(2.0);
+  MuonRecoBTag0->UseCurrentStyle();
+  MuonRecoBTag0->Write();
+  SaveEfficiency(MuonRecoBTag0);
+  
+  MuonRecoBTag1 = ratioCalculator(MuonRecoBTag1,MuonRecoBTag1Fail);   
+  //MuonRecoLowFail->Delete("all");
+  MuonRecoBTag1->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu reco BTag=1; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonRecoBTag1->SetMarkerSize(2.0);
+  MuonRecoBTag1->UseCurrentStyle();
+  MuonRecoBTag1->Write();
+  SaveEfficiency(MuonRecoBTag1);
+  
+  MuonRecoBTag2ToInf = ratioCalculator(MuonRecoBTag2ToInf,MuonRecoBTag2ToInfFail);   
+  //MuonRecoLowFail->Delete("all");
+  MuonRecoBTag2ToInf->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu reco BTag=>2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonRecoBTag2ToInf->SetMarkerSize(2.0);
+  MuonRecoBTag2ToInf->UseCurrentStyle();
+  MuonRecoBTag2ToInf->Write();
+  SaveEfficiency(MuonRecoBTag2ToInf);
+  
+  MuonIsoBTag0 = ratioCalculator(MuonIsoBTag0,MuonIsoBTag0Fail);   
+  //MuonIsoLowFail->Delete("all");
+  MuonIsoBTag0->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu iso BTag=0; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonIsoBTag0->SetMarkerSize(2.0);
+  MuonIsoBTag0->UseCurrentStyle();
+  MuonIsoBTag0->Write();
+  SaveEfficiency(MuonIsoBTag0);
+  
+  MuonIsoBTag1 = ratioCalculator(MuonIsoBTag1,MuonIsoBTag1Fail);   
+  //MuonIsoLowFail->Delete("all");
+  MuonIsoBTag1->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu iso BTag=1; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonIsoBTag1->SetMarkerSize(2.0);
+  MuonIsoBTag1->UseCurrentStyle();
+  MuonIsoBTag1->Write();
+  SaveEfficiency(MuonIsoBTag1);
+  
+  MuonIsoBTag2ToInf = ratioCalculator(MuonIsoBTag2ToInf,MuonIsoBTag2ToInfFail);   
+  //MuonIsoLowFail->Delete("all");
+  MuonIsoBTag2ToInf->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu iso BTag=>2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  MuonIsoBTag2ToInf->SetMarkerSize(2.0);
+  MuonIsoBTag2ToInf->UseCurrentStyle();
+  MuonIsoBTag2ToInf->Write();
+  SaveEfficiency(MuonIsoBTag2ToInf);
+  
+  n_ = sprintf(buffer_,"CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV #mu m_{T} correction m_{T}(w)<%.0f; BTag; N_{Jets}",mtwCut_);
+  TTemp_+=buffer_;
+  
+  MuMTWMHTBTag = ratioCalculator(MuMTWMHTBTag,MuMTWMHTBTagFail);   
+  //MuonIsoLowFail->Delete("all");
+  MuMTWMHTBTag->SetTitle(TTemp_);
+  MuMTWMHTBTag->SetMarkerSize(2.0);
+  MuMTWMHTBTag->UseCurrentStyle();
+  MuMTWMHTBTag->Write();
+  SaveEfficiency(MuMTWMHTBTag);
+  
   
   ElecAcc = ratioCalculator(ElecAcc,ElecAccFail);   
   //  ElecAccFail->Delete("all");
@@ -882,6 +1119,74 @@ void EffMaker::Terminate()
   ElecDiLepEffNJets->UseCurrentStyle();
   ElecDiLepEffNJets->Write();
   SaveEfficiency(ElecDiLepEffNJets);
+  
+  //Btag
+  ElecAccBTag = ratioCalculator(ElecAccBTag,ElecAccBTagFail);   
+  ElecAccBTag->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec acceptance; #slash{H}_{T} [GeV]; BTag");
+  ElecAccBTag->SetMarkerSize(2.0);
+  ElecAccBTag->UseCurrentStyle();
+  ElecAccBTag->Write();
+  SaveEfficiency(ElecAccBTag);
+  
+  ElecRecoBTag0 = ratioCalculator(ElecRecoBTag0,ElecRecoBTag0Fail);   
+  //ElecRecoLowFail->Delete("all");
+  ElecRecoBTag0->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec reco BTag=0; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecRecoBTag0->SetMarkerSize(2.0);
+  ElecRecoBTag0->UseCurrentStyle();
+  ElecRecoBTag0->Write();
+  SaveEfficiency(ElecRecoBTag0);
+  
+  ElecRecoBTag1 = ratioCalculator(ElecRecoBTag1,ElecRecoBTag1Fail);   
+  //ElecRecoLowFail->Delete("all");
+  ElecRecoBTag1->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec reco BTag=1; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecRecoBTag1->SetMarkerSize(2.0);
+  ElecRecoBTag1->UseCurrentStyle();
+  ElecRecoBTag1->Write();
+  SaveEfficiency(ElecRecoBTag1);
+  
+  ElecRecoBTag2ToInf = ratioCalculator(ElecRecoBTag2ToInf,ElecRecoBTag2ToInfFail);   
+  //ElecRecoLowFail->Delete("all");
+  ElecRecoBTag2ToInf->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec reco BTag=>2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecRecoBTag2ToInf->SetMarkerSize(2.0);
+  ElecRecoBTag2ToInf->UseCurrentStyle();
+  ElecRecoBTag2ToInf->Write();
+  SaveEfficiency(ElecRecoBTag2ToInf);
+  
+  ElecIsoBTag0 = ratioCalculator(ElecIsoBTag0,ElecIsoBTag0Fail);   
+  //ElecIsoLowFail->Delete("all");
+  ElecIsoBTag0->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec iso BTag=0; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecIsoBTag0->SetMarkerSize(2.0);
+  ElecIsoBTag0->UseCurrentStyle();
+  ElecIsoBTag0->Write();
+  SaveEfficiency(ElecIsoBTag0);
+  
+  ElecIsoBTag1 = ratioCalculator(ElecIsoBTag1,ElecIsoBTag1Fail);   
+  //ElecIsoLowFail->Delete("all");
+  ElecIsoBTag1->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec iso BTag=1; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecIsoBTag1->SetMarkerSize(2.0);
+  ElecIsoBTag1->UseCurrentStyle();
+  ElecIsoBTag1->Write();
+  SaveEfficiency(ElecIsoBTag1);
+  
+  ElecIsoBTag2ToInf = ratioCalculator(ElecIsoBTag2ToInf,ElecIsoBTag2ToInfFail);   
+  //ElecIsoLowFail->Delete("all");
+  ElecIsoBTag2ToInf->SetTitle("CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec iso BTag=>2; H_{T} [GeV]; #slash{H}_{T} [GeV]");
+  ElecIsoBTag2ToInf->SetMarkerSize(2.0);
+  ElecIsoBTag2ToInf->UseCurrentStyle();
+  ElecIsoBTag2ToInf->Write();
+  SaveEfficiency(ElecIsoBTag2ToInf);
+  
+  n_ = sprintf(buffer_,"CMS Simulation, L=5 fb-1, #sqrt(s)=13 TeV elec m_{T} correction m_{T}(w)<%.0f; BTag; N_{Jets}",mtwCut_);
+  TTemp_+=buffer_;
+  
+  ElecMTWMHTBTag = ratioCalculator(ElecMTWMHTBTag,ElecMTWMHTBTagFail);   
+  //ElecIsoLowFail->Delete("all");
+  ElecMTWMHTBTag->SetTitle(TTemp_);
+  ElecMTWMHTBTag->SetMarkerSize(2.0);
+  ElecMTWMHTBTag->UseCurrentStyle();
+  ElecMTWMHTBTag->Write();
+  SaveEfficiency(ElecMTWMHTBTag);
+  
    // The Terminate() function is the last function to be called during
    // a query. It always runs on the client, it can be used to present
    // the results graphically or save the results to file.

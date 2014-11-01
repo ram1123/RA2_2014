@@ -181,6 +181,99 @@ double muiLepEffNJet_[muilepEffNJet_] ={2,3,5,7,22};
 const int elecilepEffNJet_ = 5;
 double eleciLepEffNJet_[elecilepEffNJet_] ={2,3,5,7,22};
 
+
+
+
+
+// b-tag included instead of njets
+const int muonAccBTagB_=4;
+double MuAccBTagB_[muonAccBTagB_]={0,1,2,15};
+const int muonAccBTagMHT_=8;
+double MuAccBTagMHT_[muonAccBTagMHT_]={0,50,100,200,450,600,750,9500};
+
+const int muIsoBTagHT0_=5;
+double MuIsoBTagHT0_[muIsoBTagHT0_]={350,500,800,2000,9000};
+const int muIsoBTagMHT0_=8;
+double MuIsoBTagMHT0_[muIsoBTagMHT0_]={0,50,100,200,450,600,750,9500};
+
+const int muIsoBTagHT1_=5;
+double MuIsoBTagHT1_[muIsoBTagHT1_]={350,500,800,2000,9000};
+const int muIsoBTagMHT1_=7;
+double MuIsoBTagMHT1_[muIsoBTagMHT1_]={0,50,100,200,450,750,9500};
+
+const int muIsoBTagHT2ToInf_=4;
+double MuIsoBTagHT2ToInf_[muIsoBTagHT2ToInf_]={350,500,800,9000};
+const int muIsoBTagMHT2ToInf_=5;
+double MuIsoBTagMHT2ToInf_[muIsoBTagMHT2ToInf_]={0,100,200,450,9500};
+
+
+const int muRecoBTagHT0_=5;
+double MuRecoBTagHT0_[muRecoBTagHT0_]={350,500,800,2000,9000};
+const int muRecoBTagMHT0_=8;
+double MuRecoBTagMHT0_[muRecoBTagMHT0_]={0,50,100,200,450,600,750,9500};
+
+const int muRecoBTagHT1_=5;
+double MuRecoBTagHT1_[muRecoBTagHT1_]={350,500,800,2000,9000};
+const int muRecoBTagMHT1_=7;
+double MuRecoBTagMHT1_[muRecoBTagMHT1_]={0,50,100,200,450,750,9500};
+
+const int muRecoBTagHT2ToInf_=4;
+double MuRecoBTagHT2ToInf_[muRecoBTagHT2ToInf_]={350,500,800,9000};
+const int muRecoBTagMHT2ToInf_=5;
+double MuRecoBTagMHT2ToInf_[muRecoBTagMHT2ToInf_]={0,100,200,450,9500};
+
+
+const int mumtwBTagB_ = 4;
+double muMtwBTagB_[mumtwBTagB_] ={0,1,2,15};
+
+const int mumtwMHTBTag_ = 5;
+double muMtwMHTBTag_[mumtwMHTBTag_] ={0,100,200,400,9600};
+
+
+
+
+const int elecAccBTagB_=4;
+double ElecAccBTagB_[elecAccBTagB_]={0,1,2,15};
+const int elecAccBTagMHT_=8;
+double ElecAccBTagMHT_[elecAccBTagMHT_]={0,50,100,200,450,600,750,9500};
+
+const int elecIsoBTagHT0_=5;
+double ElecIsoBTagHT0_[elecIsoBTagHT0_]={350,500,800,2000,9000};
+const int elecIsoBTagMHT0_=8;
+double ElecIsoBTagMHT0_[elecIsoBTagMHT0_]={0,50,100,200,450,600,750,9500};
+
+const int elecIsoBTagHT1_=5;
+double ElecIsoBTagHT1_[elecIsoBTagHT1_]={350,500,800,2000,9000};
+const int elecIsoBTagMHT1_=7;
+double ElecIsoBTagMHT1_[elecIsoBTagMHT1_]={0,50,100,200,450,750,9500};
+
+const int elecIsoBTagHT2ToInf_=4;
+double ElecIsoBTagHT2ToInf_[elecIsoBTagHT2ToInf_]={350,500,800,9000};
+const int elecIsoBTagMHT2ToInf_=5;
+double ElecIsoBTagMHT2ToInf_[elecIsoBTagMHT2ToInf_]={0,100,200,450,9500};
+
+
+const int elecRecoBTagHT0_=5;
+double ElecRecoBTagHT0_[elecRecoBTagHT0_]={350,500,800,2000,9000};
+const int elecRecoBTagMHT0_=8;
+double ElecRecoBTagMHT0_[elecRecoBTagMHT0_]={0,50,100,200,450,600,750,9500};
+
+const int elecRecoBTagHT1_=5;
+double ElecRecoBTagHT1_[elecRecoBTagHT1_]={350,500,800,2000,9000};
+const int elecRecoBTagMHT1_=7;
+double ElecRecoBTagMHT1_[elecRecoBTagMHT1_]={0,50,100,200,450,750,9500};
+
+const int elecRecoBTagHT2ToInf_=4;
+double ElecRecoBTagHT2ToInf_[elecRecoBTagHT2ToInf_]={350,500,800,9000};
+const int elecRecoBTagMHT2ToInf_=5;
+double ElecRecoBTagMHT2ToInf_[elecRecoBTagMHT2ToInf_]={0,100,200,450,9500};
+
+
+const int elecmtwBTagB_ = 4;
+double elecMtwBTagB_[elecmtwBTagB_] ={0,1,2,15};
+
+const int elecmtwMHTBTag_ = 5;
+double elecMtwMHTBTag_[elecmtwMHTBTag_] ={0,100,200,400,9600};
 // Header file for the classes stored in the TTree if any.
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
@@ -218,6 +311,16 @@ public :
    TH2F *ElecIso0Fail, *ElecIsoLowFail, *ElecIso1Fail, *ElecIso2Fail, *ElecAccFail, *ElecReco0Fail, *ElecRecoLowFail, *ElecReco1Fail, *ElecReco2Fail;
    TH1F *MuMTWNJetFail, *ElecMTWNJetFail;
    TH2F *MuMTWMHTNJetFail, *ElecMTWMHTNJetFail;
+   // btag included instaed of njets
+   
+   TH2F *MuonAccBTag, *MuonIsoBTag0, *MuonIsoBTag1, *MuonIsoBTag2ToInf, *MuonRecoBTag0, *MuonRecoBTag1, *MuonRecoBTag2ToInf, *MuMTWMHTBTag;
+   TH2F *ElecAccBTag, *ElecIsoBTag0, *ElecIsoBTag1, *ElecIsoBTag2ToInf, *ElecRecoBTag0, *ElecRecoBTag1, *ElecRecoBTag2ToInf, *ElecMTWMHTBTag; 
+   
+   TH2F *MuonAccBTagFail, *MuonIsoBTag0Fail, *MuonIsoBTag1Fail, *MuonIsoBTag2ToInfFail, *MuonRecoBTag0Fail, *MuonRecoBTag1Fail, *MuonRecoBTag2ToInfFail, *MuMTWMHTBTagFail;
+   TH2F *ElecAccBTagFail, *ElecIsoBTag0Fail, *ElecIsoBTag1Fail, *ElecIsoBTag2ToInfFail, *ElecRecoBTag0Fail, *ElecRecoBTag1Fail, *ElecRecoBTag2ToInfFail, *ElecMTWMHTBTagFail; 
+   
+   
+   
    // eff variables fot the tree
    UShort_t Expectation;
    UShort_t muIso, muReco, muAcc, muMTW, muTotal;
