@@ -76,7 +76,7 @@ RA2TreeMaker::RA2TreeMaker(const edm::ParameterSet& iConfig)
   ra2JetsBTagInputTag_        		= 	iConfig.getParameter< std::vector<std::string> >  ("ra2JetsBTagInputTag");
   ra2JetsBTagValueInput_        		= 	iConfig.getParameter< std::vector<double> >  ("ra2JetsBTagValueInput_");
   leptonTag_ 				= 	iConfig.getParameter< std::vector<edm::InputTag> >("LeptonTag");
-  leptonTagName_        			= 	iConfig.getParameter< std::vector<std::string> >  ("LeptonTagName");
+  leptonTagName_        		= 	iConfig.getParameter< std::vector<std::string> >  ("LeptonTagName");
   IsoTrackTag_ 				= 	iConfig.getParameter< std::vector<edm::InputTag> >("IsoTrackTag");
   IsoTrackTagName_        			= 	iConfig.getParameter< std::vector<std::string> >  ("IsoTrackTagName");
   genra2JetsTag_				=	iConfig.getParameter<edm::InputTag>  ("GenJetTag");
@@ -314,6 +314,10 @@ RA2TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     if( cands.isValid() ) {
       std::string name = leptonTag_.at(i).label();
+      if(leptonTagName_.size()== leptonTag_.size() )
+      {
+	name = leptonTagName_.at(i);
+      }
       if(name.find("IDIso") !=std::string::npos)
       {
 	nIsoLeptons_+=cands->size();
