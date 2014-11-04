@@ -34,6 +34,8 @@ const double maxMuEta_=2.4;
 const double minElecPt_=10;
 const double maxElecEta_=2.4;
 const double mtwCut_=100;
+const double minTauPt_=10;
+const double maxTauEta_=2.4;
 
 // lepton matching
 const double maxDeltaRGenToRecoMu_ =0.3;
@@ -50,6 +52,19 @@ const double maxDiffPtRecoToIsoElec_ =0.1;
 const double maxDeltaRIsoToGenElec_ = 0.3;
 const double maxDiffPtIsoToGenElec_ = 0.3;
 
+// isolated tracks
+const double maxDeltaRGenMuToTack_ = 0.2;
+const double maxDiffPtGenMuToTack_ = 0.5;
+const double maxDeltaRRecoIsoMuToTack_ = 0.2;
+const double maxDiffPtRecoIsoMuToTack_ = 0.5;
+
+const double maxDeltaRGenElecToTack_ = 0.3;
+const double maxDiffPtGenElecToTack_ = 0.5;
+const double maxDeltaRRecoIsoElecToTack_ = 0.3;
+const double maxDiffPtRecoIsoElecToTack_ = 0.5;
+
+const double maxDeltaRGenTauToTack_ = 0.3;
+const double maxDiffPtGenTauToTack_ = 0.5;
 
 
 const UShort_t NJetsLow_=2;
@@ -325,12 +340,20 @@ public :
    UShort_t Expectation;
    UShort_t muIso, muReco, muAcc, muMTW, muTotal;
    UShort_t elecIso, elecReco, elecAcc, elecMTW, elecTotal;
-   UShort_t         RecoIsoMuonPromtMatched[10];
-   Float_t         RecoIsoMuonPromtMatchedDeltaR[10];
-   Float_t         RecoIsoMuonPromtMatchedRelPt[10];
-   UShort_t         RecoIsoElecPromtMatched[10];
-   Float_t         RecoIsoElecPromtMatchedDeltaR[10];
-   Float_t         RecoIsoElecPromtMatchedRelPt[10];
+   UShort_t         RecoIsoMuonPromtMatched[20];
+   Float_t         RecoIsoMuonPromtMatchedDeltaR[20];
+   Float_t         RecoIsoMuonPromtMatchedRelPt[20];
+   UShort_t         RecoIsoElecPromtMatched[20];
+   Float_t         RecoIsoElecPromtMatchedDeltaR[20];
+   Float_t         RecoIsoElecPromtMatchedRelPt[20];
+   // isolated track studies
+   UShort_t GenMuonIsoTrackMatched[20], RecoIsoMuonIsoTrackMatched[20];
+   UShort_t GenElecIsoTrackMatched[20], RecoIsoElecIsoTrackMatched[20];
+   UShort_t GenTauIsoTrackMatched[20];
+   UShort_t SelectedIsoTracksMatchedToGenLepton[20], SelectedIsoTracksMatchedToRecoIsoLepton[20];
+   Float_t SelectedIsoTracksMatchedToGenDeltaR[20], SelectedIsoTracksMatchedToGenRelPT[20];
+   Float_t SelectedIsoTracksMatchedToRecoIsoDeltaR[20], SelectedIsoTracksMatchedToRecoIsoRelPT[20];
+   
    Float_t mtw;
 
    // Declaration of leaf types
@@ -379,43 +402,48 @@ public :
    Float_t         ak4BTagValue[53];   //[ak4Num]
    UShort_t        ak4BTag[53];   //[ak4Num]
    UShort_t        RecoIsoMuonNum;
-   Float_t         RecoIsoMuonPt[3];   //[RecoIsoMuonNum]
-   Float_t         RecoIsoMuonEta[3];   //[RecoIsoMuonNum]
-   Float_t         RecoIsoMuonPhi[3];   //[RecoIsoMuonNum]
-   Float_t         RecoIsoMuonE[3];   //[RecoIsoMuonNum]
+   Float_t         RecoIsoMuonPt[20];   //[RecoIsoMuonNum]
+   Float_t         RecoIsoMuonEta[20];   //[RecoIsoMuonNum]
+   Float_t         RecoIsoMuonPhi[20];   //[RecoIsoMuonNum]
+   Float_t         RecoIsoMuonE[20];   //[RecoIsoMuonNum]
    UShort_t        RecoMuonNum;
-   Float_t         RecoMuonPt[6];   //[RecoMuonNum]
-   Float_t         RecoMuonEta[6];   //[RecoMuonNum]
-   Float_t         RecoMuonPhi[6];   //[RecoMuonNum]
-   Float_t         RecoMuonE[6];   //[RecoMuonNum]
+   Float_t         RecoMuonPt[20];   //[RecoMuonNum]
+   Float_t         RecoMuonEta[20];   //[RecoMuonNum]
+   Float_t         RecoMuonPhi[20];   //[RecoMuonNum]
+   Float_t         RecoMuonE[20];   //[RecoMuonNum]
    UShort_t        RecoIsoElecNum;
-   Float_t         RecoIsoElecPt[4];   //[RecoIsoElecNum]
-   Float_t         RecoIsoElecEta[4];   //[RecoIsoElecNum]
-   Float_t         RecoIsoElecPhi[4];   //[RecoIsoElecNum]
-   Float_t         RecoIsoElecE[4];   //[RecoIsoElecNum]
+   Float_t         RecoIsoElecPt[20];   //[RecoIsoElecNum]
+   Float_t         RecoIsoElecEta[20];   //[RecoIsoElecNum]
+   Float_t         RecoIsoElecPhi[20];   //[RecoIsoElecNum]
+   Float_t         RecoIsoElecE[20];   //[RecoIsoElecNum]
    UShort_t        RecoElecNum;
-   Float_t         RecoElecPt[9];   //[RecoElecNum]
-   Float_t         RecoElecEta[9];   //[RecoElecNum]
-   Float_t         RecoElecPhi[9];   //[RecoElecNum]
-   Float_t         RecoElecE[9];   //[RecoElecNum]
+   Float_t         RecoElecPt[20];   //[RecoElecNum]
+   Float_t         RecoElecEta[20];   //[RecoElecNum]
+   Float_t         RecoElecPhi[20];   //[RecoElecNum]
+   Float_t         RecoElecE[20];   //[RecoElecNum]
+   UShort_t        SelectedIsoTracksNum;
+   Float_t         SelectedIsoTracksPt[20];   //[SelectedIsoTracksNum]
+   Float_t         SelectedIsoTracksEta[20];   //[SelectedIsoTracksNum]
+   Float_t         SelectedIsoTracksPhi[20];   //[SelectedIsoTracksNum]
+   Float_t         SelectedIsoTracksE[20];   //[SelectedIsoTracksNum]
    UShort_t        GenWNum;
-   Float_t         GenWPt[1];   //[GenWNum]
-   Float_t         GenWEta[1];   //[GenWNum]
-   Float_t         GenWPhi[1];   //[GenWNum]
+   Float_t         GenWPt[2];   //[GenWNum]
+   Float_t         GenWEta[2];   //[GenWNum]
+   Float_t         GenWPhi[2];   //[GenWNum]
    UShort_t        GenMuNum;
-   UShort_t        GenMuFromTau[1];   //[GenMuNum]
-   Float_t         GenMuPt[1];   //[GenMuNum]
-   Float_t         GenMuEta[1];   //[GenMuNum]
-   Float_t         GenMuPhi[1];   //[GenMuNum]
+   UShort_t        GenMuFromTau[2];   //[GenMuNum]
+   Float_t         GenMuPt[2];   //[GenMuNum]
+   Float_t         GenMuEta[2];   //[GenMuNum]
+   Float_t         GenMuPhi[2];   //[GenMuNum]
    UShort_t        GenElecNum;
-   UShort_t        GenElecFromTau[1];   //[GenElecNum]
-   Float_t         GenElecPt[1];   //[GenElecNum]
-   Float_t         GenElecEta[1];   //[GenElecNum]
-   Float_t         GenElecPhi[1];   //[GenElecNum]
+   UShort_t        GenElecFromTau[2];   //[GenElecNum]
+   Float_t         GenElecPt[2];   //[GenElecNum]
+   Float_t         GenElecEta[2];   //[GenElecNum]
+   Float_t         GenElecPhi[2];   //[GenElecNum]
    UShort_t        GenTauNum;
-   Float_t         GenTauPt[1];   //[GenTauNum]
-   Float_t         GenTauEta[1];   //[GenTauNum]
-   Float_t         GenTauPhi[1];   //[GenTauNum]
+   Float_t         GenTauPt[2];   //[GenTauNum]
+   Float_t         GenTauEta[2];   //[GenTauNum]
+   Float_t         GenTauPhi[2];   //[GenTauNum]
    Float_t         genHT;
    Float_t         genMHT;
    UShort_t        genNJets;
@@ -511,6 +539,11 @@ public :
    TBranch        *b_RecoElecEta;   //!
    TBranch        *b_RecoElecPhi;   //!
    TBranch        *b_RecoElecE;   //!
+   TBranch        *b_SelectedIsoTracksNum;   //!
+   TBranch        *b_SelectedIsoTracksPt;   //!
+   TBranch        *b_SelectedIsoTracksEta;   //!
+   TBranch        *b_SelectedIsoTracksPhi;   //!
+   TBranch        *b_SelectedIsoTracksE;   //!
    TBranch        *b_GenWNum;   //!
    TBranch        *b_GenWPt;   //!
    TBranch        *b_GenWEta;   //!
@@ -660,6 +693,11 @@ void EffMaker::Init(TTree *tree)
    fChain->SetBranchAddress("RecoElecEta", RecoElecEta, &b_RecoElecEta);
    fChain->SetBranchAddress("RecoElecPhi", RecoElecPhi, &b_RecoElecPhi);
    fChain->SetBranchAddress("RecoElecE", RecoElecE, &b_RecoElecE);
+   fChain->SetBranchAddress("SelectedIsoTracksNum", &SelectedIsoTracksNum, &b_SelectedIsoTracksNum);
+   fChain->SetBranchAddress("SelectedIsoTracksPt", SelectedIsoTracksPt, &b_SelectedIsoTracksPt);
+   fChain->SetBranchAddress("SelectedIsoTracksEta", SelectedIsoTracksEta, &b_SelectedIsoTracksEta);
+   fChain->SetBranchAddress("SelectedIsoTracksPhi", SelectedIsoTracksPhi, &b_SelectedIsoTracksPhi);
+   fChain->SetBranchAddress("SelectedIsoTracksE", SelectedIsoTracksE, &b_SelectedIsoTracksE);
    fChain->SetBranchAddress("GenWNum", &GenWNum, &b_GenWNum);
    fChain->SetBranchAddress("GenWPt", GenWPt, &b_GenWPt);
    fChain->SetBranchAddress("GenWEta", GenWEta, &b_GenWEta);
