@@ -426,10 +426,13 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
 
    // tree
    tExpectation_ = new TTree("LostLeptonExpectation","a simple Tree with simple variables");
+   tExpectation_->SetAutoSave(10000000000);
+ //  tExpectation_->SetAutoFlush(1000000);
    tExpectation_->Branch("HT",&HT,"HT/F");
    tExpectation_->Branch("MHT",&MHT,"MHT/F");
    tExpectation_->Branch("NJets",&NJets,"NJets/s");
    tExpectation_->Branch("BTags",&BTags,"BTags/s");
+	 tExpectation_->Branch("Leptons",&Leptons,"Leptons/s");
    tExpectation_->Branch("NVtx",&NVtx,"NVtx/s");
    tExpectation_->Branch("DeltaPhi1",&DeltaPhi1,"DeltaPhi1/F");
    tExpectation_->Branch("DeltaPhi2",&DeltaPhi2,"DeltaPhi2/F");
@@ -463,6 +466,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    tExpectation_->Branch("elecAcc",&elecAcc,"elecAcc/s");  
    tExpectation_->Branch("elecReco",&elecReco,"elecReco/s");  
    tExpectation_->Branch("elecIso",&elecIso,"elecIso/s");  
+	 tExpectation_->Branch("FallsVetoLep",&FallsVetoLep,"FallsVetoLep/s");
    tExpectation_->Branch("RecoIsoMuonNum",&RecoIsoMuonNum,"RecoIsoMuonNum/s");
    tExpectation_->Branch("RecoIsoMuonPt", RecoIsoMuonPt, "RecoIsoMuonPt[RecoIsoMuonNum]/F");
    tExpectation_->Branch("RecoIsoMuonPromtMatched", RecoIsoMuonPromtMatched, "RecoIsoMuonPromtMatched[RecoIsoMuonNum]/s");
@@ -483,6 +487,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    tExpectation_->Branch("RecoIsoElecIsoTrackMatched", RecoIsoElecIsoTrackMatched, "RecoIsoElecIsoTrackMatched[RecoIsoElecNum]/s"); 
    
    tExpectation_->Branch("SelectedIsoTracksNum",&SelectedIsoTracksNum,"SelectedIsoTracksNum/s");
+	 tExpectation_->Branch("FallsVetoIsoTrack",&FallsVetoIsoTrack,"FallsVetoIsoTrack/s");
    tExpectation_->Branch("SelectedIsoTracksPt", SelectedIsoTracksPt, "SelectedIsoTracksPt[SelectedIsoTracksNum]/F");
    tExpectation_->Branch("SelectedIsoTracksEta", SelectedIsoTracksEta, "SelectedIsoTracksEta[SelectedIsoTracksNum]/F");
    tExpectation_->Branch("SelectedIsoTracksPhi", SelectedIsoTracksPhi, "SelectedIsoTracksPhi[SelectedIsoTracksNum]/F");
@@ -491,6 +496,40 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
    tExpectation_->Branch("SelectedIsoTracksMatchedToGenDeltaR", SelectedIsoTracksMatchedToGenDeltaR, "SelectedIsoTracksMatchedToGenDeltaR[SelectedIsoTracksNum]/F"); 
    tExpectation_->Branch("SelectedIsoTracksMatchedToGenRelPT", SelectedIsoTracksMatchedToGenRelPT, "SelectedIsoTracksMatchedToGenRelPT[SelectedIsoTracksNum]/F"); 
    tExpectation_->Branch("SelectedIsoTracksMatchedToRecoIsoLepton", SelectedIsoTracksMatchedToRecoIsoLepton, "SelectedIsoTracksMatchedToRecoIsoLepton[SelectedIsoTracksNum]/s");  
+   
+   //
+   tExpectation_->Branch("IsolatedTracksPT10Num",&IsolatedTracksPT10Num,"IsolatedTracksPT10Num/s");
+   tExpectation_->Branch("IsolatedTracksPT10Pt", IsolatedTracksPT10Pt, "IsolatedTracksPT10Pt[IsolatedTracksPT10Num]/F");
+	 tExpectation_->Branch("FallsVetoIsoTrackPT10",&FallsVetoIsoTrackPT10,"FallsVetoIsoTrackPT10/s");
+   tExpectation_->Branch("IsolatedTracksPT10Eta", IsolatedTracksPT10Eta, "IsolatedTracksPT10Eta[IsolatedTracksPT10Num]/F");
+   tExpectation_->Branch("IsolatedTracksPT10Phi", IsolatedTracksPT10Phi, "IsolatedTracksPT10Phi[IsolatedTracksPT10Num]/F");
+   tExpectation_->Branch("IsolatedTracksPT10E", IsolatedTracksPT10E, "IsolatedTracksPT10E[IsolatedTracksPT10Num]/F");
+   tExpectation_->Branch("IsolatedTracksPT10MatchedToGenLepton", IsolatedTracksPT10MatchedToGenLepton, "IsolatedTracksPT10MatchedToGenLepton[IsolatedTracksPT10Num]/s");  
+   tExpectation_->Branch("IsolatedTracksPT10MatchedToGenDeltaR", IsolatedTracksPT10MatchedToGenDeltaR, "IsolatedTracksPT10MatchedToGenDeltaR[IsolatedTracksPT10Num]/F"); 
+   tExpectation_->Branch("IsolatedTracksPT10MatchedToGenRelPT", IsolatedTracksPT10MatchedToGenRelPT, "IsolatedTracksPT10MatchedToGenRelPT[IsolatedTracksPT10Num]/F"); 
+   tExpectation_->Branch("IsolatedTracksPT10MatchedToRecoIsoLepton", IsolatedTracksPT10MatchedToRecoIsoLepton, "IsolatedTracksPT10MatchedToRecoIsoLepton[IsolatedTracksPT10Num]/s");  
+   
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut08Num",&IsolatedTracksPT10IsoCut08Num,"IsolatedTracksPT10IsoCut08Num/s");
+	 tExpectation_->Branch("FallsVetoIsoTrackPT10IsoCut08",&FallsVetoIsoTrackPT10IsoCut08,"FallsVetoIsoTrackPT10IsoCut08/s");
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut08Pt", IsolatedTracksPT10IsoCut08Pt, "IsolatedTracksPT10IsoCut08Pt[IsolatedTracksPT10IsoCut08Num]/F");
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut08Eta", IsolatedTracksPT10IsoCut08Eta, "IsolatedTracksPT10IsoCut08Eta[IsolatedTracksPT10IsoCut08Num]/F");
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut08Phi", IsolatedTracksPT10IsoCut08Phi, "IsolatedTracksPT10IsoCut08Phi[IsolatedTracksPT10IsoCut08Num]/F");
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut08E", IsolatedTracksPT10IsoCut08E, "IsolatedTracksPT10IsoCut08E[IsolatedTracksPT10IsoCut08Num]/F");
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut08MatchedToGenLepton", IsolatedTracksPT10IsoCut08MatchedToGenLepton, "IsolatedTracksPT10IsoCut08MatchedToGenLepton[IsolatedTracksPT10IsoCut08Num]/s");  
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut08MatchedToGenDeltaR", IsolatedTracksPT10IsoCut08MatchedToGenDeltaR, "IsolatedTracksPT10IsoCut08MatchedToGenDeltaR[IsolatedTracksPT10IsoCut08Num]/F"); 
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut08MatchedToGenRelPT", IsolatedTracksPT10IsoCut08MatchedToGenRelPT, "IsolatedTracksPT10IsoCut08MatchedToGenRelPT[IsolatedTracksPT10IsoCut08Num]/F"); 
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut08MatchedToRecoIsoLepton", IsolatedTracksPT10IsoCut08MatchedToRecoIsoLepton, "IsolatedTracksPT10IsoCut08MatchedToRecoIsoLepton[IsolatedTracksPT10IsoCut08Num]/s");  
+   
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut12Num",&IsolatedTracksPT10IsoCut12Num,"IsolatedTracksPT10IsoCut12Num/s");
+	 tExpectation_->Branch("FallsVetoIsoTrackPT10IsoCut12",&FallsVetoIsoTrackPT10IsoCut12,"FallsVetoIsoTrackPT10IsoCut12/s");
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut12Pt", IsolatedTracksPT10IsoCut12Pt, "IsolatedTracksPT10IsoCut12Pt[IsolatedTracksPT10IsoCut12Num]/F");
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut12Eta", IsolatedTracksPT10IsoCut12Eta, "IsolatedTracksPT10IsoCut12Eta[IsolatedTracksPT10IsoCut12Num]/F");
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut12Phi", IsolatedTracksPT10IsoCut12Phi, "IsolatedTracksPT10IsoCut12Phi[IsolatedTracksPT10IsoCut12Num]/F");
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut12E", IsolatedTracksPT10IsoCut12E, "IsolatedTracksPT10IsoCut12E[IsolatedTracksPT10IsoCut12Num]/F");
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut12MatchedToGenLepton", IsolatedTracksPT10IsoCut12MatchedToGenLepton, "IsolatedTracksPT10IsoCut12MatchedToGenLepton[IsolatedTracksPT10IsoCut12Num]/s");  
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut12MatchedToGenDeltaR", IsolatedTracksPT10IsoCut12MatchedToGenDeltaR, "IsolatedTracksPT10IsoCut12MatchedToGenDeltaR[IsolatedTracksPT10IsoCut12Num]/F"); 
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut12MatchedToGenRelPT", IsolatedTracksPT10IsoCut12MatchedToGenRelPT, "IsolatedTracksPT10IsoCut12MatchedToGenRelPT[IsolatedTracksPT10IsoCut12Num]/F"); 
+   tExpectation_->Branch("IsolatedTracksPT10IsoCut12MatchedToRecoIsoLepton", IsolatedTracksPT10IsoCut12MatchedToRecoIsoLepton, "IsolatedTracksPT10IsoCut12MatchedToRecoIsoLepton[IsolatedTracksPT10IsoCut12Num]/s");  
    
    GetOutputList()->Add(tExpectation_);
 }
@@ -572,6 +611,200 @@ Bool_t EffMaker::Process(Long64_t entry)
       }
     }
   }
+  // save if fals veto is true
+  unsigned int temp =0;
+  for(unsigned int i=0; i< SelectedIsoTracksNum;i++)
+	{
+		if(SelectedIsoTracksMatchedToGenLepton[i]==0)temp++;
+		
+	}
+	if(temp!=0)FallsVetoIsoTrack=1;
+  //
+  
+  
+  for (unsigned  i=0; i<GenMuNum;i++)
+  {
+    if(GenMuPt[i] <minMuPt_ || std::abs(GenMuEta[i]) > maxMuEta_) continue;
+    for(unsigned int ii=0; ii< IsolatedTracksPT10Num;ii++)
+    {
+      if(IsolatedTracksPT10MatchedToGenLepton[ii]==0) // only look at not yet matched tracks
+      {
+	if(deltaR(GenMuEta[i],GenMuPhi[i],IsolatedTracksPT10Eta[ii],IsolatedTracksPT10Phi[ii])<maxDeltaRGenMuToTack_ && std::abs(GenMuPt[i]-IsolatedTracksPT10Pt[ii])/GenMuPt[i] <maxDiffPtGenMuToTack_)
+	{
+	  GenMuonIsolatedTracksPT10Matched[i]=1;
+	  IsolatedTracksPT10MatchedToGenLepton[ii]=1;
+	  IsolatedTracksPT10MatchedToGenDeltaR[ii]=deltaR(GenMuEta[i],GenMuPhi[i],IsolatedTracksPT10Eta[ii],IsolatedTracksPT10Phi[ii]);
+	  IsolatedTracksPT10MatchedToGenRelPT[ii]=GenMuPt[i]-IsolatedTracksPT10Pt[ii]/GenMuPt[i];
+	}
+      }
+    }
+  }
+  for (unsigned  i=0; i<GenElecNum;i++)
+  {
+    if(GenElecPt[i] <minElecPt_ || std::abs(GenElecEta[i]) > maxElecEta_) continue;
+    for(unsigned int ii=0; ii< IsolatedTracksPT10Num;ii++)
+    {
+      if(IsolatedTracksPT10MatchedToGenLepton[ii]==0) // only look at not yet matched tracks
+      {
+	if(deltaR(GenElecEta[i],GenElecPhi[i],IsolatedTracksPT10Eta[ii],IsolatedTracksPT10Phi[ii])<maxDeltaRGenElecToTack_ && std::abs(GenElecPt[i]-IsolatedTracksPT10Pt[ii])/GenElecPt[i] <maxDiffPtGenElecToTack_)
+	{
+		GenElecIsolatedTracksPT10Matched[i]=1;
+	  IsolatedTracksPT10MatchedToGenLepton[ii]=2;
+	  IsolatedTracksPT10MatchedToGenDeltaR[ii]=deltaR(GenElecEta[i],GenElecPhi[i],IsolatedTracksPT10Eta[ii],IsolatedTracksPT10Phi[ii]);
+	  IsolatedTracksPT10MatchedToGenRelPT[ii]=GenElecPt[i]-IsolatedTracksPT10Pt[ii]/GenElecPt[i];
+	}
+      }
+    }
+  }
+  for (unsigned  i=0; i<GenTauNum;i++)
+  {
+    if(GenTauPt[i] <minTauPt_ || std::abs(GenTauEta[i]) > maxTauEta_) continue;
+    for(unsigned int ii=0; ii< IsolatedTracksPT10Num;ii++)
+    {
+      if(IsolatedTracksPT10MatchedToGenLepton[ii]==0) // only look at not yet matched tracks
+      {
+	if(deltaR(GenTauEta[i],GenTauPhi[i],IsolatedTracksPT10Eta[ii],IsolatedTracksPT10Phi[ii])<maxDeltaRGenTauToTack_ && std::abs(GenTauPt[i]-IsolatedTracksPT10Pt[ii])/GenTauPt[i] <maxDiffPtGenTauToTack_)
+	{
+		GenTauIsolatedTracksPT10Matched[i]=1;
+	  IsolatedTracksPT10MatchedToGenLepton[ii]=3;
+	  IsolatedTracksPT10MatchedToGenDeltaR[ii]=deltaR(GenTauEta[i],GenTauPhi[i],IsolatedTracksPT10Eta[ii],IsolatedTracksPT10Phi[ii]);
+	  IsolatedTracksPT10MatchedToGenRelPT[ii]=GenTauPt[i]-IsolatedTracksPT10Pt[ii]/GenTauPt[i];
+	}
+      }
+    }
+  }
+  // save if fals veto is true
+  temp =0;
+	for(unsigned int i=0; i< IsolatedTracksPT10Num;i++)
+	{
+		if(IsolatedTracksPT10MatchedToGenLepton[i]==0)temp++;
+		
+	}
+	if(temp!=0)FallsVetoIsoTrackPT10=1;
+  
+  for (unsigned  i=0; i<GenMuNum;i++)
+  {
+    if(GenMuPt[i] <minMuPt_ || std::abs(GenMuEta[i]) > maxMuEta_) continue;
+    for(unsigned int ii=0; ii< IsolatedTracksPT10IsoCut08Num;ii++)
+    {
+      if(IsolatedTracksPT10IsoCut08MatchedToGenLepton[ii]==0) // only look at not yet matched tracks
+      {
+	if(deltaR(GenMuEta[i],GenMuPhi[i],IsolatedTracksPT10IsoCut08Eta[ii],IsolatedTracksPT10IsoCut08Phi[ii])<maxDeltaRGenMuToTack_ && std::abs(GenMuPt[i]-IsolatedTracksPT10IsoCut08Pt[ii])/GenMuPt[i] <maxDiffPtGenMuToTack_)
+	{
+		GenMuonIsolatedTracksPT10IsoCut08Matched[i]=1;
+	  IsolatedTracksPT10IsoCut08MatchedToGenLepton[ii]=1;
+	  IsolatedTracksPT10IsoCut08MatchedToGenDeltaR[ii]=deltaR(GenMuEta[i],GenMuPhi[i],IsolatedTracksPT10IsoCut08Eta[ii],IsolatedTracksPT10IsoCut08Phi[ii]);
+	  IsolatedTracksPT10IsoCut08MatchedToGenRelPT[ii]=GenMuPt[i]-IsolatedTracksPT10IsoCut08Pt[ii]/GenMuPt[i];
+	}
+      }
+    }
+  }
+  for (unsigned  i=0; i<GenElecNum;i++)
+  {
+    if(GenElecPt[i] <minElecPt_ || std::abs(GenElecEta[i]) > maxElecEta_) continue;
+    for(unsigned int ii=0; ii< IsolatedTracksPT10IsoCut08Num;ii++)
+    {
+      if(IsolatedTracksPT10IsoCut08MatchedToGenLepton[ii]==0) // only look at not yet matched tracks
+      {
+	if(deltaR(GenElecEta[i],GenElecPhi[i],IsolatedTracksPT10IsoCut08Eta[ii],IsolatedTracksPT10IsoCut08Phi[ii])<maxDeltaRGenElecToTack_ && std::abs(GenElecPt[i]-IsolatedTracksPT10IsoCut08Pt[ii])/GenElecPt[i] <maxDiffPtGenElecToTack_)
+	{
+		GenElecIsolatedTracksPT10IsoCut08Matched[i]=1;
+	  IsolatedTracksPT10IsoCut08MatchedToGenLepton[ii]=2;
+	  IsolatedTracksPT10IsoCut08MatchedToGenDeltaR[ii]=deltaR(GenElecEta[i],GenElecPhi[i],IsolatedTracksPT10IsoCut08Eta[ii],IsolatedTracksPT10IsoCut08Phi[ii]);
+	  IsolatedTracksPT10IsoCut08MatchedToGenRelPT[ii]=GenElecPt[i]-IsolatedTracksPT10IsoCut08Pt[ii]/GenElecPt[i];
+	}
+      }
+    }
+  }
+  for (unsigned  i=0; i<GenTauNum;i++)
+  {
+    if(GenTauPt[i] <minTauPt_ || std::abs(GenTauEta[i]) > maxTauEta_) continue;
+    for(unsigned int ii=0; ii< IsolatedTracksPT10IsoCut08Num;ii++)
+    {
+      if(IsolatedTracksPT10IsoCut08MatchedToGenLepton[ii]==0) // only look at not yet matched tracks
+      {
+	if(deltaR(GenTauEta[i],GenTauPhi[i],IsolatedTracksPT10IsoCut08Eta[ii],IsolatedTracksPT10IsoCut08Phi[ii])<maxDeltaRGenTauToTack_ && std::abs(GenTauPt[i]-IsolatedTracksPT10IsoCut08Pt[ii])/GenTauPt[i] <maxDiffPtGenTauToTack_)
+	{
+		GenTauIsolatedTracksPT10IsoCut08Matched[i]=1;
+	  IsolatedTracksPT10IsoCut08MatchedToGenLepton[ii]=3;
+	  IsolatedTracksPT10IsoCut08MatchedToGenDeltaR[ii]=deltaR(GenTauEta[i],GenTauPhi[i],IsolatedTracksPT10IsoCut08Eta[ii],IsolatedTracksPT10IsoCut08Phi[ii]);
+	  IsolatedTracksPT10IsoCut08MatchedToGenRelPT[ii]=GenTauPt[i]-IsolatedTracksPT10IsoCut08Pt[ii]/GenTauPt[i];
+	}
+      }
+    }
+  }
+  // save if fals veto is true
+  temp =0;
+	for(unsigned int i=0; i< IsolatedTracksPT10IsoCut08Num;i++)
+	{
+		if(IsolatedTracksPT10IsoCut08MatchedToGenLepton[i]==0)temp++;
+		
+	}
+	if(temp!=0)FallsVetoIsoTrackPT10IsoCut08=1;
+  
+  for (unsigned  i=0; i<GenMuNum;i++)
+  {
+    if(GenMuPt[i] <minMuPt_ || std::abs(GenMuEta[i]) > maxMuEta_) continue;
+    for(unsigned int ii=0; ii< IsolatedTracksPT10IsoCut12Num;ii++)
+    {
+      if(IsolatedTracksPT10IsoCut12MatchedToGenLepton[ii]==0) // only look at not yet matched tracks
+      {
+	if(deltaR(GenMuEta[i],GenMuPhi[i],IsolatedTracksPT10IsoCut12Eta[ii],IsolatedTracksPT10IsoCut12Phi[ii])<maxDeltaRGenMuToTack_ && std::abs(GenMuPt[i]-IsolatedTracksPT10IsoCut12Pt[ii])/GenMuPt[i] <maxDiffPtGenMuToTack_)
+	{
+		GenMuonIsolatedTracksPT10IsoCut12Matched[i]=1;
+	  IsolatedTracksPT10IsoCut12MatchedToGenLepton[ii]=1;
+	  IsolatedTracksPT10IsoCut12MatchedToGenDeltaR[ii]=deltaR(GenMuEta[i],GenMuPhi[i],IsolatedTracksPT10IsoCut12Eta[ii],IsolatedTracksPT10IsoCut12Phi[ii]);
+	  IsolatedTracksPT10IsoCut12MatchedToGenRelPT[ii]=GenMuPt[i]-IsolatedTracksPT10IsoCut12Pt[ii]/GenMuPt[i];
+	}
+      }
+    }
+  }
+  for (unsigned  i=0; i<GenElecNum;i++)
+  {
+    if(GenElecPt[i] <minElecPt_ || std::abs(GenElecEta[i]) > maxElecEta_) continue;
+    for(unsigned int ii=0; ii< IsolatedTracksPT10IsoCut12Num;ii++)
+    {
+      if(IsolatedTracksPT10IsoCut12MatchedToGenLepton[ii]==0) // only look at not yet matched tracks
+      {
+	if(deltaR(GenElecEta[i],GenElecPhi[i],IsolatedTracksPT10IsoCut12Eta[ii],IsolatedTracksPT10IsoCut12Phi[ii])<maxDeltaRGenElecToTack_ && std::abs(GenElecPt[i]-IsolatedTracksPT10IsoCut12Pt[ii])/GenElecPt[i] <maxDiffPtGenElecToTack_)
+	{
+		GenElecIsolatedTracksPT10IsoCut12Matched[i]=1;
+	  IsolatedTracksPT10IsoCut12MatchedToGenLepton[ii]=2;
+	  IsolatedTracksPT10IsoCut12MatchedToGenDeltaR[ii]=deltaR(GenElecEta[i],GenElecPhi[i],IsolatedTracksPT10IsoCut12Eta[ii],IsolatedTracksPT10IsoCut12Phi[ii]);
+	  IsolatedTracksPT10IsoCut12MatchedToGenRelPT[ii]=GenElecPt[i]-IsolatedTracksPT10IsoCut12Pt[ii]/GenElecPt[i];
+	}
+      }
+    }
+  }
+  for (unsigned  i=0; i<GenTauNum;i++)
+  {
+    if(GenTauPt[i] <minTauPt_ || std::abs(GenTauEta[i]) > maxTauEta_) continue;
+    for(unsigned int ii=0; ii< IsolatedTracksPT10IsoCut12Num;ii++)
+    {
+      if(IsolatedTracksPT10IsoCut12MatchedToGenLepton[ii]==0) // only look at not yet matched tracks
+      {
+	if(deltaR(GenTauEta[i],GenTauPhi[i],IsolatedTracksPT10IsoCut12Eta[ii],IsolatedTracksPT10IsoCut12Phi[ii])<maxDeltaRGenTauToTack_ && std::abs(GenTauPt[i]-IsolatedTracksPT10IsoCut12Pt[ii])/GenTauPt[i] <maxDiffPtGenTauToTack_)
+	{
+		GenTauIsolatedTracksPT10IsoCut12Matched[i]=1;
+	  IsolatedTracksPT10IsoCut12MatchedToGenLepton[ii]=3;
+	  IsolatedTracksPT10IsoCut12MatchedToGenDeltaR[ii]=deltaR(GenTauEta[i],GenTauPhi[i],IsolatedTracksPT10IsoCut12Eta[ii],IsolatedTracksPT10IsoCut12Phi[ii]);
+	  IsolatedTracksPT10IsoCut12MatchedToGenRelPT[ii]=GenTauPt[i]-IsolatedTracksPT10IsoCut12Pt[ii]/GenTauPt[i];
+	}
+      }
+    }
+  }
+  // save if fals veto is true
+  temp =0;
+	for(unsigned int i=0; i< IsolatedTracksPT10IsoCut12Num;i++)
+	{
+		if(IsolatedTracksPT10IsoCut12MatchedToGenLepton[i]==0)temp++;
+		
+	}
+	if(temp!=0)FallsVetoIsoTrackPT10IsoCut12=1;
+  
+  //
+  
+  
   
   for (unsigned  i=0; i<RecoIsoMuonNum;i++)
   {
@@ -901,6 +1134,18 @@ Bool_t EffMaker::Process(Long64_t entry)
       RecoIsoElecPromtMatchedRelPt[i]=-100;
     }
   }
+  // check if falls lepton veto will be applied
+  temp=0;
+  for(unsigned int i=0; i< RecoIsoElecNum;i++)
+	{
+		if(RecoIsoElecPromtMatched[i]==0)temp=1;
+	}
+	for(unsigned int i=0; i< RecoIsoMuonNum;i++)
+	{
+		if(RecoIsoMuonPromtMatched[i]==0)temp=1;
+	}
+	if(temp==1)FallsVetoLep=1;
+		
   tExpectation_->Fill();
    return kTRUE;
 }
@@ -1307,6 +1552,11 @@ void EffMaker::resetValues()
   elecAcc =1;
   elecTotal=1;
   elecMTW=1;
+	FallsVetoLep=0;
+	FallsVetoIsoTrack=0;
+	FallsVetoIsoTrackPT10=0;
+	FallsVetoIsoTrackPT10IsoCut08=0;
+	FallsVetoIsoTrackPT10IsoCut12=0;
   for(unsigned int i=0; i<20;i++)
   {
     RecoIsoMuonPromtMatched[i]=999;
@@ -1326,6 +1576,44 @@ void EffMaker::resetValues()
     SelectedIsoTracksMatchedToGenRelPT[i]=-1;
     SelectedIsoTracksMatchedToRecoIsoDeltaR[i]=-1;
     SelectedIsoTracksMatchedToRecoIsoRelPT[i]=-1;
+    
+    
+    GenMuonIsolatedTracksPT10Matched[i]=0;
+    RecoIsoMuonIsolatedTracksPT10Matched[i]=0;
+    GenElecIsolatedTracksPT10Matched[i]=0;
+    RecoIsoElecIsolatedTracksPT10Matched[i]=0;
+    GenTauIsolatedTracksPT10Matched[i]=0;
+    IsolatedTracksPT10MatchedToGenLepton[i]=0;
+    IsolatedTracksPT10MatchedToRecoIsoLepton[i]=0;
+    IsolatedTracksPT10MatchedToGenDeltaR[i]=-1; 
+    IsolatedTracksPT10MatchedToGenRelPT[i]=-1;
+    IsolatedTracksPT10MatchedToRecoIsoDeltaR[i]=-1;
+    IsolatedTracksPT10MatchedToRecoIsoRelPT[i]=-1;
+    
+    GenMuonIsolatedTracksPT10IsoCut08Matched[i]=0;
+    RecoIsoMuonIsolatedTracksPT10IsoCut08Matched[i]=0;
+    GenElecIsolatedTracksPT10IsoCut08Matched[i]=0;
+    RecoIsoElecIsolatedTracksPT10IsoCut08Matched[i]=0;
+    GenTauIsolatedTracksPT10IsoCut08Matched[i]=0;
+    IsolatedTracksPT10IsoCut08MatchedToGenLepton[i]=0;
+    IsolatedTracksPT10IsoCut08MatchedToRecoIsoLepton[i]=0;
+    IsolatedTracksPT10IsoCut08MatchedToGenDeltaR[i]=-1; 
+    IsolatedTracksPT10IsoCut08MatchedToGenRelPT[i]=-1;
+    IsolatedTracksPT10IsoCut08MatchedToRecoIsoDeltaR[i]=-1;
+    IsolatedTracksPT10IsoCut08MatchedToRecoIsoRelPT[i]=-1;
+    
+    GenMuonIsolatedTracksPT10IsoCut12Matched[i]=0;
+    RecoIsoMuonIsolatedTracksPT10IsoCut12Matched[i]=0;
+    GenElecIsolatedTracksPT10IsoCut12Matched[i]=0;
+    RecoIsoElecIsolatedTracksPT10IsoCut12Matched[i]=0;
+    GenTauIsolatedTracksPT10IsoCut12Matched[i]=0;
+    IsolatedTracksPT10IsoCut12MatchedToGenLepton[i]=0;
+    IsolatedTracksPT10IsoCut12MatchedToRecoIsoLepton[i]=0;
+    IsolatedTracksPT10IsoCut12MatchedToGenDeltaR[i]=-1; 
+    IsolatedTracksPT10IsoCut12MatchedToGenRelPT[i]=-1;
+    IsolatedTracksPT10IsoCut12MatchedToRecoIsoDeltaR[i]=-1;
+    IsolatedTracksPT10IsoCut12MatchedToRecoIsoRelPT[i]=-1;
+  
   }
 }
 bool EffMaker::FiltersPass()

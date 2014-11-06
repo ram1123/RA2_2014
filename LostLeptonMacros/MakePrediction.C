@@ -15,6 +15,7 @@ void MakePrediction()
 	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-200to400/*root");
 	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-400to600/*root");
 	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-600toInf/*root");
+//	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/QCD_Pt-470to600_Tune4C_13TeV_pythia8_PU20bx25_POSTLS170_V5-v1/*root");
 	Effchain->SetProof();
 	//	Effchain->Process("EffMaker.C+g",0,800000);
 	Effchain->Process("Prediction.C+");

@@ -22,7 +22,7 @@ const bool saveEffToPDF_=true;
 const bool saveEffToPNG_=true;
 // cuts baseline
 const double minHT_=350;
-const double minMHT_=100;
+const double minMHT_=200;
 const double minNJets_=1.9;
 const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;
@@ -338,6 +338,8 @@ public :
    
    // eff variables fot the tree
    UShort_t Expectation;
+	 UShort_t FallsVetoLep, FallsVetoIsoTrack;
+	 UShort_t FallsVetoIsoTrackPT10, FallsVetoIsoTrackPT10IsoCut08, FallsVetoIsoTrackPT10IsoCut12;
    UShort_t muIso, muReco, muAcc, muMTW, muTotal;
    UShort_t elecIso, elecReco, elecAcc, elecMTW, elecTotal;
    UShort_t         RecoIsoMuonPromtMatched[20];
@@ -353,6 +355,30 @@ public :
    UShort_t SelectedIsoTracksMatchedToGenLepton[20], SelectedIsoTracksMatchedToRecoIsoLepton[20];
    Float_t SelectedIsoTracksMatchedToGenDeltaR[20], SelectedIsoTracksMatchedToGenRelPT[20];
    Float_t SelectedIsoTracksMatchedToRecoIsoDeltaR[20], SelectedIsoTracksMatchedToRecoIsoRelPT[20];
+   
+   UShort_t GenMuonIsolatedTracksPT10Matched[20], RecoIsoMuonIsolatedTracksPT10Matched[20];
+   UShort_t GenElecIsolatedTracksPT10Matched[20], RecoIsoElecIsolatedTracksPT10Matched[20];
+   UShort_t GenTauIsolatedTracksPT10Matched[20];
+   UShort_t IsolatedTracksPT10MatchedToGenLepton[20], IsolatedTracksPT10MatchedToRecoIsoLepton[20];
+   Float_t IsolatedTracksPT10MatchedToGenDeltaR[20], IsolatedTracksPT10MatchedToGenRelPT[20];
+   Float_t IsolatedTracksPT10MatchedToRecoIsoDeltaR[20], IsolatedTracksPT10MatchedToRecoIsoRelPT[20];
+   
+   UShort_t GenMuonIsolatedTracksPT10IsoCut08Matched[20], RecoIsoMuonIsolatedTracksPT10IsoCut08Matched[20];
+   UShort_t GenElecIsolatedTracksPT10IsoCut08Matched[20], RecoIsoElecIsolatedTracksPT10IsoCut08Matched[20];
+   UShort_t GenTauIsolatedTracksPT10IsoCut08Matched[20];
+   UShort_t IsolatedTracksPT10IsoCut08MatchedToGenLepton[20], IsolatedTracksPT10IsoCut08MatchedToRecoIsoLepton[20];
+   Float_t IsolatedTracksPT10IsoCut08MatchedToGenDeltaR[20], IsolatedTracksPT10IsoCut08MatchedToGenRelPT[20];
+   Float_t IsolatedTracksPT10IsoCut08MatchedToRecoIsoDeltaR[20], IsolatedTracksPT10IsoCut08MatchedToRecoIsoRelPT[20];
+   
+
+   UShort_t GenMuonIsolatedTracksPT10IsoCut12Matched[20], RecoIsoMuonIsolatedTracksPT10IsoCut12Matched[20];
+   UShort_t GenElecIsolatedTracksPT10IsoCut12Matched[20], RecoIsoElecIsolatedTracksPT10IsoCut12Matched[20];
+   UShort_t GenTauIsolatedTracksPT10IsoCut12Matched[20];
+   UShort_t IsolatedTracksPT10IsoCut12MatchedToGenLepton[20], IsolatedTracksPT10IsoCut12MatchedToRecoIsoLepton[20];
+   Float_t IsolatedTracksPT10IsoCut12MatchedToGenDeltaR[20], IsolatedTracksPT10IsoCut12MatchedToGenRelPT[20];
+   Float_t IsolatedTracksPT10IsoCut12MatchedToRecoIsoDeltaR[20], IsolatedTracksPT10IsoCut12MatchedToRecoIsoRelPT[20];
+
+   
    
    Float_t mtw;
 
@@ -426,6 +452,25 @@ public :
    Float_t         SelectedIsoTracksEta[20];   //[SelectedIsoTracksNum]
    Float_t         SelectedIsoTracksPhi[20];   //[SelectedIsoTracksNum]
    Float_t         SelectedIsoTracksE[20];   //[SelectedIsoTracksNum]
+   //
+   
+   UShort_t        IsolatedTracksPT10Num;
+   Float_t         IsolatedTracksPT10Pt[4];   //[IsolatedTracksPT10Num]
+   Float_t         IsolatedTracksPT10Eta[4];   //[IsolatedTracksPT10Num]
+   Float_t         IsolatedTracksPT10Phi[4];   //[IsolatedTracksPT10Num]
+   Float_t         IsolatedTracksPT10E[4];   //[IsolatedTracksPT10Num]
+   UShort_t        IsolatedTracksPT10IsoCut08Num;
+   Float_t         IsolatedTracksPT10IsoCut08Pt[4];   //[IsolatedTracksPT10IsoCut08Num]
+   Float_t         IsolatedTracksPT10IsoCut08Eta[4];   //[IsolatedTracksPT10IsoCut08Num]
+   Float_t         IsolatedTracksPT10IsoCut08Phi[4];   //[IsolatedTracksPT10IsoCut08Num]
+   Float_t         IsolatedTracksPT10IsoCut08E[4];   //[IsolatedTracksPT10IsoCut08Num]
+   UShort_t        IsolatedTracksPT10IsoCut12Num;
+   Float_t         IsolatedTracksPT10IsoCut12Pt[4];   //[IsolatedTracksPT10IsoCut12Num]
+   Float_t         IsolatedTracksPT10IsoCut12Eta[4];   //[IsolatedTracksPT10IsoCut12Num]
+   Float_t         IsolatedTracksPT10IsoCut12Phi[4];   //[IsolatedTracksPT10IsoCut12Num]
+   Float_t         IsolatedTracksPT10IsoCut12E[4];   //[IsolatedTracksPT10IsoCut12Num]
+   
+   //
    UShort_t        GenWNum;
    Float_t         GenWPt[2];   //[GenWNum]
    Float_t         GenWEta[2];   //[GenWNum]
@@ -544,6 +589,26 @@ public :
    TBranch        *b_SelectedIsoTracksEta;   //!
    TBranch        *b_SelectedIsoTracksPhi;   //!
    TBranch        *b_SelectedIsoTracksE;   //!
+   //
+   
+   TBranch        *b_IsolatedTracksPT10Num;   //!
+   TBranch        *b_IsolatedTracksPT10Pt;   //!
+   TBranch        *b_IsolatedTracksPT10Eta;   //!
+   TBranch        *b_IsolatedTracksPT10Phi;   //!
+   TBranch        *b_IsolatedTracksPT10E;   //!
+   TBranch        *b_IsolatedTracksPT10IsoCut08Num;   //!
+   TBranch        *b_IsolatedTracksPT10IsoCut08Pt;   //!
+   TBranch        *b_IsolatedTracksPT10IsoCut08Eta;   //!
+   TBranch        *b_IsolatedTracksPT10IsoCut08Phi;   //!
+   TBranch        *b_IsolatedTracksPT10IsoCut08E;   //!
+   TBranch        *b_IsolatedTracksPT10IsoCut12Num;   //!
+   TBranch        *b_IsolatedTracksPT10IsoCut12Pt;   //!
+   TBranch        *b_IsolatedTracksPT10IsoCut12Eta;   //!
+   TBranch        *b_IsolatedTracksPT10IsoCut12Phi;   //!
+   TBranch        *b_IsolatedTracksPT10IsoCut12E;   //!
+   
+   
+   //
    TBranch        *b_GenWNum;   //!
    TBranch        *b_GenWPt;   //!
    TBranch        *b_GenWEta;   //!
@@ -698,6 +763,26 @@ void EffMaker::Init(TTree *tree)
    fChain->SetBranchAddress("SelectedIsoTracksEta", SelectedIsoTracksEta, &b_SelectedIsoTracksEta);
    fChain->SetBranchAddress("SelectedIsoTracksPhi", SelectedIsoTracksPhi, &b_SelectedIsoTracksPhi);
    fChain->SetBranchAddress("SelectedIsoTracksE", SelectedIsoTracksE, &b_SelectedIsoTracksE);
+   //
+   
+   fChain->SetBranchAddress("IsolatedTracksPT10Num", &IsolatedTracksPT10Num, &b_IsolatedTracksPT10Num);
+   fChain->SetBranchAddress("IsolatedTracksPT10Pt", IsolatedTracksPT10Pt, &b_IsolatedTracksPT10Pt);
+   fChain->SetBranchAddress("IsolatedTracksPT10Eta", IsolatedTracksPT10Eta, &b_IsolatedTracksPT10Eta);
+   fChain->SetBranchAddress("IsolatedTracksPT10Phi", IsolatedTracksPT10Phi, &b_IsolatedTracksPT10Phi);
+   fChain->SetBranchAddress("IsolatedTracksPT10E", IsolatedTracksPT10E, &b_IsolatedTracksPT10E);
+   fChain->SetBranchAddress("IsolatedTracksPT10IsoCut08Num", &IsolatedTracksPT10IsoCut08Num, &b_IsolatedTracksPT10IsoCut08Num);
+   fChain->SetBranchAddress("IsolatedTracksPT10IsoCut08Pt", IsolatedTracksPT10IsoCut08Pt, &b_IsolatedTracksPT10IsoCut08Pt);
+   fChain->SetBranchAddress("IsolatedTracksPT10IsoCut08Eta", IsolatedTracksPT10IsoCut08Eta, &b_IsolatedTracksPT10IsoCut08Eta);
+   fChain->SetBranchAddress("IsolatedTracksPT10IsoCut08Phi", IsolatedTracksPT10IsoCut08Phi, &b_IsolatedTracksPT10IsoCut08Phi);
+   fChain->SetBranchAddress("IsolatedTracksPT10IsoCut08E", IsolatedTracksPT10IsoCut08E, &b_IsolatedTracksPT10IsoCut08E);
+   fChain->SetBranchAddress("IsolatedTracksPT10IsoCut12Num", &IsolatedTracksPT10IsoCut12Num, &b_IsolatedTracksPT10IsoCut12Num);
+   fChain->SetBranchAddress("IsolatedTracksPT10IsoCut12Pt", IsolatedTracksPT10IsoCut12Pt, &b_IsolatedTracksPT10IsoCut12Pt);
+   fChain->SetBranchAddress("IsolatedTracksPT10IsoCut12Eta", IsolatedTracksPT10IsoCut12Eta, &b_IsolatedTracksPT10IsoCut12Eta);
+   fChain->SetBranchAddress("IsolatedTracksPT10IsoCut12Phi", IsolatedTracksPT10IsoCut12Phi, &b_IsolatedTracksPT10IsoCut12Phi);
+   fChain->SetBranchAddress("IsolatedTracksPT10IsoCut12E", IsolatedTracksPT10IsoCut12E, &b_IsolatedTracksPT10IsoCut12E);
+   
+   
+   //
    fChain->SetBranchAddress("GenWNum", &GenWNum, &b_GenWNum);
    fChain->SetBranchAddress("GenWPt", GenWPt, &b_GenWPt);
    fChain->SetBranchAddress("GenWEta", GenWEta, &b_GenWEta);
