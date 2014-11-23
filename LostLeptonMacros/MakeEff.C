@@ -16,6 +16,13 @@ void MakeEff()
 	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-400to600/*root");
 	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-600toInf/*root");
 //	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/QCD_Pt-470to600_Tune4C_13TeV_pythia8_PU20bx25_POSTLS170_V5-v1/*.root");
+//	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/signal/25ns20PU.SMS-T1bbbb_2J_mGl-1000_mLSP-900*root");
+//       Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/signal/25ns20PU.SMS-T1bbbb_2J_mGl-1500_mLSP-100*root");
+//	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/signal/25ns20PU.SMS-T1qqqq_2J_mGl-1000_mLSP-800*root");	
+//	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/signal/25ns20PU.SMS-T1qqqq_2J_mGl-1400_mLSP-100*root");
+//	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/signal/25ns20PU.SMS-T1tttt_2J_mGl-1200_mLSP-800*root");
+//	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/signal/25ns20PU.SMS-T1tttt_2J_mGl-1500_mLSP-100*root");
+
 	Effchain->SetProof();
 	//	Effchain->Process("EffMaker.C+g",0,800000);
 	Effchain->Process("EffMaker.C+");

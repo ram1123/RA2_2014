@@ -20,12 +20,12 @@
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 // use gen infomation to fix purityy of muon controlsample
-const bool useGenInfoToMatchCSMuonToGen_=1;
+const bool useGenInfoToMatchCSMuonToGen_=0; // changed 20 Nov from 1 to 0
 const double maxDeltaRGenToRecoIsoMuon_=0.3;
 const double maxDiffPtGenToRecoIsoMuon_=0.3;
-const double minHT_=350;
-const double minMHT_=0;
-const double minNJets_=1.9;
+const double minHT_=500;
+const double minMHT_=200;
+const double minNJets_=2.5;
 const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;
 const double deltaPhi3_=0.3;
