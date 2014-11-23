@@ -41,6 +41,7 @@ RA2TreeMaker::RA2TreeMaker(const edm::ParameterSet& iConfig)
   treeName_ = iConfig.getParameter<std::string>("TreeName");
   vertexCollectionTag_ = iConfig.getParameter<edm::InputTag>("VertexCollection");
   varsDoubleTags_ = iConfig.getParameter< std::vector<edm::InputTag> >("VarsDouble");
+  varsDoubleNamesInTree_= iConfig.getParameter< std::vector<std::string> >  ("VarsDoubleNamesInTree");
   filterDecisionTags_ = iConfig.getParameter< std::vector<edm::InputTag> >("Filters");
   MC_ = iConfig.getParameter<bool> ("MC");
   QCD_ = iConfig.getParameter<bool> ("QCD");
@@ -206,7 +207,12 @@ RA2TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     {
       ht_+=ra2JetsCands->at(i).pt();
       nJets_++;
-      if(ra2JetsCands->at(i).bDiscriminator(btagname_) >btagvalue_) BTags_++;
+      if(ra2JetsCands->at(i).bDiscriminator(btagname_) >btagvalue_) 
+      {
+//	      const reco::TrackRefVector *tracks = &ra2JetsCands->at(i).associatedTracks();
+//	      std::cout<<"BTag associated tracks size:"<<tracks->size()<<std::endl;
+	      BTags_++;
+      }
     }
     if(ra2JetsCands->at(i).pt() > minPTMHTJets_ && abs(ra2JetsCands->at(i).eta() ) <maxEtaMHTJets_ ) /// check values!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     {
@@ -318,7 +324,7 @@ RA2TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       {
 	name = leptonTagName_.at(i);
       }
-      if(name.find("IDIso") !=std::string::npos)
+      if(name.find("RecoIso") !=std::string::npos)
       {
 	nIsoLeptons_+=cands->size();
       }

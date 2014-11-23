@@ -131,8 +131,8 @@ def makeRA2TreeTreeFromMiniADO(process,
     	debug =debug,
     	LeptonTag = cms.VInputTag(cms.InputTag('selectedIDIsoMuons'),cms.InputTag('selectedIDMuons'),cms.InputTag('selectedIDIsoElectrons'),cms.InputTag('selectedIDElectrons')),
     	LeptonTagName = cms.vstring('RecoIsoMuon','RecoMuon','RecoIsoElec','RecoElec'),
-    	IsoTrackTag = cms.VInputTag(cms.InputTag('IsolatedTracks')),
-        IsoTrackTagName = cms.vstring('SelectedIsoTracks'),  ## if name of isoalted track contains::: SelectedIsoTracks they will be counted as IsolatedTracks for final value in tree
+    	IsoTrackTag = cms.VInputTag(cms.InputTag('IsolatedTracks'),cms.InputTag('IsolatedTracksPT10'),cms.InputTag('IsolatedTracksPT10IsoCut08'),cms.InputTag('IsolatedTracksPT10IsoCut12')),
+        IsoTrackTagName = cms.vstring('SelectedIsoTracks','IsolatedTracksPT10','IsolatedTracksPT10IsoCut08','IsolatedTracksPT10IsoCut12'),  ## if name of isoalted track contains::: SelectedIsoTracks they will be counted as IsolatedTracks for final value in tree
     #RA2JetsTag = cms.InputTag("patJetsAK5PFCHS"),   
     	RA2DefaultJetsTag = cms.InputTag("slimmedJets"),  
     	METTag  = cms.InputTag("slimmedMETs"),
@@ -141,14 +141,77 @@ def makeRA2TreeTreeFromMiniADO(process,
     	ra2JetsBTagInputTag = cms.vstring('combinedSecondaryVertexBJetTags','combinedSecondaryVertexBJetTags'),
     	ra2JetsBTagValueInput_ = cms.vdouble(0.679,0.679),
     ) 
+    from RecoBTag.Configuration.RecoBTag_cff import *
+    from RecoJets.JetAssociationProducers.j2tParametersVX_cfi import *
+    process.slimmedJetsPFJetTracksAssociatorAtVertex = cms.EDProducer("JetTracksAssociatorAtVertex",
+      j2tParametersVX,
+      jets = cms.InputTag("iterativeCone5PFJets")
+    )
+    process.slimmedJetsPFJetTracksAssociatorAtVertex.jets = "slimmedJets"
+    process.slimmedJetsPFJetTracksAssociatorAtVertex.tracks = "generalTracks"
+    
+    process.slimmedJetsPFImpactParameterTagInfos = impactParameterTagInfos.clone()
+    process.slimmedJetsPFImpactParameterTagInfos.jetTracks = "slimmedJetsPFJetTracksAssociatorAtVertex"
+    process.slimmedJetsPFSecondaryVertexTagInfos = secondaryVertexTagInfos.clone()
+    process.slimmedJetsPFSecondaryVertexTagInfos.trackIPTagInfos = "slimmedJetsPFImpactParameterTagInfos"
+    #slimmedJetsPFSimpleSecondaryVertexBJetTags = simpleSecondaryVertexBJetTags.clone()
+    #slimmedJetsPFSimpleSecondaryVertexBJetTags.tagInfos = cms.VInputTag( cms.InputTag("slimmedJetsPFSecondaryVertexTagInfos") )
+    process.slimmedJetsPFCombinedSecondaryVertexBJetTags = combinedSecondaryVertexBJetTags.clone()
+    process.slimmedJetsPFStandardCombinedSecondaryVertex = combinedSecondaryVertex.clone()
+    process.slimmedJetsPFCombinedSecondaryVertexBJetTags.jetTagComputer = cms.string('slimmedJetsPFStandardCombinedSecondaryVertex')
+    process. slimmedJetsPFCombinedSecondaryVertexBJetTags.tagInfos = cms.VInputTag( cms.InputTag("slimmedJetsPFImpactParameterTagInfos"), cms.InputTag("slimmedJetsPFSecondaryVertexTagInfos") )
+    
+    process.slimmedJetsPFJetBtaggingSV = cms.Sequence(
+    	process.slimmedJetsPFImpactParameterTagInfos *
+    process.slimmedJetsPFSecondaryVertexTagInfos *
+    # slimmedJetsPFStandardCombinedSecondaryVertex *
+    process.slimmedJetsPFCombinedSecondaryVertexBJetTags
+    )
+    process.slimmedJetsPFJetsBtag = cms.Sequence(
+    process.slimmedJetsPFJetTracksAssociatorAtVertex *
+    process.slimmedJetsPFJetBtaggingSV
+    )
     
     ## isotrack producer
     from AllHadronicSUSY.Utils.trackIsolationMaker_cfi import trackIsolationFilter
     from AllHadronicSUSY.Utils.trackIsolationMaker_cfi import trackIsolationCounter
+    ## default
     process.IsolatedTracks = trackIsolationFilter.clone(
       doTrkIsoVeto= False,
       vertexInputTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
       pfCandidatesTag = cms.InputTag("packedPFCandidates"),
+      dR_ConeSize         = cms.double(0.3),
+      dz_CutValue         = cms.double(0.05),
+      minPt_PFCandidate   = cms.double(10.0),
+      isoCut              = cms.double(0.1),
+      )
+    #study
+    process.IsolatedTracksPT10 = trackIsolationFilter.clone(
+      doTrkIsoVeto= False,
+      vertexInputTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
+      pfCandidatesTag = cms.InputTag("packedPFCandidates"),
+      dR_ConeSize         = cms.double(0.3),
+      dz_CutValue         = cms.double(0.05),
+      minPt_PFCandidate   = cms.double(10.0),
+      isoCut              = cms.double(0.1),
+      )
+    process.IsolatedTracksPT10IsoCut08 = trackIsolationFilter.clone(
+      doTrkIsoVeto= False,
+      vertexInputTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
+      pfCandidatesTag = cms.InputTag("packedPFCandidates"),
+      dR_ConeSize         = cms.double(0.3),
+      dz_CutValue         = cms.double(0.05),
+      minPt_PFCandidate   = cms.double(10.0),
+      isoCut              = cms.double(0.08),
+      )
+    process.IsolatedTracksPT10IsoCut12 = trackIsolationFilter.clone(
+      doTrkIsoVeto= False,
+      vertexInputTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
+      pfCandidatesTag = cms.InputTag("packedPFCandidates"),
+      dR_ConeSize         = cms.double(0.3),
+      dz_CutValue         = cms.double(0.05),
+      minPt_PFCandidate   = cms.double(10.0),
+      isoCut              = cms.double(0.12),
       )
     process.CountIsoTracks = trackIsolationCounter.clone(
       src = cms.InputTag("IsolatedTracks"),
@@ -166,6 +229,11 @@ def makeRA2TreeTreeFromMiniADO(process,
     	process.selectedIDElectrons *
     	process.WeightProducer *
     	process.IsolatedTracks *
+ #   	process.IsolatedTracksPT10 *
+ #   	process.IsolatedTracksPT10IsoCut08 *
+ #   	process.IsolatedTracksPT10IsoCut12 *
+  #  	process.slimmedJetsPFCombinedSecondaryVertexBJetTags *
+   # 	process.dump *
  #   	process.CountIsoTracks *
  #   	process.PrintDecay *
     	process.RA2TreeMaker2
