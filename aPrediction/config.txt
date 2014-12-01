@@ -1,0 +1,17 @@
+# everyting in a line after # will be treated as comment and will be ignored 
+# every space and tabular will be removed so have no effect
+# basic syntax example:
+#all sections start with a !
+!Cuts
+NJets=1
+MHT<1000000
+HT<500
+HT>200
+
+!Efficiencies # Choose name of efficiency MuonIsoEff (VariableinX, VariableinY)=NameInFile
+FileName= /afs/desy.de/user/a/adraeger/xxl/csa14/RA2_2014/LostLeptonMacros/Expectation.root
+Folder=Efficiencies
+MuonIsoEff(HT,NJets)=MuonIsoNJet2Jet
+
+MuonI2soEff(HT,NJets)=MuonIsoNJet2Jet
+
