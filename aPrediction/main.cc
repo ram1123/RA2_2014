@@ -1,9 +1,18 @@
  #include <TTree.h>
 #include "iostream"
+#include <fstream>
 #include "FlexPrediction.h"
 #include "Config.h"
 int main(int argc, char* argv[])
 {
+  ofstream *tempStream = new ofstream;
+  tempStream->open("LostLeptonPrediction.log");
+  tempStream->close();
+  delete tempStream;
+  fstream *textOutPut = new fstream("LostLeptonPrediction.log");
+  *textOutPut <<"------------------------------------------------------------------------------------------------------------------\n";
+  *textOutPut <<"------------------------------------LogFileLostLepton Prediction--------------------------------------------------\n";
+  *textOutPut <<"------------------------------------------------------------------------------------------------------------------\n";
    if(argc <3)
    {
      std::cout << "Opening of file failed. Please use ./run confFile rootFile" << std::endl;
@@ -26,9 +35,10 @@ int main(int argc, char* argv[])
  // TTre *tree = 
  // Effchain->Process("Prediction.C+");
 //  Prediction *Muon = new Prediction();
-  FlexPrediction *Prediction = new FlexPrediction(inputTree);
-	std::string ConfigName = "HelloString";
-  Prediction->Loop();
+  FlexPrediction *Predictions = new FlexPrediction(inputTree);
+  Predictions->InitConfig(ConfigFile, textOutPut);
+  Predictions->Loop();
 //   delete Muon;
+  textOutPut->close();
   return 0;
 }

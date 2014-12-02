@@ -11,7 +11,7 @@ OBJ     = Config.o Prediction.o FlexPrediction.o main.o
 run: $(OBJ)		
 	g++ $(OBJ) $(LFLAG) -o run
 	@echo -e 'Done.\n\n   Type "./run config-file-name"\n\n'
-FlexPrediction.o: FlexPrediction.h FlexPrediction.C
+FlexPrediction.o: FlexPrediction.h FlexPrediction.C Config.h
 	g++ $(CFLAG) -c  FlexPrediction.C
 Prediction.o: Prediction.h Prediction.cc 
 	g++ $(CFLAG) -c Prediction.cc

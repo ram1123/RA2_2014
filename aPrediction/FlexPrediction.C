@@ -45,3 +45,70 @@ void FlexPrediction::Loop()
    }
    std::cout<<"Total HT: "<<HTSum<<std::endl;
 }
+bool FlexPrediction::InitConfig(Config* config, fstream *textOutPut)
+{
+ bool result = true;
+ *textOutPut <<"\n------------------------------------------------------------------------------------------------------------------\n";
+ *textOutPut <<"----------------------------FlexPrediction::InitConfig started----------------------------------------------------\n";
+ // load efficiency maps using the config file for defining the input TH2Fs
+ // open file and folder
+ std::map<std::string, std::string> efficienciesSharedValues = config->GetEfficiencySharedValues();
+ std::map<std::string, std::string>::iterator itt;
+ if(efficienciesSharedValues.find("FileName") !=efficienciesSharedValues.end() )
+ { 
+   itt=efficienciesSharedValues.find("FileName");
+ }
+ else 
+ {
+   std::cout<<"FlexPrediction:: Could not retrieve FileName. Please check config input file!! line expected with: FileName=blub.root";
+   return (1);
+ }
+ tTemp_=  (std::string) itt->second;
+ *textOutPut <<"Loading efficiencies from file: "<<tTemp_<<"\n";
+ //std::cout<<"FileName: "<<tTemp_<<std::endl;
+ TFile *effInput = new TFile(tTemp_,"OPEN");
+ // open folder
+ TDirectory *EffInputFolder;
+ if(efficienciesSharedValues.find("Folder") !=efficienciesSharedValues.end() )
+ { 
+   itt=efficienciesSharedValues.find("Folder");
+ }
+ else 
+ {
+   std::cout<<"FlexPrediction:: Could not retrieve Folder. Please check config input file!! line expected with: Folder=Blub";
+   return (1);
+ }
+ tTemp_=  (std::string) itt->second;
+ *textOutPut <<"Loading efficiencies from folder: "<<tTemp_<<"\n";
+ std::cout<<"Folder: "<<tTemp_<<std::endl;
+ EffInputFolder =   (TDirectory*)effInput->Get(tTemp_);
+ *textOutPut <<"List of efficiencies loaded: [Internale Name, Name as in file]\n";
+ std::map<std::string, Efficiency*> efficiencies = config->GetEfficiencies();
+ for (std::map<std::string, Efficiency*>::iterator it=efficiencies.begin(); it!=efficiencies.end(); ++it)
+ {
+   std::string sTemp = it->first;
+   tTemp_=it->second->Name();
+   *textOutPut <<"["<<sTemp<<","<<tTemp_<<"]\n";
+   efficiencies_[sTemp]= (TH2F*)EffInputFolder->Get(tTemp_);
+ }
+ *textOutPut <<"------------------------------------------------------------------------------------------------------------------\n\n";
+ *textOutPut <<"Loading cuts: \n";
+ // loading cuts
+ std::map<std::string, std::vector<Cuts*> > cuts = config->GetCuts();
+ for (std::map<std::string, std::vector<Cuts*> >::iterator it=cuts.begin(); it!=cuts.end(); ++it)
+ {
+   std::vector<std::pair<unsigned int,double> > cutts;
+   cutts.push_back(std::make_pair(it->second[0]->CutTyp(),it->second[0]->value()));
+   cuts_[it->first]=cutts;
+   *textOutPut <<it->first<<" "<<it->second[0]->cutTyp()<<" "<<it->second[0]->value();
+   for(unsigned int i=1; i< it->second.size();i++)
+   {
+     std::map<std::string,std::vector<std::pair<unsigned int,double> > >::iterator ittt;
+     ittt=cuts_.find(it->first);
+     ittt->second.push_back(std::make_pair(it->second[i]->CutTyp(),it->second[i]->value()));
+     *textOutPut<<", " <<it->second[i]->cutTyp()<<" "<<it->second[i]->value();
+   }
+   *textOutPut<<"\n";
+ }
+  return result;
+}

@@ -11,7 +11,20 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TH2F.h>
+#include <TString.h>
 #include "iostream"
+#include <fstream>
+#include "Config.h"
+// added classes
+class Prediction
+{
+public:
+  Prediction();
+  Prediction(std::string Name){Name_=Name;}
+private:
+  std::string Name_;
+};
 
 // Header file for the classes stored in the TTree if any.
 
@@ -23,6 +36,15 @@ class FlexPrediction {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
+   
+   // added stuff
+   TString tTemp_;
+   bool InitConfig(Config*,fstream *textOutPut);
+   std::map<std::string, TH2F*> efficiencies_;
+   std::map<std::string,std::vector<std::pair<unsigned int,double> > > cuts_;
+   std::map<std::string, Prediction*> predictions_;
+   
+   // end of added stuff
 
    // Declaration of leaf types
    Bool_t          MatchedToGenMuonExDiLep;

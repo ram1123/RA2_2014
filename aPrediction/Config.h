@@ -29,6 +29,7 @@ public:
 	Efficiency(std::string Name,std::string FileName,std::string variableX, std::string variableY){Name_=Name;FileName_=FileName;variableX_=variableX;variableY_=variableY;}
 
 	~Efficiency(){}
+	std::string Name(){return Name_;}
 private:
 	std::string Name_, FileName_,variableX_,variableY_;
 	
@@ -40,6 +41,9 @@ class Config
 public:
 	Config(const char* ConfFile);
 	~Config();
+	std::map<std::string, Efficiency*> GetEfficiencies (){return efficiencies_;}
+	std::map<std::string,std::string> GetEfficiencySharedValues(){return efficiencySharedValues_;}
+	std::map<std::string, std::vector<Cuts*> > GetCuts(){return cuts_;}
 private:
 	// filename and file itself
 	std::string fileName_;
@@ -47,10 +51,11 @@ private:
 	// functions
 	void ReadFile();
 	bool initilized_;
-	std::map<std::string, Cuts*> cuts_;
+	std::map<std::string, std::vector<Cuts*> > cuts_;
 	std::map<std::string, Efficiency*> efficiencies_;
 	std::vector<std::string> operators_;
 	std::vector<std::string> EfficiencySharedValues_;
+	std::map<std::string,std::string> efficiencySharedValues_;
 };
 
 #endif

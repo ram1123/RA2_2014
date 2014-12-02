@@ -4,10 +4,9 @@
 #all sections start with a !
 !Cuts
 NJets=1
-MHT<1000000
-HT<500
+MHT<=1000
 HT>200
-
+HT>3300
 !Efficiencies # Choose name of efficiency MuonIsoEff (VariableinX, VariableinY)=NameInFile
 FileName= /afs/desy.de/user/a/adraeger/xxl/csa14/RA2_2014/LostLeptonMacros/Expectation.root
 Folder=Efficiencies
