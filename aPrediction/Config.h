@@ -11,17 +11,30 @@ class Cuts
 {
 public:
 	Cuts();
-	Cuts(std::string Variable, std::string cutTyp,unsigned int CutTyp, double value){Variable_=Variable;cutTyp_=cutTyp;CutTyp_=CutTyp;value_=value;}
-	std::string Variable(){return Variable_;}
+	Cuts(std::string Variable, std::string cutTyp,unsigned int CutTyp, double value){Variable_=Variable;cutTyp_=cutTyp;CutTyp_=CutTyp;value_=value;isUShort_=false;}
+	Cuts(std::string Variable, std::string cutTyp,unsigned int CutTyp, unsigned int value,bool ushort){Variable_=Variable;cutTyp_=cutTyp;CutTyp_=CutTyp;valueI_=value;isUShort_=ushort;}
+	std::string Variable(){unsigned int position = Variable_.find(";");if(position>Variable_.size())return "EROOOOROROORORORO";std::string result = Variable_.substr(0,position);return result;};
+	std::string VariableTyp()
+	{
+	  unsigned int position = Variable_.find(";");
+	  if(position>Variable_.size())return "EROOOOROROORORORO";
+	  std::string result = Variable_.substr(position+1);
+	  return result;
+	  
+	};
 	std::string cutTyp(){return cutTyp_;}
 	unsigned int CutTyp(){return CutTyp_;}
 	double value(){return value_;}
+	unsigned int valueI(){return valueI_;}
+	bool isInt(){return isUShort_;}
 	~Cuts(){}
 private:
 	std::string Variable_, cutTyp_;
 	double value_;
-	unsigned int CutTyp_;
+	unsigned int CutTyp_, valueI_;
+	bool isUShort_;
 };
+
 class Efficiency
 {
 public:

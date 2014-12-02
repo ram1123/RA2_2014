@@ -3,10 +3,10 @@
 # basic syntax example:
 #all sections start with a !
 !Cuts
-NJets=1
-MHT<=1000
-HT>200
-HT>3300
+NJets;UShort_t<=3
+MHT;Float_t>=211
+HT;Float_t<1200.3
+HT;Float_t>300
 !Efficiencies # Choose name of efficiency MuonIsoEff (VariableinX, VariableinY)=NameInFile
 FileName= /afs/desy.de/user/a/adraeger/xxl/csa14/RA2_2014/LostLeptonMacros/Expectation.root
 Folder=Efficiencies

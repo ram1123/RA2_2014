@@ -79,10 +79,27 @@ void Config::ReadFile()
       value =line.substr(operatorPositionStart,operatorPositionEnd-operatorPositionStart+1);
       std::string cutTemp;
       double cutValue;
+      unsigned int cutValueI;
       cutTemp= line.substr(operatorPositionEnd+1);
-      sscanf(cutTemp.c_str(), "%lf", &cutValue);
-      std::cout<<"New cut with: Name: "<<name<<", cutTyp: "<<value<<", CutTyp: "<<CutTyp<<" cutValue: "<<cutValue<<std::endl;
-      Cuts *cut = new Cuts(name,value,CutTyp,cutValue);
+      Cuts *cut;
+      if(line.find("UShort_t")<line.size())
+      {
+	sscanf(cutTemp.c_str(), "%hu", &cutValueI);
+	cut = new Cuts(name,value,CutTyp,cutValueI,true);
+	std::cout<<"CutvalueI: "<<cut->valueI()<<std::endl;
+	std::cout<<"New UShort_t cut with: Name: "<<cut->Variable()<<", cutTyp: "<<value<<", CutTyp: "<<CutTyp<<" cutValue: "<<cutValueI<<std::endl;
+      }
+      else if(line.find("Float_t")<line.size()) 
+      {
+	sscanf(cutTemp.c_str(), "%lf", &cutValue);
+	cut = new Cuts(name,value,CutTyp,cutValue);
+	std::cout<<"New Float_t cut with: Name: "<<cut->Variable()<<", cutTyp: "<<value<<", CutTyp: "<<CutTyp<<" cutValue: "<<cutValue<<std::endl;
+      }
+      else
+      {
+	std::cout<<"Error input cut is of non typ UShort_t or Float_t name found: "<<name<<std::endl;
+      }
+      
       if(cuts_.find(name)!=cuts_.end() )
       {
 	std::map<std::string, std::vector<Cuts*> >::iterator itt;
@@ -129,3 +146,4 @@ void Config::ReadFile()
   }
   initilized_=true;
 }
+

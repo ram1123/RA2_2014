@@ -31,19 +31,30 @@ void FlexPrediction::Loop()
 //by  b_branchname->GetEntry(ientry); //read only this branch
   std::cout<<"Loop started fChain: "<<fChain<<std::endl;
    if (fChain == 0) return;
+   // store all necessary varaibles from tree in maps for UShort_t Float_t (more need to be implemented)
+   // Float_t
+   treeFloat_ts_["HT"]=&HT;
+   treeFloat_ts_["MHT"]=&MHT;
+   // UShort_t
+   treeUShort_ts_["NJets"]=&NJets;
 
+   
    Long64_t nentries = fChain->GetEntriesFast();
    double HTSum=0;
+   double HTSumCheck=0;
 
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
-      HTSum+=HT;
+   //   std::cout<<"HT: "<<HT<<", MHT: "<<MHT<<", NJets: "<<NJets<<std::endl;
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
-      // if (Cut(ientry) < 0) continue;
+     if(PerformeCut(cuts_))continue;
+      HTSum+=HT;
+      HTSumCheck+=*(treeFloat_ts_.find("HT")->second);
    }
    std::cout<<"Total HT: "<<HTSum<<std::endl;
+   std::cout<<"Total HT: "<<HTSumCheck<<std::endl;
 }
 bool FlexPrediction::InitConfig(Config* config, fstream *textOutPut)
 {
@@ -94,21 +105,107 @@ bool FlexPrediction::InitConfig(Config* config, fstream *textOutPut)
  *textOutPut <<"------------------------------------------------------------------------------------------------------------------\n\n";
  *textOutPut <<"Loading cuts: \n";
  // loading cuts
- std::map<std::string, std::vector<Cuts*> > cuts = config->GetCuts();
- for (std::map<std::string, std::vector<Cuts*> >::iterator it=cuts.begin(); it!=cuts.end(); ++it)
+ cuts_ = config->GetCuts();
+ for (std::map<std::string, std::vector<Cuts*> >::iterator it=cuts_.begin(); it!=cuts_.end(); ++it)
  {
-   std::vector<std::pair<unsigned int,double> > cutts;
-   cutts.push_back(std::make_pair(it->second[0]->CutTyp(),it->second[0]->value()));
-   cuts_[it->first]=cutts;
-   *textOutPut <<it->first<<" "<<it->second[0]->cutTyp()<<" "<<it->second[0]->value();
+   *textOutPut <<it->second[0]->Variable()<<"("<<it->second[0]->VariableTyp()<<" isInt: "<<it->second[0]->isInt()<<")"<<" "<<it->second[0]->cutTyp()<<" "<<it->second[0]->value();
    for(unsigned int i=1; i< it->second.size();i++)
    {
-     std::map<std::string,std::vector<std::pair<unsigned int,double> > >::iterator ittt;
-     ittt=cuts_.find(it->first);
-     ittt->second.push_back(std::make_pair(it->second[i]->CutTyp(),it->second[i]->value()));
      *textOutPut<<", " <<it->second[i]->cutTyp()<<" "<<it->second[i]->value();
    }
    *textOutPut<<"\n";
  }
   return result;
+}
+bool FlexPrediction::PerformeCut(std::map<std::string, std::vector<Cuts*> > cuts)
+{
+  bool result = false;
+  for (std::map<std::string, std::vector<Cuts*> >::iterator it=cuts.begin(); it!=cuts.end(); ++it)
+  {
+    std::string key = it->first;
+    for (unsigned int i=0; i< it->second.size();i++)
+    {
+      unsigned int cutTyp = it->second[i]->CutTyp();
+      double cutvalue = it->second[i]->value();
+      if(cutTyp==0) // =
+      {
+	if(key.find("UShort_t")<key.size())
+	{
+	  //
+	  if( !(*(treeUShort_ts_.find(it->second[i]->Variable()))->second == it->second[i]->valueI() )) return true;
+	}
+	else if(key.find("Float_t")<key.size())
+	{
+	  if( *(treeFloat_ts_.find(it->second[i]->Variable()))->second == it->second[i]->value()) return true;
+	}
+	else 
+	{
+	  std::cout<<"Error cut is of unknown typ: "<<key<<" only UShort_t and Float_t are defined."<<std::endl;
+	}
+      }
+      if(cutTyp==1)// <
+      {
+	if(key.find("UShort_t")<key.size())
+	{
+	  if( *(treeUShort_ts_.find(it->second[i]->Variable()))->second > it->second[i]->valueI()) return true;
+	}
+	else if(key.find("Float_t")<key.size())
+	{
+	  if( *(treeFloat_ts_.find(it->second[i]->Variable()))->second > it->second[i]->value()) return true;
+	}
+	else 
+	{
+	  std::cout<<"Error cut is of unknown typ: "<<key<<" only UShort_t and Float_t are defined."<<std::endl;
+	}
+      }
+      if(cutTyp==2)// >
+      {
+	if(key.find("UShort_t")<key.size())
+	{
+	  if( *(treeUShort_ts_.find(it->second[i]->Variable()))->second < it->second[i]->valueI()) return true;
+	}
+	else if(key.find("Float_t")<key.size())
+	{
+	  if( *(treeFloat_ts_.find(it->second[i]->Variable()))->second < it->second[i]->value()) return true;
+	}
+	else 
+	{
+	  std::cout<<"Error cut is of unknown typ: "<<key<<" only UShort_t and Float_t are defined."<<std::endl;
+	}
+      }
+      if(cutTyp==3)// <=
+      {
+	if(key.find("UShort_t")<key.size())
+	{
+	  if( *(treeUShort_ts_.find(it->second[i]->Variable()))->second > it->second[i]->valueI()) return true;
+	}
+	else if(key.find("Float_t")<key.size())
+	{
+	  if( *(treeFloat_ts_.find(it->second[i]->Variable()))->second > it->second[i]->value()) return true;
+	}
+	else 
+	{
+	  std::cout<<"Error cut is of unknown typ: "<<key<<" only UShort_t and Float_t are defined."<<std::endl;
+	}
+      }
+      if(cutTyp==4)// >=
+      {
+	if(key.find("UShort_t")<key.size())
+	{
+	  if( *(treeUShort_ts_.find(it->second[i]->Variable()))->second < it->second[i]->valueI()) return true;
+	}
+	else if(key.find("Float_t")<key.size())
+	{
+	  if( *(treeFloat_ts_.find(it->second[i]->Variable()))->second < it->second[i]->value()) return true;
+	}
+	else 
+	{
+	  std::cout<<"Error cut is of unknown typ: "<<key<<" only UShort_t and Float_t are defined."<<std::endl;
+	}
+      }
+      if(cutTyp>4) std::cout<<"Error cut typ is not defined. Cut: "<<it->second[i]->cutTyp()<<std::endl;
+    }	
+  }
+  return result;
+  
 }

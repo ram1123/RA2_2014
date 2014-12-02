@@ -40,9 +40,12 @@ public :
    // added stuff
    TString tTemp_;
    bool InitConfig(Config*,fstream *textOutPut);
+   bool PerformeCut(std::map<std::string, std::vector<Cuts*> > cuts);
    std::map<std::string, TH2F*> efficiencies_;
-   std::map<std::string,std::vector<std::pair<unsigned int,double> > > cuts_;
+   std::map<std::string, std::vector<Cuts*> > cuts_;
    std::map<std::string, Prediction*> predictions_;
+   std::map<std::string,Float_t*> treeFloat_ts_;
+   std::map<std::string,UShort_t*> treeUShort_ts_;
    
    // end of added stuff
 
