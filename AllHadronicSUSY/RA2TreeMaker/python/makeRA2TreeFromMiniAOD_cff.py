@@ -123,7 +123,7 @@ def makeRA2TreeTreeFromMiniADO(process,
     	TreeName          = cms.string("RA2PreSelection"),
     	VertexCollection  = cms.InputTag('offlineSlimmedPrimaryVertices'),
     	VarsDouble        = cms.VInputTag(cms.InputTag('WeightProducer:weight')),
-    	VarsDoubleNamesInTree = cms.vstring('Weight'),
+    	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
     	Filters           = cms.VInputTag(FilterNames), #FilterNames
     	MC = MC,
     	QCD = QCD,  # use this switch to store only information needed for qcd background estimation method
@@ -219,6 +219,12 @@ def makeRA2TreeTreeFromMiniADO(process,
       )
 
 
+    from AllHadronicSUSY.TreeMaker.treeMaker import TreeMaker
+    process.TreeMaker2 = TreeMaker.clone(
+    	TreeName          = cms.string("PreSelection"),
+    	VarsRecoCand = cms.vstring('RecoIsoMuon|JamJam|Jup','RecoMuon','RecoIsoElec','RecoElec'),
+    	)
+
     ## --- Final paths ----------------------------------------------------
 
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
@@ -236,6 +242,7 @@ def makeRA2TreeTreeFromMiniADO(process,
    # 	process.dump *
  #   	process.CountIsoTracks *
  #   	process.PrintDecay *
-    	process.RA2TreeMaker2
+#    	process.RA2TreeMaker2 *
+    	process.TreeMaker2
 
         )
