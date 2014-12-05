@@ -87,6 +87,7 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			varsDouble_.at(i) = *var;
 		}
 	}
+	
 	for(unsigned int i = 0; i < varsIntTags_.size(); ++i) {
 		edm::Handle<int> var;
 		iEvent.getByLabel(varsIntTags_.at(i),var);
@@ -102,6 +103,7 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			else varsBool_.at(i) = 0;
 		}
 	}
+	
 	for(unsigned int i = 0; i < varsTLorentzVectorTags_.size(); ++i) {
 		edm::Handle<TLorentzVector> var;
 		iEvent.getByLabel(varsTLorentzVectorTags_.at(i),var);
@@ -135,7 +137,6 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 				RecoCandE_.at(i)[ii] = cands->at(ii).energy();
 				RecoCandLorentzVector_.at(i)[ii].SetXYZT(cands->at(ii).p4().X(),cands->at(ii).p4().Y(),cands->at(ii).p4().Z(),cands->at(ii).p4().T());
 			}
-			// loop over double variables
 			for(unsigned int ii=0; ii< RecoCandAdditionalFloatVariablesTags_[i].size();ii++)
 			{
 				edm::Handle<std::vector<double> > FloatVar;
@@ -232,6 +233,7 @@ TreeMaker::beginJob()
     varsRecoCandTags_.push_back(edm::InputTag(temp));
 		std::cout<<"RecoCand stored name in tree: "<<nameInTree<<std::endl;
 		temp=nameInTree;
+		temp.erase (std::remove (temp.begin(), temp.end(), ':'), temp.end());
     tree_->Branch((temp+"Num").c_str(),&(RecoCandN_.at(i)),(temp+"Num/s").c_str());
     tree_->Branch((temp+"Pt").c_str(), RecoCandPt_.at(i), (temp+"Pt["+temp+"Num]/F").c_str());
     tree_->Branch((temp+"Eta").c_str(),RecoCandEta_.at(i),(temp+"Eta["+temp+"Num]/F").c_str());
@@ -288,6 +290,7 @@ TreeMaker::beginJob()
 			}
 			else if(typ==-1)std::cout<<"Warning no typ selected for additonal input object: "<<temp2<<" of main varialbe: "<<nameInTree<<"Please use: tag(x_Name) with x=b,I,F (bool, int float) and optional Name for naming in the tree"<<std::endl;
      // std::cout<<"| TagName: "<<temp2<<std::endl;
+			nameInTree.erase (std::remove (nameInTree.begin(), nameInTree.end(), ':'), nameInTree.end());
 			std::cout<<"Sub Typ: Tag: "<<tag<<", typ: "<<typ<< ", nameIn Tree: "<<nameInTree<<std::endl;
 			if(typ==0)
 			{
@@ -319,45 +322,61 @@ TreeMaker::beginJob()
 		RecoCandAdditionalIntVariablesN_.push_back(countInt);
 		RecoCandAdditionalFloatVariablesN_.push_back(countFloat);
   }
+  varsBool_ = std::vector<UChar_t>(varsBoolTags_.size(),0);
   for(unsigned int i = 0; i < varsBoolTags_.size(); ++i) {
-		TString name = "Bool_";
+		std::string name = "Bool_";
 		name += varsBoolTags_.at(i).label();
 		if( varsBoolNames_.size() == varsDoubleTags_.size() ) {
 			name = "Bool_"+varsBoolNames_.at(i);
 		}
-		tree_->Branch(name,&(varsBool_.at(i)),name+"/b");
+		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
+		TString namet = name;
+		tree_->Branch(namet,&(varsBool_.at(i)),namet+"/b");
 	}
+	varsInt_ = std::vector<Int_t>(varsIntTags_.size(),1);
 	for(unsigned int i = 0; i < varsIntTags_.size(); ++i) {
-		TString name = "Int_" + varsIntTags_.at(i).label();
+		std::string  name = "Int_" + varsIntTags_.at(i).label();
 		if( varsIntNames_.size() == varsIntTags_.size() ) {
 			name = "Int_" +varsIntNames_.at(i);
 		}
-		tree_->Branch(name,&(varsIntTags_.at(i)),name+"/I");
+		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
+		TString namet = name;
+		tree_->Branch(namet,&(varsIntTags_.at(i)),namet+"/I");
 	}
+	varsDouble_ = std::vector<Float_t>(varsDoubleTags_.size(),1.);
 	for(unsigned int i = 0; i < varsDouble_.size(); ++i) {
-		TString name = "Float_" + varsDoubleTags_.at(i).label();
+		std::string  name = "Float_" + varsDoubleTags_.at(i).label();
 		if( varsDoubleNames_.size() == varsDoubleTags_.size() ) {
 			name = "Float_" +varsDoubleNames_.at(i);
 		}
-		tree_->Branch(name,&(varsDouble_.at(i)),name+"/F");
+		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
+		TString namet = name;
+		tree_->Branch(namet,&(varsDouble_.at(i)),namet+"/F");
  	}
+ 	varsTLorentzVector_ = std::vector<TLorentzVector>(varsTLorentzVectorTags_.size(),TLorentzVector(0.,0.,0.,0.));
  	for(unsigned int i = 0; i < varsTLorentzVectorTags_.size(); ++i) {
-		TString name = "TLorentzVector_";
+		std::string  name = "TLorentzVector_";
 		name += varsTLorentzVectorTags_.at(i).label();
 		if( varsTLorentzVectorTags_.size() == varsTLorentzVectorNames_.size() ) {
 			name = "TLorentzVector_"+varsTLorentzVectorNames_.at(i);
 		}
-		tree_->Branch(name,name,&(varsTLorentzVector_.at(i)));
+		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
+		TString namet = name;
+		tree_->Branch(namet,namet,&(varsTLorentzVector_.at(i)));
 	}
 	for(unsigned int i=0; i< vectorTLorentzVectorTags_.size();i++)
 	{
-		TString name = "VectorTLorentzVector_";
+		std::vector<TLorentzVector> vector;
+		vectorTLorentzVector_.push_back(vector);
+		std::string  name = "VectorTLorentzVector_";
 		name += vectorTLorentzVectorTags_.at(i).label();
 		if(vectorTLorentzVectorNames_.size() == vectorTLorentzVectorTags_.size())
 		{
 			name = "VectorTLorentzVector_"+vectorTLorentzVectorNames_.at(i);
 		}
-		tree_->Branch(name,name,&(vectorTLorentzVector_.at(i)));
+		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
+		TString namet = name;
+		tree_->Branch(namet,namet,&(vectorTLorentzVector_.at(i)));
 	}
 }
 

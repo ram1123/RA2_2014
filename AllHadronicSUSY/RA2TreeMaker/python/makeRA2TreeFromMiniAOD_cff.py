@@ -222,7 +222,9 @@ def makeRA2TreeTreeFromMiniADO(process,
     from AllHadronicSUSY.TreeMaker.treeMaker import TreeMaker
     process.TreeMaker2 = TreeMaker.clone(
     	TreeName          = cms.string("PreSelection"),
-    	VarsRecoCand = cms.vstring('RecoIsoMuon|JamJam|Jup','RecoMuon','RecoIsoElec','RecoElec'),
+    	VarsRecoCand = cms.vstring('selectedIDIsoMuons(selectedIDIsoMuonsName)|AdditionalIntVariable(I_AdditionalIntVariableNameINTree)|AddiationBool(b_NameOfBool)|WeightProducer:Weight(F)','selectedIDMuons','IsolatedTracks','selectedRecoElec','slimmedJets'),
+    	VarsDouble        = cms.VInputTag(cms.InputTag('WeightProducer:weight')),
+    #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
     	)
 
     ## --- Final paths ----------------------------------------------------
