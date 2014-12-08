@@ -243,7 +243,7 @@ def getWeightProducer(fileName):
         weightProducer.weight = cms.double(-1.)
         
 
-    if "TTJets_MSDecaysCKM_central_Tune4C_13TeV" in fileName and "PU20bx250_V5-v2" in fileName:
+    if "TTJets_MSDecaysCKM_central_Tune4C_13TeV" in fileName and "PU20bx25_POSTLS170_V5-v2" in fileName:
         mcVersion = "Spring14miniaod"
         weightProducer.Method     = cms.string("Constant")
         weightProducer.XS         = cms.double(818.8)
