@@ -16,7 +16,7 @@ FlexPrediction.o: FlexPrediction.h FlexPrediction.C Config.h
 Prediction.o: Prediction.h Prediction.cc 
 	g++ $(CFLAG) -c Prediction.cc
 
-Config.o: Config.h Config.cc 
+Config.o: Config.h Config.cc Prediction.h
 	g++ $(CFLAG) -c Config.cc
 main.o: main.cc FlexPrediction.h Config.h
 	g++ $(CFLAG) -c  main.cc

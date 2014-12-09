@@ -16,15 +16,7 @@
 #include "iostream"
 #include <fstream>
 #include "Config.h"
-// added classes
-class Prediction
-{
-public:
-  Prediction();
-  Prediction(std::string Name){Name_=Name;}
-private:
-  std::string Name_;
-};
+#include "Prediction.h"
 
 // Header file for the classes stored in the TTree if any.
 
@@ -46,6 +38,8 @@ public :
    std::map<std::string, Prediction*> predictions_;
    std::map<std::string,Float_t*> treeFloat_ts_;
    std::map<std::string,UShort_t*> treeUShort_ts_;
+   fstream *textOutPut_;
+   bool textOutPutActiv_;
    
    // end of added stuff
 

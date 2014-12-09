@@ -7,6 +7,7 @@
 #include <iostream>
 #include "stdlib.h"
 #include "algorithm"
+#include "Prediction.h"
 class Cuts
 {
 public:
@@ -57,6 +58,8 @@ public:
 	std::map<std::string, Efficiency*> GetEfficiencies (){return efficiencies_;}
 	std::map<std::string,std::string> GetEfficiencySharedValues(){return efficiencySharedValues_;}
 	std::map<std::string, std::vector<Cuts*> > GetCuts(){return cuts_;}
+	std::map<std::string, std::vector<Cuts*> > returnCut(std::vector<std::string> cutStringVector);
+	
 private:
 	// filename and file itself
 	std::string fileName_;
@@ -69,6 +72,7 @@ private:
 	std::vector<std::string> operators_;
 	std::vector<std::string> EfficiencySharedValues_;
 	std::map<std::string,std::string> efficiencySharedValues_;
+	std::map<std::string,Prediction > predictionMap_;
 };
 
 #endif

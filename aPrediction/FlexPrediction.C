@@ -58,9 +58,11 @@ void FlexPrediction::Loop()
 }
 bool FlexPrediction::InitConfig(Config* config, fstream *textOutPut)
 {
+  textOutPut_=textOutPut;
+  textOutPutActiv_=true;
  bool result = true;
- *textOutPut <<"\n------------------------------------------------------------------------------------------------------------------\n";
- *textOutPut <<"----------------------------FlexPrediction::InitConfig started----------------------------------------------------\n";
+ *textOutPut_ <<"\n------------------------------------------------------------------------------------------------------------------\n";
+ *textOutPut_ <<"----------------------------FlexPrediction::InitConfig started----------------------------------------------------\n";
  // load efficiency maps using the config file for defining the input TH2Fs
  // open file and folder
  std::map<std::string, std::string> efficienciesSharedValues = config->GetEfficiencySharedValues();

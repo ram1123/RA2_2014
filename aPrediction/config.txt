@@ -13,4 +13,10 @@ Folder=Efficiencies
 MuonIsoEff(HT,NJets)=MuonIsoNJet2Jet
 
 MuonI2soEff(HT,NJets)=MuonIsoNJet2Jet
+!Prediction
+Name: MuonControlSample
+cut: IsoMuonNum=1, IsoElecNum=0
+ControlSampe: MuonMTW, MuonIsoEff, MuonRecoEff, MuonAccEff
+Prediction: (ScalingFactor,SclaingTwo) MuonAccEff, MuonRecoEff, MuonIsoEff
+Prediction: ElecAccEff, ElecRecoEff, ElecIsoEff
 

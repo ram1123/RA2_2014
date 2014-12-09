@@ -40,6 +40,7 @@ void Config::ReadFile()
   std::string value;
   unsigned int operatorPositionStart; // position of the =
   unsigned int operatorPositionEnd; // position of the =
+  std::vector<std::string> cutsTemp;
   while (!fileStr_.eof())
   {
     line.clear();
@@ -143,7 +144,49 @@ void Config::ReadFile()
       }
       efficiencies_[name]=efficiency;
     }
+    if(sectionName=="Prediction")
+    {
+      Prediction *preTemp;
+      if(line.find("Name:")<line.size())
+      {
+	name = line.substr(5);
+	std::cout<<"Prediction with name: "<<name<<" is being setup"<<std::endl;
+	
+	if(predictionMap_.find(name)!=predictionMap_.end() )
+	{
+	  std::cout<<"Warning Prediction with name: "<<name<<" double defined!! please check config!"<<std::endl;
+	  
+	  
+	}
+	else
+	{
+	  preTemp = new Prediction(name);
+	  cutsTemp.clear();
+	}
+      }
+       if(line.find("selection \\:: label:")<line.size())
+      {
+	cutsTemp.push_back(line);
+      }
+	
+      
+      
+      // finally push back prediction
+      if(preTemp->FullSetupDone() && predictionMap_.find(preTemp->getName())!=predictionMap_.end())
+      {
+	predictionMap_[name]=*preTemp;
+      }
+    }
+    
   }
   initilized_=true;
 }
+std::map<std::string, std::vector<Cuts*> > Config:: returnCut(std::vector<std::string> cutStringVector)
+{
+  std::map<std::string, std::vector<Cuts*> > result;
+  
+  return result;
+}
+
+
 
