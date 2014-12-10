@@ -1,5 +1,5 @@
 import FWCore.ParameterSet.Config as cms
 
 mhtdouble = cms.EDProducer('MhtDouble',
-	MHT               = cms.InputTag('mhtPF'),
+JetTag_               = cms.InputTag('JetTag'),
 )

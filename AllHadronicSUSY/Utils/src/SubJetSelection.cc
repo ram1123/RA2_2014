@@ -94,7 +94,7 @@ SubJetSelection::SubJetSelection(const edm::ParameterSet& iConfig)
 	//now do what ever other initialization is needed
 	//register your products
 	produces<std::vector<Jet> >();
-	produces<std::vector<Float_t> > ("testValue");
+// 	produces<std::vector<Float_t> > ("testValue");
 	
 }
 
@@ -118,9 +118,8 @@ SubJetSelection::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
 	std::auto_ptr<std::vector<Jet> > prodJets(new std::vector<Jet>());
-	std::auto_ptr<std::vector<Float_t> > pFloat(new std::vector<Float_t>());
+// 	std::auto_ptr<std::vector<Float_t> > pFloat(new std::vector<Float_t>());
 	// test
-	std::vector<Float_t> testResult;
 	edm::Handle< edm::View<Jet> > Jets;
 	iEvent.getByLabel(JetTag_,Jets);
 	if(Jets.isValid())
@@ -130,7 +129,7 @@ SubJetSelection::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			if(Jets->at(i).pt()>MinPt_ && std::abs(Jets->at(i).eta() ) < MaxEta_)
 			{
 				prodJets->push_back(Jet(Jets->at(i)) );
-				pFloat->push_back(0.1);
+// 				pFloat->push_back(0.1);
 			}
 		}
 	}
@@ -138,7 +137,7 @@ SubJetSelection::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	const std::string string1("");
 	iEvent.put(prodJets );
 	
-	iEvent.put(pFloat, "testValue");
+// 	iEvent.put(pFloat, "testValue");
 	
 }
 
