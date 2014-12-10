@@ -211,6 +211,10 @@ numProcessedEvt=1000):
     process.NJets = njetint.clone(
     JetTag  = cms.InputTag('HTJets'),
     )
+    from AllHadronicSUSY.Utils.btagint_cfi import btagint
+    process.BTags = btagint.clone(
+    JetTag  = cms.InputTag('HTJets'),
+    )
     from AllHadronicSUSY.Utils.subJetSelection_cfi import SubJetSelection
     process.MHTJets = SubJetSelection.clone(
     JetTag  = cms.InputTag('slimmedJets'),
@@ -221,12 +225,20 @@ numProcessedEvt=1000):
     process.MHT = mhtdouble.clone(
     JetTag  = cms.InputTag('MHTJets'),
     )
+    from AllHadronicSUSY.Utils.metdouble_cfi import metdouble
+    process.MET = metdouble.clone(
+    METTag  = cms.InputTag("slimmedMETs"),
+    )
+    from AllHadronicSUSY.Utils.leptonint_cfi import leptonint
+    process.Leptons = leptonint.clone(
+    LeptonTag = cms.VInputTag(cms.InputTag('selectedIDIsoMuons'),cms.InputTag('selectedIDIsoElectrons')),
+    )
     from AllHadronicSUSY.TreeMaker.treeMaker import TreeMaker
     process.TreeMaker2 = TreeMaker.clone(
     	TreeName          = cms.string("PreSelection"),
     	VarsRecoCand = cms.vstring('selectedIDIsoMuons(selectedIDIsoMuonsName)|AdditionalIntVariable(I_AdditionalIntVariableNameINTree)|AddiationBool(b_NameOfBool)|WeightProducer:Weight(F)','selectedIDMuons','IsolatedTracks|Weight(I)','selectedRecoElec','slimmedJets','HTJets|HTJets:testValue(F)'),
-    	VarsDouble        = cms.VInputTag(cms.InputTag('WeightProducer:weight'),cms.InputTag('MHT'),cms.InputTag('HT')),
-    	VarsInt = cms.VInputTag(cms.InputTag('NJets')),
+    	VarsDouble        = cms.VInputTag(cms.InputTag('WeightProducer:weight'),cms.InputTag('MHT'),cms.InputTag('MET'),cms.InputTag('HT')),
+    	VarsInt = cms.VInputTag(cms.InputTag('NJets'),cms.InputTag('BTags'),cms.InputTag('Leptons')),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
     	)
 
@@ -247,8 +259,11 @@ numProcessedEvt=1000):
       process.HTJets *
       process.HT *
       process.NJets *
+      process.BTags *
       process.MHTJets *
       process.MHT *
+      process.Leptons *
+      process.MET *
   #  	process.dump *
  #   	process.CountIsoTracks *
  #   	process.PrintDecay *
