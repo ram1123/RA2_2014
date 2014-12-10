@@ -324,30 +324,30 @@ TreeMaker::beginJob()
   }
   varsBool_ = std::vector<UChar_t>(varsBoolTags_.size(),0);
   for(unsigned int i = 0; i < varsBoolTags_.size(); ++i) {
-		std::string name = "Bool_";
+		std::string name = "";
 		name += varsBoolTags_.at(i).label();
 		if( varsBoolNames_.size() == varsDoubleTags_.size() ) {
-			name = "Bool_"+varsBoolNames_.at(i);
+			name = varsBoolNames_.at(i);
 		}
 		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
 		TString namet = name;
 		tree_->Branch(namet,&(varsBool_.at(i)),namet+"/b");
 	}
-	varsInt_ = std::vector<Int_t>(varsIntTags_.size(),1);
+	varsInt_ = std::vector<int>(varsIntTags_.size(),1);
 	for(unsigned int i = 0; i < varsIntTags_.size(); ++i) {
-		std::string  name = "Int_" + varsIntTags_.at(i).label();
+		std::string  name = varsIntTags_.at(i).label();
 		if( varsIntNames_.size() == varsIntTags_.size() ) {
-			name = "Int_" +varsIntNames_.at(i);
+			name = varsIntNames_.at(i);
 		}
 		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
 		TString namet = name;
-		tree_->Branch(namet,&(varsIntTags_.at(i)),namet+"/I");
+		tree_->Branch(namet,&(varsInt_.at(i)),namet+"/I");
 	}
 	varsDouble_ = std::vector<Float_t>(varsDoubleTags_.size(),1.);
 	for(unsigned int i = 0; i < varsDouble_.size(); ++i) {
-		std::string  name = "Float_" + varsDoubleTags_.at(i).label();
+		std::string  name = varsDoubleTags_.at(i).label();
 		if( varsDoubleNames_.size() == varsDoubleTags_.size() ) {
-			name = "Float_" +varsDoubleNames_.at(i);
+			name = varsDoubleNames_.at(i);
 		}
 		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
 		TString namet = name;

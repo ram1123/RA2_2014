@@ -52,8 +52,8 @@ class MhtDouble : public edm::EDProducer {
       virtual void endRun(edm::Run&, edm::EventSetup const&);
       virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-edm::InputTag mhtTag_;
-double mht_;
+	    edm::InputTag JetTag_;
+
 
       // ----------member data ---------------------------
 };
@@ -73,9 +73,9 @@ double mht_;
 MhtDouble::MhtDouble(const edm::ParameterSet& iConfig)
 {
    //register your produc
-  mhtTag_ = iConfig.getParameter<edm::InputTag>("MHT");
+   JetTag_ = iConfig.getParameter<edm::InputTag>("JetTag");
 
-  produces<double>("");
+	 produces<double>("");
 /* Examples
    produces<ExampleData2>();
 
@@ -108,13 +108,19 @@ void
 MhtDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   using namespace edm;
-  mht_=0;
-  edm::Handle< edm::View<reco::Candidate> > mht;
-  iEvent.getByLabel(mhtTag_,mht);
-  if( mht.isValid() ) {
-    mht_ = mht->at(0).pt();
+	double mht_=0;
+  edm::Handle< edm::View<reco::Candidate> > Jets;
+	iEvent.getByLabel(JetTag_,Jets);
+	reco::MET::LorentzVector mhtLorentz(0,0,0,0);
+	if( Jets.isValid() ) {
+		for(unsigned int i=0; i<Jets->size();i++)
+		{
+		mhtLorentz -=Jets->at(i).p4();
+		}
   }
-  std::auto_ptr<double> htp(new double(mht_));
+  else std::cout<<"MHTDouble::Invlide Tag: "<<JetTag_.label()<<std::endl;
+  mht_ = mhtLorentz.pt();
+	std::auto_ptr<double> htp(new double(mht_));
   iEvent.put(htp);
  
 }
