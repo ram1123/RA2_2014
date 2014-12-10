@@ -3,19 +3,19 @@
 
 import FWCore.ParameterSet.Config as cms
 
-def makeRA2TreeTreeFromMiniADO(process,
-                    outFileName,
-                    NJetsMin=2,
-                    HTMin=350.,
-                    MHTMin=0.,
-                    reportEveryEvt=10,
-                    testFileName="",
-		    Global_Tag="",
-		    MC=False,
-		    debug = False,
-		    QCD=False,
-		    LostLepton=False,
-                    numProcessedEvt=1000):
+def makeTreeTreeFromMiniADO(process,
+outFileName,
+NJetsMin=2,
+HTMin=350.,
+MHTMin=0.,
+reportEveryEvt=10,
+testFileName="",
+Global_Tag="",
+MC=False,
+debug = False,
+QCD=False,
+LostLepton=False,
+numProcessedEvt=1000):
 
     process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
     process.GlobalTag.globaltag = Global_Tag
@@ -118,29 +118,7 @@ def makeRA2TreeTreeFromMiniADO(process,
     process.WeightProducer.PU                         = cms.int32(0) # PU S10 3 for S10 2 for S7
     process.WeightProducer.FileNamePUDataDistribution = cms.string("NONE")
     print process.WeightProducer.PU
-    from AllHadronicSUSY.RA2TreeMaker.ra2TreeMaker import RA2TreeMaker
-    process.RA2TreeMaker2 = RA2TreeMaker.clone(
-    	TreeName          = cms.string("RA2PreSelection"),
-    	VertexCollection  = cms.InputTag('offlineSlimmedPrimaryVertices'),
-    	VarsDouble        = cms.VInputTag(cms.InputTag('WeightProducer:weight')),
-    	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
-    	Filters           = cms.VInputTag(FilterNames), #FilterNames
-    	MC = MC,
-    	QCD = QCD,  # use this switch to store only information needed for qcd background estimation method
-    	LostLepton = LostLepton, # use this siwtch to store lost lepton relevant information only
-    	debug =debug,
-    	LeptonTag = cms.VInputTag(cms.InputTag('selectedIDIsoMuons'),cms.InputTag('selectedIDMuons'),cms.InputTag('selectedIDIsoElectrons'),cms.InputTag('selectedIDElectrons')),
-    	LeptonTagName = cms.vstring('RecoIsoMuon','RecoMuon','RecoIsoElec','RecoElec'),
-    	IsoTrackTag = cms.VInputTag(cms.InputTag('IsolatedTracks'),cms.InputTag('IsolatedTracksPT10'),cms.InputTag('IsolatedTracksPT10IsoCut08'),cms.InputTag('IsolatedTracksPT10IsoCut12')),
-        IsoTrackTagName = cms.vstring('SelectedIsoTracks','IsolatedTracksPT10','IsolatedTracksPT10IsoCut08','IsolatedTracksPT10IsoCut12'),  ## if name of isoalted track contains::: SelectedIsoTracks they will be counted as IsolatedTracks for final value in tree
-    #RA2JetsTag = cms.InputTag("patJetsAK5PFCHS"),   
-    	RA2DefaultJetsTag = cms.InputTag("slimmedJets"),  
-    	METTag  = cms.InputTag("slimmedMETs"),
-    	ra2JetsCollectionInputTag = cms.VInputTag(cms.InputTag('slimmedJets')),
-    	ra2JetsCollectionNameInTree = cms.vstring('ak4'),
-    	ra2JetsBTagInputTag = cms.vstring('combinedSecondaryVertexBJetTags','combinedSecondaryVertexBJetTags'),
-    	ra2JetsBTagValueInput_ = cms.vdouble(0.679,0.679),
-    ) 
+
     from RecoBTag.Configuration.RecoBTag_cff import *
     from RecoJets.JetAssociationProducers.j2tParametersVX_cfi import *
     process.slimmedJetsPFJetTracksAssociatorAtVertex = cms.EDProducer("JetTracksAssociatorAtVertex",
