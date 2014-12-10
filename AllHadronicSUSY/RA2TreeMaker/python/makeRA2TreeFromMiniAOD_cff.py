@@ -218,11 +218,17 @@ def makeRA2TreeTreeFromMiniADO(process,
       minNumber = 1,
       )
 
-
+    # Producers
+    from AllHadronicSUSY.Utils.subJetSelection_cfi import SubJetSelection
+    process.HTJets = SubJetSelection.clone(
+    JetTag  = cms.InputTag('slimmedJets'),
+    MinPt								  = cms.double(50),
+    MaxEta								  = cms.double(2.5),
+    )
     from AllHadronicSUSY.TreeMaker.treeMaker import TreeMaker
     process.TreeMaker2 = TreeMaker.clone(
     	TreeName          = cms.string("PreSelection"),
-    	VarsRecoCand = cms.vstring('selectedIDIsoMuons(selectedIDIsoMuonsName)|AdditionalIntVariable(I_AdditionalIntVariableNameINTree)|AddiationBool(b_NameOfBool)|WeightProducer:Weight(F)','selectedIDMuons','IsolatedTracks','selectedRecoElec','slimmedJets'),
+    	VarsRecoCand = cms.vstring('selectedIDIsoMuons(selectedIDIsoMuonsName)|AdditionalIntVariable(I_AdditionalIntVariableNameINTree)|AddiationBool(b_NameOfBool)|WeightProducer:Weight(F)','selectedIDMuons','IsolatedTracks|Weight(I)','selectedRecoElec','slimmedJets','HTJets|HTJets:testValue(F)'),
     	VarsDouble        = cms.VInputTag(cms.InputTag('WeightProducer:weight')),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
     	)
@@ -241,7 +247,8 @@ def makeRA2TreeTreeFromMiniADO(process,
  #   	process.IsolatedTracksPT10IsoCut08 *
  #   	process.IsolatedTracksPT10IsoCut12 *
   #  	process.slimmedJetsPFCombinedSecondaryVertexBJetTags *
-   # 	process.dump *
+      process.HTJets *
+  #  	process.dump *
  #   	process.CountIsoTracks *
  #   	process.PrintDecay *
 #    	process.RA2TreeMaker2 *
