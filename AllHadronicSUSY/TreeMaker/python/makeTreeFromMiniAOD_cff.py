@@ -238,6 +238,10 @@ numProcessedEvt=1000):
     process.Leptons = leptonint.clone(
     LeptonTag = cms.VInputTag(cms.InputTag('selectedIDIsoMuons'),cms.InputTag('selectedIDIsoElectrons')),
     )
+    from AllHadronicSUSY.Utils.primaryverticies_cfi import primaryverticies
+    process.NVtx = primaryverticies.clone(
+    VertexCollection  = cms.InputTag('offlineSlimmedPrimaryVertices'),
+    )
     from AllHadronicSUSY.TreeMaker.treeMaker import TreeMaker
     process.TreeMaker2 = TreeMaker.clone(
     	TreeName          = cms.string("PreSelection"),
@@ -245,7 +249,7 @@ numProcessedEvt=1000):
     	VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
     	VarsDouble        = cms.VInputTag(cms.InputTag('WeightProducer:weight'),cms.InputTag('MHT'),cms.InputTag('MET'),cms.InputTag('HT'),cms.InputTag('DeltaPhi:DeltaPhi1'),cms.InputTag('DeltaPhi:DeltaPhi2'),cms.InputTag('DeltaPhi:DeltaPhi3'),),
     	VarsDoubleNamesInTree = cms.vstring('WeightProducer','MHT','MET','HT','DeltaPhi1','DeltaPhi2','DeltaPhi3'),
-    	VarsInt = cms.VInputTag(cms.InputTag('NJets'),cms.InputTag('BTags'),cms.InputTag('Leptons')),
+    	VarsInt = cms.VInputTag(cms.InputTag('NJets'),cms.InputTag('BTags'),cms.InputTag('Leptons'),cms.InputTag('NVtx')),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
     	)
 
@@ -272,6 +276,7 @@ numProcessedEvt=1000):
       process.Leptons *
       process.MET *
       process.DeltaPhi *
+      process.NVtx *
   #  	process.dump *
  #   	process.CountIsoTracks *
  #   	process.PrintDecay *
