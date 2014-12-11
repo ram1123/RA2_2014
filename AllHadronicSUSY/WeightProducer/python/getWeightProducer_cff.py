@@ -295,7 +295,56 @@ def getWeightProducer(fileName):
         weightProducer.NumberEvts = cms.double(2907137)  
         print "WJetsToLNu_HT-600toIn : '"+fileName+"'"
         applyWeight = True
-        weightProducer.weight = cms.double(-1.)     
+        weightProducer.weight = cms.double(-1.)   
+     #signal
+    if "SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola" in fileName and "PU_S14_POSTLS170_V6AN1" in fileName:
+			   mcVersion = "Spring14dr"
+			   weightProducer.Method     = cms.string("Constant")
+			   weightProducer.XS         = cms.double(0.0856418)
+			   weightProducer.NumberEvts = cms.double(100322)  
+			   print "SMS-T1tttt_2J_mGl-1200_mLSP-800 : '"+fileName+"'"
+			   applyWeight = True
+			   weightProducer.weight = cms.double(-1.)   
+    if "SMS-T1tttt_2J_mGl-1500_mLSP-100_Tune4C_13TeV-madgraph-tauola" in fileName and "PU_S14_POSTLS170_V6AN1" in fileName:
+				 mcVersion = "Spring14dr"
+				 weightProducer.Method     = cms.string("Constant")
+				 weightProducer.XS         = cms.double(0.0141903)
+				 weightProducer.NumberEvts = cms.double(105679)  
+				 print "SMS-T1tttt_2J_mGl-1500_mLSP-100 : '"+fileName+"'"
+				 applyWeight = True
+				 weightProducer.weight = cms.double(-1.)  
+    if "SMS-T1bbbb_2J_mGl-1000_mLSP-900_Tune4C_13TeV-madgraph-tauola" in fileName and "PU_S14_POSTLS170_V6AN1" in fileName:
+				 mcVersion = "Spring14dr"
+				 weightProducer.Method     = cms.string("Constant")
+				 weightProducer.XS         = cms.double(0.325388)
+				 weightProducer.NumberEvts = cms.double(97584)  
+				 print "T1bbbb_2J_mGl-1000_mLSP-900 : '"+fileName+"'"
+				 applyWeight = True
+				 weightProducer.weight = cms.double(-1.)  
+    if "SMS-T1bbbb_2J_mGl-1500_mLSP-100_Tune4C_13TeV-madgraph-tauola" in fileName and "PU_S14_POSTLS170_V6AN1" in fileName:
+				 mcVersion = "Spring14dr"
+				 weightProducer.Method     = cms.string("Constant")
+				 weightProducer.XS         = cms.double(0.0141903)
+				 weightProducer.NumberEvts = cms.double(105964)  
+				 print "SMS-T1bbbb_2J_mGl-1500_mLSP-100 : '"+fileName+"'"
+				 applyWeight = True
+				 weightProducer.weight = cms.double(-1.)  
+    if "SMS-T1qqqq_2J_mGl-1000_mLSP-800_Tune4C_13TeV-madgraph-tauola" in fileName and "PU_S14_POSTLS170_V6AN1" in fileName:
+				 mcVersion = "Spring14dr"
+				 weightProducer.Method     = cms.string("Constant")
+				 weightProducer.XS         = cms.double(0.325388)
+				 weightProducer.NumberEvts = cms.double(97513)  
+				 print "SMS-T1qqqq_2J_mGl-1000_mLSP-800 : '"+fileName+"'"
+				 applyWeight = True
+				 weightProducer.weight = cms.double(-1.)  
+    if "SMS-T1qqqq_2J_mGl-1400_mLSP-100_Tune4C_13TeV-madgraph-tauola" in fileName and "PU_S14_POSTLS170_V6AN1" in fileName:
+				 mcVersion = "Spring14dr"
+				 weightProducer.Method     = cms.string("Constant")
+				 weightProducer.XS         = cms.double(0.0252977)
+				 weightProducer.NumberEvts = cms.double(103943)  
+				 print "SMS-T1qqqq_2J_mGl-1400_mLSP-100 : '"+fileName+"'"
+				 applyWeight = True
+				 weightProducer.weight = cms.double(-1.)  
         
     ## --- PU Reweighting and Lumi ------------------------------------------------
          

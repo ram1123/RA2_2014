@@ -225,6 +225,11 @@ numProcessedEvt=1000):
     process.MHT = mhtdouble.clone(
     JetTag  = cms.InputTag('MHTJets'),
     )
+    from AllHadronicSUSY.Utils.deltaphidouble_cfi import deltaphidouble
+    process.DeltaPhi = deltaphidouble.clone(
+    DeltaPhiJets  = cms.InputTag('HTJets'),
+    MHTJets  = cms.InputTag("MHTJets"),
+    )
     from AllHadronicSUSY.Utils.metdouble_cfi import metdouble
     process.MET = metdouble.clone(
     METTag  = cms.InputTag("slimmedMETs"),
@@ -236,8 +241,10 @@ numProcessedEvt=1000):
     from AllHadronicSUSY.TreeMaker.treeMaker import TreeMaker
     process.TreeMaker2 = TreeMaker.clone(
     	TreeName          = cms.string("PreSelection"),
-    	VarsRecoCand = cms.vstring('selectedIDIsoMuons(selectedIDIsoMuonsName)|AdditionalIntVariable(I_AdditionalIntVariableNameINTree)|AddiationBool(b_NameOfBool)|WeightProducer:Weight(F)','selectedIDMuons','IsolatedTracks|Weight(I)','selectedRecoElec','slimmedJets','HTJets|HTJets:testValue(F)'),
-    	VarsDouble        = cms.VInputTag(cms.InputTag('WeightProducer:weight'),cms.InputTag('MHT'),cms.InputTag('MET'),cms.InputTag('HT')),
+    	# example VarsRecoCand = cms.vstring('selectedIDIsoMuons','IsolatedTracks','selectedIDIsoElectrons','HTJets|HTJets:testValue(F)','selectedIDIsoMuons(selectedIDIsoMuonsName)|AdditionalIntVariable(I_AdditionalIntVariableNameINTree)|AddiationBool(b_NameOfBool)|WeightProducer:Weight(F)'),
+    	VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
+    	VarsDouble        = cms.VInputTag(cms.InputTag('WeightProducer:weight'),cms.InputTag('MHT'),cms.InputTag('MET'),cms.InputTag('HT'),cms.InputTag('DeltaPhi:DeltaPhi1'),cms.InputTag('DeltaPhi:DeltaPhi2'),cms.InputTag('DeltaPhi:DeltaPhi3'),),
+    	VarsDoubleNamesInTree = cms.vstring('WeightProducer','MHT','MET','HT','DeltaPhi1','DeltaPhi2','DeltaPhi3'),
     	VarsInt = cms.VInputTag(cms.InputTag('NJets'),cms.InputTag('BTags'),cms.InputTag('Leptons')),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
     	)
@@ -264,10 +271,10 @@ numProcessedEvt=1000):
       process.MHT *
       process.Leptons *
       process.MET *
+      process.DeltaPhi *
   #  	process.dump *
  #   	process.CountIsoTracks *
  #   	process.PrintDecay *
-#    	process.RA2TreeMaker2 *
     	process.TreeMaker2
 
         )
