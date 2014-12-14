@@ -116,9 +116,9 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		iEvent.getByLabel(varsTLorentzVectorTags_.at(i),var);
 		if( var.isValid() ) 
 		{
-			for(unsigned int i=0; i< var->size();i++)
+			for(unsigned int ii=0; ii< var->size();ii++)
 			{
-				vectorTLorentzVector_.at(i).push_back(var->at(i));
+				vectorTLorentzVector_.at(i).push_back(var->at(ii));
 			}
 		}
 	}
