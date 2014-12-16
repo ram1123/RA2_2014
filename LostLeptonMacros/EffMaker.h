@@ -22,7 +22,7 @@ const bool saveEffToPDF_=true;
 const bool saveEffToPNG_=true;
 // cuts baseline
 const double minHT_=350;
-const double minMHT_=200;
+const double minMHT_=100;
 const double minNJets_=1.9;
 const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;

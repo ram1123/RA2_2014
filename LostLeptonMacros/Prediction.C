@@ -544,7 +544,7 @@ void Prediction::Terminate()
    // The Terminate() function is the last function to be called during
    // a query. It always runs on the client, it can be used to present
    // the results graphically or save the results to file.
-  TFile *outPutFile = new TFile("PredictionQCD.root","RECREATE"); ;
+  TFile *outPutFile = new TFile("Prediction.root","RECREATE"); ;
    outPutFile->cd();
    tPrediction_->Write();
 

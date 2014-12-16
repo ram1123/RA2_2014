@@ -11,11 +11,11 @@ void MakePrediction()
 	//TProof *proof = TProof::Open(connect);
 	// analyse the trees
  	TChain *Effchain = new TChain("RA2TreeMaker2/RA2PreSelection");
-//  	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauolaPU20bx25_V5-v2/*.root");
-// 	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-200to400/*root");
-//   	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-400to600/*root");
-//   	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-600toInf/*root");
-		Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/QCD_Pt-470to600_Tune4C_13TeV_pythia8_PU20bx25_POSTLS170_V5-v1/*.root");
+  	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauolaPU20bx25_V5-v2/*.root");
+  	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-200to400/*root");
+   	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-400to600/*root");
+   	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/WJetsToLNu_HT-600toInf/*root");
+	//	Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/mc/QCD_Pt-470to600_Tune4C_13TeV_pythia8_PU20bx25_POSTLS170_V5-v1/*.root");
 // 		Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/signal/25ns20PU.SMS-T1bbbb_2J_mGl-1000_mLSP-900*root");
 //  	       Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/signal/25ns20PU.SMS-T1bbbb_2J_mGl-1500_mLSP-100*root");
 // 		Effchain->Add("/nfs/dust/cms/user/adraeger/CSA2014/signal/25ns20PU.SMS-T1qqqq_2J_mGl-1000_mLSP-800*root");	
