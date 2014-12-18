@@ -206,6 +206,38 @@ TreeMaker::beginJob()
 	tree_->Branch("RunNum",&runNum_,"RunNum/i");
 	tree_->Branch("LumiBlockNum",&lumiBlockNum_,"LumiBlockNum/i");
 	tree_->Branch("EvtNum",&evtNum_,"EvtNum/i");
+	
+	varsDouble_ = std::vector<Float_t>(varsDoubleTags_.size(),1.);
+	for(unsigned int i = 0; i < varsDouble_.size(); ++i) {
+		std::string  name = varsDoubleTags_.at(i).label();
+		if( varsDoubleNames_.size() == varsDoubleTags_.size() ) {
+			name = varsDoubleNames_.at(i);
+		}
+		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
+		TString namet = name;
+		tree_->Branch(namet,&(varsDouble_.at(i)),namet+"/F");
+	}
+	varsInt_ = std::vector<int>(varsIntTags_.size(),1);
+	for(unsigned int i = 0; i < varsIntTags_.size(); ++i) {
+		std::string  name = varsIntTags_.at(i).label();
+		if( varsIntNames_.size() == varsIntTags_.size() ) {
+			name = varsIntNames_.at(i);
+		}
+		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
+		TString namet = name;
+		tree_->Branch(namet,&(varsInt_.at(i)),namet+"/I");
+	}
+	varsBool_ = std::vector<UChar_t>(varsBoolTags_.size(),0);
+	for(unsigned int i = 0; i < varsBoolTags_.size(); ++i) {
+		std::string name = "";
+		name += varsBoolTags_.at(i).label();
+		if( varsBoolNames_.size() == varsDoubleTags_.size() ) {
+			name = varsBoolNames_.at(i);
+		}
+		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
+		TString namet = name;
+		tree_->Branch(namet,&(varsBool_.at(i)),namet+"/b");
+	}
   // loop over input varsFloat string to extract optional names in tree
 	RecoCandN_ = std::vector<UShort_t>(varsRecoCandNames_.size(),0);
   for(unsigned int i=0; i<varsRecoCandNames_.size();i++)
@@ -297,7 +329,8 @@ TreeMaker::beginJob()
 				
 				RecoCandAdditionalBoolVariablesTags_[i].push_back(edm::InputTag(tag ) );
 				RecoCandAdditionalBoolVariables_[i].push_back(new UChar_t[200]);
-				tree_->Branch((mainNameInTree+"_"+nameInTree).c_str(), RecoCandAdditionalBoolVariables_.at(i).at(countBool), (mainNameInTree+"_"+nameInTree+"["+mainNameInTree+"Num]/b").c_str());
+// 				tree_->Branch((mainNameInTree+"_"+nameInTree).c_str(), RecoCandAdditionalBoolVariables_.at(i).at(countBool), (mainNameInTree+"_"+nameInTree+"["+mainNameInTree+"Num]/b").c_str());
+				tree_->Branch((nameInTree).c_str(), RecoCandAdditionalBoolVariables_.at(i).at(countBool), (nameInTree+"["+mainNameInTree+"Num]/b").c_str());
 				countBool++;
 			}
 			if(typ==1)
@@ -305,7 +338,8 @@ TreeMaker::beginJob()
 				
 				RecoCandAdditionalIntVariablesTags_[i].push_back(edm::InputTag(tag ) );
 				RecoCandAdditionalIntVariables_[i].push_back(new Int_t[200]);
-				tree_->Branch((mainNameInTree+"_"+nameInTree).c_str(), RecoCandAdditionalIntVariables_.at(i).at(countInt), (mainNameInTree+"_"+nameInTree+"["+mainNameInTree+"Num]/I").c_str());
+// 				tree_->Branch((mainNameInTree+"_"+nameInTree).c_str(), RecoCandAdditionalIntVariables_.at(i).at(countInt), (mainNameInTree+"_"+nameInTree+"["+mainNameInTree+"Num]/I").c_str());
+				tree_->Branch((nameInTree).c_str(), RecoCandAdditionalIntVariables_.at(i).at(countInt), (nameInTree+"["+mainNameInTree+"Num]/I").c_str());
 				countInt++;
 			}
 			if(typ==2)
@@ -322,37 +356,6 @@ TreeMaker::beginJob()
 		RecoCandAdditionalIntVariablesN_.push_back(countInt);
 		RecoCandAdditionalFloatVariablesN_.push_back(countFloat);
   }
-  varsBool_ = std::vector<UChar_t>(varsBoolTags_.size(),0);
-  for(unsigned int i = 0; i < varsBoolTags_.size(); ++i) {
-		std::string name = "";
-		name += varsBoolTags_.at(i).label();
-		if( varsBoolNames_.size() == varsDoubleTags_.size() ) {
-			name = varsBoolNames_.at(i);
-		}
-		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
-		TString namet = name;
-		tree_->Branch(namet,&(varsBool_.at(i)),namet+"/b");
-	}
-	varsInt_ = std::vector<int>(varsIntTags_.size(),1);
-	for(unsigned int i = 0; i < varsIntTags_.size(); ++i) {
-		std::string  name = varsIntTags_.at(i).label();
-		if( varsIntNames_.size() == varsIntTags_.size() ) {
-			name = varsIntNames_.at(i);
-		}
-		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
-		TString namet = name;
-		tree_->Branch(namet,&(varsInt_.at(i)),namet+"/I");
-	}
-	varsDouble_ = std::vector<Float_t>(varsDoubleTags_.size(),1.);
-	for(unsigned int i = 0; i < varsDouble_.size(); ++i) {
-		std::string  name = varsDoubleTags_.at(i).label();
-		if( varsDoubleNames_.size() == varsDoubleTags_.size() ) {
-			name = varsDoubleNames_.at(i);
-		}
-		name.erase (std::remove (name.begin(), name.end(), ':'), name.end());
-		TString namet = name;
-		tree_->Branch(namet,&(varsDouble_.at(i)),namet+"/F");
- 	}
  	varsTLorentzVector_ = std::vector<TLorentzVector>(varsTLorentzVectorTags_.size(),TLorentzVector(0.,0.,0.,0.));
  	for(unsigned int i = 0; i < varsTLorentzVectorTags_.size(); ++i) {
 		std::string  name = "TLorentzVector_";

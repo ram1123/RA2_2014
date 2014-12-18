@@ -233,6 +233,7 @@ def getWeightProducer(fileName):
         
     print "---------------------------------------------------------------"
         # 13 TeV miniAOD samples
+        #csa14
     if "TTJets_MSDecaysCKM_central_Tune4C_13TeV" in fileName and "PU40bx25_POSTLS170_V5-v2" in fileName:
         mcVersion = "Spring14miniaod"
         weightProducer.Method     = cms.string("Constant")
@@ -345,6 +346,24 @@ def getWeightProducer(fileName):
 				 print "SMS-T1qqqq_2J_mGl-1400_mLSP-100 : '"+fileName+"'"
 				 applyWeight = True
 				 weightProducer.weight = cms.double(-1.)  
+    if "TTJets_MSDecaysCKM_central_Tune4C_13TeV" in fileName and "PU40bx25_POSTLS170_V5-v2" in fileName:
+        mcVersion = "Spring14miniaod"
+        weightProducer.Method     = cms.string("Constant")
+        weightProducer.XS         = cms.double(745.16)
+        weightProducer.NumberEvts = cms.double(25478151)  
+        print "TTJets_MSDecaysCKM_central_Tune4C_13TeV_PU50x25_V5_v2 : '"+fileName+"'"
+        applyWeight = True
+        weightProducer.weight = cms.double(-1.)
+        
+    #phys14
+    if "TTJets_MSDecaysCKM_central_Tune4C_13TeV" in fileName and "PU20bx25_PHYS14_25_V1-v1" in fileName:
+			mcVersion = "Phys14DR"
+			weightProducer.Method     = cms.string("Constant")
+			weightProducer.XS         = cms.double(818.8)
+			weightProducer.NumberEvts = cms.double(25446993)  
+			print "TTJets_MSDecaysCKM_central_Tune4C_13TeV_PU50x25_V5_v2 : '"+fileName+"'"
+			applyWeight = True
+			weightProducer.weight = cms.double(-1.)
         
     ## --- PU Reweighting and Lumi ------------------------------------------------
          

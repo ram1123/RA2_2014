@@ -70,24 +70,24 @@ numProcessedEvt=1000):
     # leptons
     process.load("PhysicsTools.PatAlgos.selectionLayer1.muonCountFilter_cfi")
     process.load("PhysicsTools.PatAlgos.selectionLayer1.electronCountFilter_cfi")
-    process.selectedIDIsoMuons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedMuons"), cut = cms.string('''abs(eta)<2.5 && pt>10. &&
+    process.selectedIDIsoMuons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedMuons"), cut = cms.string('''abs(eta)<2.5 && pt>5. &&
     (pfIsolationR04().sumChargedHadronPt+
     max(0.,pfIsolationR04().sumNeutralHadronEt+
     pfIsolationR04().sumPhotonEt-
-    0.50*pfIsolationR04().sumPUPt))/pt < 0.20 && 
+    0.50*pfIsolationR04().sumPUPt))/pt < 0.20 &&
     (isPFMuon && (isGlobalMuon || isTrackerMuon) )'''))
-    process.selectedIDMuons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedMuons"), cut = cms.string('''abs(eta)<2.5 && pt>10. && 
+    process.selectedIDMuons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedMuons"), cut = cms.string('''abs(eta)<2.5 && pt>5. &&
     (isPFMuon && (isGlobalMuon || isTrackerMuon) )'''))
-    process.selectedIDIsoElectrons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedElectrons"), cut = cms.string('''abs(eta)<2.5 && pt>10. &&
+    process.selectedIDIsoElectrons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedElectrons"), cut = cms.string('''abs(eta)<2.5 && pt>5. &&
     gsfTrack.isAvailable() &&
-    gsfTrack.trackerExpectedHitsInner.numberOfLostHits<2 &&
+    gsfTrack.hitPattern().numberOfLostHits('MISSING_INNER_HITS')<2 &&
     (pfIsolationVariables().sumChargedHadronPt+
     max(0.,pfIsolationVariables().sumNeutralHadronEt+
     pfIsolationVariables().sumPhotonEt-
     0.5*pfIsolationVariables().sumPUPt))/pt < 0.20'''))
-    process.selectedIDElectrons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedElectrons"), cut = cms.string('''abs(eta)<2.5 && pt>10. &&
+    process.selectedIDElectrons = cms.EDFilter("CandPtrSelector", src = cms.InputTag("slimmedElectrons"), cut = cms.string('''abs(eta)<2.5 && pt>5. &&
     gsfTrack.isAvailable() &&
-    gsfTrack.trackerExpectedHitsInner.numberOfLostHits<2'''))
+    gsfTrack.hitPattern().numberOfLostHits('MISSING_INNER_HITS')<2'''))
     
     
        ## --- Setup of TreeMaker ----------------------------------------------
@@ -242,11 +242,15 @@ numProcessedEvt=1000):
     process.NVtx = primaryverticies.clone(
     VertexCollection  = cms.InputTag('offlineSlimmedPrimaryVertices'),
     )
+    from AllHadronicSUSY.Utils.genLeptonRecoCand_cfi import genLeptonRecoCand
+    process.GenLeptons = genLeptonRecoCand.clone(
+    PrunedGenParticleTag  = cms.InputTag("prunedGenParticles"),
+    )
     from AllHadronicSUSY.TreeMaker.treeMaker import TreeMaker
     process.TreeMaker2 = TreeMaker.clone(
     	TreeName          = cms.string("PreSelection"),
     	# example VarsRecoCand = cms.vstring('selectedIDIsoMuons','IsolatedTracks','selectedIDIsoElectrons','HTJets|HTJets:testValue(F)','selectedIDIsoMuons(selectedIDIsoMuonsName)|AdditionalIntVariable(I_AdditionalIntVariableNameINTree)|AddiationBool(b_NameOfBool)|WeightProducer:Weight(F)'),
-    	VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
+    	VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDMuons','selectedIDIsoElectrons','selectedIDElectrons','IsolatedTracks','HTJets','GenLeptons:Boson(GenBoson)|GenLeptons:BosonPDGId(I_GenBosonPDGId)','GenLeptons:Muon(GenMu)|GenLeptons:MuonTauDecay(I_GenMuFromTau)' ,'GenLeptons:Electron(GenElec)|GenLeptons:ElectronTauDecay(I_GenElecFromTau)','GenLeptons:Tau(GenTau)|GenLeptons:TauHadronic(I_GenTauHad)'),
     	VarsDouble        = cms.VInputTag(cms.InputTag('WeightProducer:weight'),cms.InputTag('MHT'),cms.InputTag('MET'),cms.InputTag('HT'),cms.InputTag('DeltaPhi:DeltaPhi1'),cms.InputTag('DeltaPhi:DeltaPhi2'),cms.InputTag('DeltaPhi:DeltaPhi3'),),
     	VarsDoubleNamesInTree = cms.vstring('WeightProducer','MHT','MET','HT','DeltaPhi1','DeltaPhi2','DeltaPhi3'),
     	VarsInt = cms.VInputTag(cms.InputTag('NJets'),cms.InputTag('BTags'),cms.InputTag('Leptons'),cms.InputTag('NVtx')),
@@ -277,7 +281,8 @@ numProcessedEvt=1000):
       process.MET *
       process.DeltaPhi *
       process.NVtx *
-  #  	process.dump *
+      process.GenLeptons *
+    	#process.dump *
  #   	process.CountIsoTracks *
  #   	process.PrintDecay *
     	process.TreeMaker2
