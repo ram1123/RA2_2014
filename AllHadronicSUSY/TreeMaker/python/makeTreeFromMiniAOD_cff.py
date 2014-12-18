@@ -249,8 +249,8 @@ numProcessedEvt=1000):
     from AllHadronicSUSY.TreeMaker.treeMaker import TreeMaker
     process.TreeMaker2 = TreeMaker.clone(
     	TreeName          = cms.string("PreSelection"),
-    	# example VarsRecoCand = cms.vstring('selectedIDIsoMuons','IsolatedTracks','selectedIDIsoElectrons','HTJets|HTJets:testValue(F)','selectedIDIsoMuons(selectedIDIsoMuonsName)|AdditionalIntVariable(I_AdditionalIntVariableNameINTree)|AddiationBool(b_NameOfBool)|WeightProducer:Weight(F)'),
-    	VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDMuons','selectedIDIsoElectrons','selectedIDElectrons','IsolatedTracks','HTJets','GenLeptons:Boson(GenBoson)|GenLeptons:BosonPDGId(I_GenBosonPDGId)','GenLeptons:Muon(GenMu)|GenLeptons:MuonTauDecay(I_GenMuFromTau)' ,'GenLeptons:Electron(GenElec)|GenLeptons:ElectronTauDecay(I_GenElecFromTau)','GenLeptons:Tau(GenTau)|GenLeptons:TauHadronic(I_GenTauHad)'),
+    #	VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDMuons','selectedIDIsoElectrons','selectedIDElectrons','IsolatedTracks','HTJets','GenLeptons:Boson(GenBoson)|GenLeptons:BosonPDGId(I_GenBosonPDGId)','GenLeptons:Muon(GenMu)|GenLeptons:MuonTauDecay(I_GenMuFromTau)' ,'GenLeptons:Electron(GenElec)|GenLeptons:ElectronTauDecay(I_GenElecFromTau)','GenLeptons:Tau(GenTau)|GenLeptons:TauHadronic(I_GenTauHad)'),
+    	VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
     	VarsDouble        = cms.VInputTag(cms.InputTag('WeightProducer:weight'),cms.InputTag('MHT'),cms.InputTag('MET'),cms.InputTag('HT'),cms.InputTag('DeltaPhi:DeltaPhi1'),cms.InputTag('DeltaPhi:DeltaPhi2'),cms.InputTag('DeltaPhi:DeltaPhi3'),),
     	VarsDoubleNamesInTree = cms.vstring('WeightProducer','MHT','MET','HT','DeltaPhi1','DeltaPhi2','DeltaPhi3'),
     	VarsInt = cms.VInputTag(cms.InputTag('NJets'),cms.InputTag('BTags'),cms.InputTag('Leptons'),cms.InputTag('NVtx')),
@@ -281,7 +281,7 @@ numProcessedEvt=1000):
       process.MET *
       process.DeltaPhi *
       process.NVtx *
-      process.GenLeptons *
+ #     process.GenLeptons *
     	#process.dump *
  #   	process.CountIsoTracks *
  #   	process.PrintDecay *
