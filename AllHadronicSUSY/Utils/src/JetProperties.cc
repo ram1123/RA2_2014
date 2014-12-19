@@ -94,11 +94,11 @@ JetProperties::JetProperties(const edm::ParameterSet& iConfig)
 	const std::string string1("chargedHadronEnergyFraction");
 	produces<std::vector<double> > (string1).setBranchAlias(string1);
 	const std::string string2("chargedHadronMultiplicity");
-	produces<std::vector<double> > (string2).setBranchAlias(string2);
+	produces<std::vector<int> > (string2).setBranchAlias(string2);
 	const std::string string3("neutralHadronEnergyFraction");
 	produces<std::vector<double> > (string3).setBranchAlias(string3);
 	const std::string string4("neutralHadronMultiplicity");
-	produces<std::vector<double> > (string4).setBranchAlias(string4);
+	produces<std::vector<int> > (string4).setBranchAlias(string4);
 	const std::string string5("chargedEmEnergyFraction");
 	produces<std::vector<double> > (string5).setBranchAlias(string5);
 	const std::string string6("neutralEmEnergyFraction");
@@ -106,15 +106,15 @@ JetProperties::JetProperties(const edm::ParameterSet& iConfig)
 // 	const std::string string7("patJetsNeutralEmFractionPBNR");
 // 	produces<std::vector<double> > (string7).setBranchAlias(string7);
 	const std::string string8("electronMultiplicity");
-	produces<std::vector<double> > (string8).setBranchAlias(string8);
+	produces<std::vector<int> > (string8).setBranchAlias(string8);
 	const std::string string9("photonEnergyFraction");
 	produces<std::vector<double> > (string9).setBranchAlias(string9);
 	const std::string string10("photonMultiplicity");
-	produces<std::vector<double> > (string10).setBranchAlias(string10);
+	produces<std::vector<int> > (string10).setBranchAlias(string10);
 	const std::string string11("muonEnergyFraction");
 	produces<std::vector<double> > (string11).setBranchAlias(string11);
 	const std::string string12("muonMultiplicity");
-	produces<std::vector<double> > (string12).setBranchAlias(string12);
+	produces<std::vector<int> > (string12).setBranchAlias(string12);
 	const std::string string13("bDiscriminator");
 	produces<std::vector<double> > (string13).setBranchAlias(string13);
 	
@@ -143,18 +143,18 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	
 	std::auto_ptr< std::vector<double> > jetArea(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > chargedHadronEnergyFraction(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > chargedHadronMultiplicity(new std::vector<double>);
+	std::auto_ptr< std::vector<int> > chargedHadronMultiplicity(new std::vector<int>);
 	std::auto_ptr< std::vector<double> > neutralHadronEnergyFraction(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > neutralHadronMultiplicity(new std::vector<double>);
+	std::auto_ptr< std::vector<int> > neutralHadronMultiplicity(new std::vector<int>);
 	std::auto_ptr< std::vector<double> > chargedEmEnergyFraction(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > neutralEmEnergyFraction(new std::vector<double>);
 // 	std::auto_ptr< std::vector<double> > patJetsNeutralEmFractionPBNR(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > electronEnergyFraction(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > electronMultiplicity(new std::vector<double>);
+	std::auto_ptr< std::vector<int> > electronMultiplicity(new std::vector<int>);
 	std::auto_ptr< std::vector<double> > photonEnergyFraction(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > photonMultiplicity(new std::vector<double>);
+	std::auto_ptr< std::vector<int> > photonMultiplicity(new std::vector<int>);
 	std::auto_ptr< std::vector<double> > muonEnergyFraction(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > muonMultiplicity(new std::vector<double>);
+	std::auto_ptr< std::vector<int> > muonMultiplicity(new std::vector<int>);
 	std::auto_ptr< std::vector<double> > bDiscriminator(new std::vector<double>);
 	using namespace edm;
 	using namespace reco;
