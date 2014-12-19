@@ -180,7 +180,6 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			muonEnergyFraction->push_back( Jets->at(i).muonEnergyFraction() );
 			muonMultiplicity->push_back( Jets->at(i).muonMultiplicity() );
 			bDiscriminator->push_back( Jets->at(i).bDiscriminator(btagname_) );
-			std::cout<<"bDiscriminator: "<<Jets->at(i).bDiscriminator(btagname_) <<std::endl;
 		}
 	}
 	const std::string string00("");
