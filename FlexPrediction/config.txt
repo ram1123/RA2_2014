@@ -1,0 +1,42 @@
+# everyting in a line after # will be treated as comment and will be ignored 
+# every space and tabular will be removed so have no effect
+# basic syntax example:
+#all sections start with a !
+!AnalyzeRootFiles
+/nfs/dust/cms/user/adraeger/CSA2014/mc/LostLeptonStudies/Expectation.root
+/nfs/dust/cms/user/adraeger/CSA2014/mc/LostLeptonStudies/Expectation.root
+/nfs/dust/cms/user/adraeger/CSA2014/mc/LostLeptonStudies/Expectation.root
+/nfs/dust/cms/user/adraeger/CSA2014/mc/LostLeptonStudies/Expectation.root
+/nfs/dust/cms/user/adraeger/CSA2014/mc/LostLeptonStudies/Expectation.root
+/nfs/dust/cms/user/adraeger/CSA2014/mc/LostLeptonStudies/Expectation.root
+
+
+!Variables
+NJets=UShort_t::N_{Jets}
+HT=Float_t::H_{T}
+MHT=Float_t::MH_{T}
+!Cuts # always start with the name which must be defined in !Variables followed by operator and the cut value no multi cuts in a line. This is equivalent for a baseline selection eg global cuts
+NJets<=3
+MHT>=211.3
+!Efficiencies # define here the efficiency maps which should be used for the preediction note the parametirzation variables must be defined in the !Variables section
+FileName= /nfs/dust/cms/user/adraeger/CSA2014/mc/LostLeptonStudies/Expectation.root # tfile in which all Efficiencies are stored!!
+Folder=Efficiencies #name of folder in the tFile
+MuonPurity(MHT,NJets)::MuonPurity
+MuonIsoEff(HT,NJets)::MuonIsoNJet2Jet
+MuonIsoReco1D(NJets):: MuonReco1D
+Scaling(NJets):: Scaling
+MuonPurity1(HT):: MuonPurity1
+ScalingMuonToElectron(HT,MHT)::ScalingMuonToElectron
+
+!Prediction # define here predictions each one must end with Done:
+Name:: MuonControlSample
+Cut ::  NJets>4
+Purity:: MuonPurity
+ControlSample:: MuonIsoNJet2Jet
+ScalingControlSampleToPrediction:: ScalingMuonToElectron
+Prediction:: MuonReco1D,MuonIsoNJet2Jet
+Done:
+
+
+
+
