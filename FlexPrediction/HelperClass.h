@@ -131,9 +131,10 @@ public:
   std::vector<std::string> GetInputRootFileName(){return InputRootFileNameVector_;}
   std::pair <std::string,std::string> SeparateString(std::string InputStr, std::string Separater);
 	std::vector<std::string> SeparateStringToVector(std::string InputStr, std::string Separater);
+	std::string GetInputTreeName(){return InputTreeName_;}
   ~Config();
 private:
-  std::string fileName_;
+  std::string fileName_, InputTreeName_;
   void ReadFile();
   std::ifstream fileStr_;
   // used operators for analysization 

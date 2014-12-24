@@ -82,6 +82,11 @@ void Config::ReadFile()
 			{
 				InputRootFileNameVector_.push_back(line);
 			}
+			else if( line.find("TreeName=")<line.size() )
+			{
+			  InputTreeName_ =  SeparateString(line,"=").second;
+			  std::cout<<"Config::Global InputTreeName: "<<InputTreeName_<<std::endl;
+			}
 			else std::cout<<"Config::Error file name from config does not contain .root probably a problem, skipping file. line: "<<line<<std::endl;
 			
 		}

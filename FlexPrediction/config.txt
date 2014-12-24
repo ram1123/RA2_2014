@@ -3,6 +3,7 @@
 # basic syntax example:
 #all sections start with a !
 !AnalyzeRootFiles
+TreeName = TreeMaker2/PreSelection
 /nfs/dust/cms/user/adraeger/CSA2014/mc/LostLeptonStudies/Expectation.root
 /nfs/dust/cms/user/adraeger/CSA2014/mc/LostLeptonStudies/Expectation.root
 /nfs/dust/cms/user/adraeger/CSA2014/mc/LostLeptonStudies/Expectation.root
