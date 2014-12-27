@@ -1,5 +1,5 @@
-#ifndef HelperClass_H
-#define HelperClass_H
+#ifndef ShardVariable_H
+#define ShardVariable_H
 
 #include "iostream"
 #include "fstream"

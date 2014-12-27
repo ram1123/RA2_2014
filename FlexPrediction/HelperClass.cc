@@ -82,10 +82,10 @@ void Config::ReadFile()
 			{
 				InputRootFileNameVector_.push_back(line);
 			}
-			else if( line.find("TreeName=")<line.size() )
+			else if(line.find("treeName=")<line.size() )
 			{
-			  InputTreeName_ =  SeparateString(line,"=").second;
-			  std::cout<<"Config::Global InputTreeName: "<<InputTreeName_<<std::endl;
+				std::cout<<"treeName:  "<<SeparateString(line,"treeName=").second<<std::endl;
+				InputRootTreeName_=SeparateString(line,"treeName=").second;
 			}
 			else std::cout<<"Config::Error file name from config does not contain .root probably a problem, skipping file. line: "<<line<<std::endl;
 			
@@ -244,7 +244,7 @@ void Config::ReadFile()
 					 std::string cutTemp;
 					 cutTemp= line.substr(operatorPositionEnd+1);
 					 std::cout<<"Cut found in: line: "<<line<<" with obtained name: "<<name<< " and value: "<<value<<" and CutTyp: "<<CutTyp<<" "<<" with obtained typString: "<<typString<<std::endl;
-					 if( typString.find("UShort_t")< typString.size() )
+					 if( typString.find("Int_t")< typString.size() )
 					 {
 						 sscanf(cutTemp.c_str(), "%hu", &cutValueI);
 						 // 	  Cuts *cut = new Cuts(name,value,CutTyp,cutValueI,true);
@@ -297,7 +297,7 @@ void Config::ReadFile()
 						 std::string cutTemp;
 						 cutTemp= line.substr(operatorPositionEnd+1);
 						 std::cout<<"Cut found in: line: "<<line<<" with obtained name: "<<name<< " and value: "<<value<<" and CutTyp: "<<CutTyp<<" "<<" with obtained typString: "<<typString<<std::endl;
-						 if( typString.find("UShort_t")< typString.size() )
+						 if( typString.find("Int_t")< typString.size() )
 						 {
 							 sscanf(cutTemp.c_str(), "%hu", &cutValueI);
 							 // 	  Cuts *cut = new Cuts(name,value,CutTyp,cutValueI,true);
@@ -405,12 +405,12 @@ void Config::ReadFile()
 	}
 }
 // !Variables
-// NJets=UShort_t::N_{Jets}
+// NJets=Int_t::N_{Jets}
 void Variable::SetUp(std::string TypString)
 {
-	if(TypString.find("UShort_t")<TypString.size())
+	if(TypString.find("Int_t")<TypString.size())
 	{
-		TypString_="UShort_t";
+		TypString_="Int_t";
 	}
 	else if(TypString.find("Float_t")<TypString.size())
 	{

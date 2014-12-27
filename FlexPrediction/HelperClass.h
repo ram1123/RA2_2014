@@ -33,8 +33,9 @@ class CutI
 {
 public:
   CutI();
-  CutI(std::string Variable, std::string CutTypStr, unsigned int CutTyp, int CutValue){Variable_=Variable;CutTypStr_=CutTypStr;CutTyp_=CutTyp; CutValue_=CutValue;}
+	CutI(std::string Variable, std::string CutTypStr, unsigned int CutTyp, int CutValue){Variable_=Variable;CutTypStr_=CutTypStr;CutTyp_=CutTyp; CutValue_=CutValue;initilized_=false;}
   std::string GetVariable(){return Variable_;}
+  void SetVectorPosition(unsigned int ii){vectorPosition_ = ii; initilized_=true;}
   std::string GetCutTypStr(){return CutTypStr_;}
   unsigned int GetCutTyp(){return CutTyp_;}
   int GetCutValueI(){return CutValue_;}
@@ -44,14 +45,17 @@ private:
   std::string CutTypStr_;
   unsigned int CutTyp_;
   int CutValue_;
+	bool initilized_;
+	unsigned int vectorPosition_;
 };
 class CutF
 {
 public:
   CutF();
-  CutF(std::string Variable, std::string CutTypStr, unsigned int CutTyp, float CutValue){Variable_=Variable;CutTypStr_=CutTypStr;CutTyp_=CutTyp; CutValue_=CutValue;}
+	CutF(std::string Variable, std::string CutTypStr, unsigned int CutTyp, float CutValue){Variable_=Variable;CutTypStr_=CutTypStr;CutTyp_=CutTyp; CutValue_=CutValue;initilized_=false;}
   std::string GetVariable(){return Variable_;}
   std::string GetCutTypStr(){return CutTypStr_;}
+  void SetVectorPosition(unsigned int ii){vectorPosition_ = ii; initilized_=true;}
   unsigned int GetCutTyp(){return CutTyp_;}
   float GetCutValueF(){return CutValue_;}
   ~CutF(){}
@@ -60,6 +64,8 @@ private:
   std::string CutTypStr_;
   unsigned int CutTyp_;
   float CutValue_;
+	bool initilized_;
+	unsigned int vectorPosition_;
 };
 class Prediction
 {
@@ -115,9 +121,9 @@ class Variable
 public:
   Variable();
   Variable(std::string Name, std::string TypString){Name_=Name; SetUp(TypString);}
-  std::string GetVariable(){return Name_;}
-  std::string GetTypString(){return TypString_;}
-  std::string GetLabel(){return label_;}
+  std::string GetVariable() const {return Name_;}
+  std::string GetTypString() const {return TypString_;}
+  std::string GetLabel() const {return label_;}
   ~Variable();
 private:
   std::string Name_, TypString_, label_;
@@ -128,19 +134,24 @@ class Config
 public:
   Config();
   Config(const char* ConfFile);
+	std::string GetName(){return fileName_;}
+	std::string GetInputRootTreeName(){return InputRootTreeName_;}
   std::vector<std::string> GetInputRootFileName(){return InputRootFileNameVector_;}
   std::pair <std::string,std::string> SeparateString(std::string InputStr, std::string Separater);
 	std::vector<std::string> SeparateStringToVector(std::string InputStr, std::string Separater);
-	std::string GetInputTreeName(){return InputTreeName_;}
+	std::map<std::string,Variable*> GetVariableMap(){return variablesMap_;}
+	std::vector<CutI*> GetCutIVector(){return cutVectorI_;}
+	std::vector<CutF*> GetCutFVector(){return cutVectorF_;}
   ~Config();
 private:
-  std::string fileName_, InputTreeName_;
+  std::string fileName_;
   void ReadFile();
   std::ifstream fileStr_;
   // used operators for analysization 
   std::vector<std::string> operators_;
   // configuration stuff
   std::vector<std::string> InputRootFileNameVector_;
+	std::string InputRootTreeName_;
   std::map<std::string,Variable*> variablesMap_;
    std::vector<CutI*> cutVectorI_;
    std::vector<CutF*> cutVectorF_;
