@@ -265,10 +265,10 @@ numProcessedEvt=1000):
     	TreeName          = cms.string("PreSelection"),
     	VarsRecoCand = RecoCandVector,
     	#VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
-    	VarsDouble        = cms.VInputTag(cms.InputTag('WeightProducer:weight'),cms.InputTag('MHT'),cms.InputTag('MET'),cms.InputTag('HT'),cms.InputTag('DeltaPhi:DeltaPhi1'),cms.InputTag('DeltaPhi:DeltaPhi2'),cms.InputTag('DeltaPhi:DeltaPhi3'),),
-    	VarsDoubleNamesInTree = cms.vstring('WeightProducer','MHT','MET','HT','DeltaPhi1','DeltaPhi2','DeltaPhi3'),
-    	VarsInt = cms.VInputTag(cms.InputTag('NJets'),cms.InputTag('BTags'),cms.InputTag('Leptons'),cms.InputTag('NVtx')),
+    	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MHT','MET','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)'),
+    	VarsInt = cms.vstring('NJets','BTags','Leptons','NVtx',),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
+    debug = debug,
     	)
 
     ## --- Final paths ----------------------------------------------------
