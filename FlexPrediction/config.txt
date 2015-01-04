@@ -14,7 +14,8 @@ MHT=Float_t::MH_{T}
 NJets<=3
 MHT>=211.3
 !Efficiencies # define here the efficiency maps which should be used for the preediction note the parametirzation variables must be defined in the !Variables section
-FileName= /nfs/dust/cms/user/adraeger/CSA2014/mc/LostLeptonStudies/Expectation.root # tfile in which all Efficiencies are stored!!
+#FileName= Expectation.root # tfile in which all Efficiencies are stored!!
+FileName= Efficiencies.root
 Folder=Efficiencies #name of folder in the tFile
 MuonPurity(MHT,NJets)::MuonPurity
 MuonIsoEff(HT,NJets)::MuonIsoNJet2Jet

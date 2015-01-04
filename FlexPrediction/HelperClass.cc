@@ -92,7 +92,6 @@ void Config::ReadFile()
 		}
 	}
 	// loop to find efficiencies
-	std::string EfficiencyFileName="", EfficiencyFolderName="";
 	fileStr_.clear() ;
 	fileStr_.seekg(0, std::ios::beg) ;
 	lineNumber=0;
@@ -126,15 +125,15 @@ void Config::ReadFile()
 			if(line.find("FileName=") <line.size() )
 			{
 // 				std::cout<<"FileNameFound in efficiency section"<<std::endl;
-				EfficiencyFileName = line.substr(line.find("=")+1);
-// 				std::cout<<"FileName="<<EfficiencyFileName<<std::endl;
+				EfficiencyFileName_ = line.substr(line.find("=")+1);
+// 				std::cout<<"FileName="<<EfficiencyFileName_<<std::endl;
 				continue;
 				
 			}
 			if(line.find("Folder=")< line.size())
 			{
-				EfficiencyFolderName= line.substr(line.find("=")+1);
-// 				std::cout<<"FolderName= "<<EfficiencyFolderName<<std::endl;
+				EfficiencyFolderName_= line.substr(line.find("=")+1);
+// 				std::cout<<"FolderName= "<<EfficiencyFolderName_<<std::endl;
 				continue;
 			}
 			if(line.find("(") >line.size() || line.find(")") >line.size())
@@ -484,6 +483,21 @@ void Prediction::DumpStatus()
 	std::cout<<std::endl;
 	
 }
-
-
+bool Prediction::Initialize()
+{
+  bool result=true;
+  // test if all necessary efficiencies and variables work
+  
+  return result;
+}
+Float_t Prediction::GetPurityScaling(std::vector<Float_t> treeVariablesFloat_, std::vector<Int_t>  treeVariablesInt_, Float_t weight)
+{
+  Float_t result=weight;
+  for (unsigned int i=0; i< PurityEfficiencies_.size();i++)
+  {
+    Float_t efficiency = 0;
+    
+//     result = result * 
+  }
+}
 
