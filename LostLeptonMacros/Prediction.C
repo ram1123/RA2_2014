@@ -83,6 +83,7 @@ void Prediction::Begin(TTree * /*tree*/)
    ElecRecoBTag1=NULL;
    ElecRecoBTag2ToInf=NULL;
    MuMTWMHTBTag=NULL;
+	 ElecPurity_=NULL;
    if(useGenInfoToMatchCSMuonToGen_)std::cout<<"WARNING USING GEN INFORMATION TO MAKE SURE THIS IS A SINGLE MUON ELEC EVENT AND DO MATCHING TO HAVE 100% PURITY OF MUON CONTROL SAMPLE"<<std::endl;
 
 }
@@ -93,7 +94,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    // When running with PROOF SlaveBegin() is called on each slave server.
    // The tree argument is deprecated (on PROOF 0 is passed).
 
-   TFile *effInput = new TFile("/afs/desy.de/user/a/adraeger/xxl/csa14/RA2_2014/LostLeptonMacros/Expectation.root","UPDATE");
+   TFile *effInput = new TFile("/afs/desy.de/user/a/adraeger/xxl-af-cms/phy14/RA2_2014/LostLeptonMacros/Expectation.root","UPDATE");
    TDirectory *EffInputFolder =   (TDirectory*)effInput->Get("Efficiencies");
    MuonIsoLow_ = (TH2F*)EffInputFolder->Get("MuonIsoNJet2Jet");
    MuonIso0_ = (TH2F*)EffInputFolder->Get("MuonIsoNJetLow");
@@ -120,8 +121,9 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    ElecAcc_ = (TH2F*)EffInputFolder->Get("ElecAcc");
    MuMTWNJet_ = (TH1F*)EffInputFolder->Get("MuMTW");
    MuMTWMHTNJet_ = (TH2F*)EffInputFolder->Get("MuMTWMHTNjet");
-   ElecDiLepMTW_ = (TH2F*)EffInputFolder->Get("ElecDiLepMTW");
+   ElecDiLepMTW_ = (TH2F*)EffInputFolder->Get("EleconDiLepMTW");
    ElecDiLepEff_ = (TH1F*)EffInputFolder->Get("ElecDiLepEff");
+	 ElecPurity_ = (TH2F*)EffInputFolder->Get("ElecPurity");
    
    // btag information
    MuonAccBTag = (TH2F*)EffInputFolder->Get("MuonAccBTag");
@@ -141,6 +143,9 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    ElecRecoBTag1 = (TH2F*)EffInputFolder->Get("ElecRecoBTag1");
    ElecRecoBTag2ToInf = (TH2F*)EffInputFolder->Get("ElecRecoBTag2ToInf");
    MuMTWMHTBTag = (TH2F*)EffInputFolder->Get("MuMTWMHTBTag");
+	 
+	 // elec control sample
+	 ElecMTWMHTNJet_ = (TH2F*)EffInputFolder->Get("ElecMTWMHTNjet");
    
    
    TString option = GetOption();
@@ -158,20 +163,19 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    tPrediction_->Branch("DeltaPhi1",&DeltaPhi1,"DeltaPhi1/F");
    tPrediction_->Branch("DeltaPhi2",&DeltaPhi2,"DeltaPhi2/F");
    tPrediction_->Branch("DeltaPhi3",&DeltaPhi3,"DeltaPhi3/F");
-   tPrediction_->Branch("WeightProducer", &WeightProducer, "WeightProducer/F");
+   tPrediction_->Branch("Weight", &Weight, "Weight/F");
    tPrediction_->Branch("METPt",&METPt,"METPt/F");
-   tPrediction_->Branch("METEta",&METEta,"METEta/F");
    tPrediction_->Branch("METPhi",&METPhi,"METPhi/F");
-   tPrediction_->Branch("RecoIsoMuonNum",&RecoIsoMuonNum,"RecoIsoMuonNum/s");
-   tPrediction_->Branch("RecoIsoMuonPt", RecoIsoMuonPt, "RecoIsoMuonPt[RecoIsoMuonNum]/F");
-   tPrediction_->Branch("RecoIsoMuonEta", RecoIsoMuonEta, "RecoIsoMuonEta[RecoIsoMuonNum]/F");
-   tPrediction_->Branch("RecoIsoMuonPhi", RecoIsoMuonPhi, "RecoIsoMuonPhi[RecoIsoMuonNum]/F");
-   tPrediction_->Branch("RecoIsoMuonE", RecoIsoMuonE, "RecoIsoMuonE[RecoIsoMuonNum]/F");
-   tPrediction_->Branch("RecoIsoElecNum",&RecoIsoElecNum,"RecoIsoElecNum/s");
-   tPrediction_->Branch("RecoIsoElecPt", RecoIsoElecPt, "RecoIsoElecPt[RecoIsoElecNum]/F");
-   tPrediction_->Branch("RecoIsoElecEta", RecoIsoElecEta, "RecoIsoElecEta[RecoIsoElecNum]/F");
-   tPrediction_->Branch("RecoIsoElecPhi", RecoIsoElecPhi, "RecoIsoElecPhi[RecoIsoElecNum]/F");
-   tPrediction_->Branch("RecoIsoElecE", RecoIsoElecE, "RecoIsoElecE[RecoIsoElecNum]/F");
+	 tPrediction_->Branch("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum,"selectedIDIsoMuonsNum/s");
+	 tPrediction_->Branch("selectedIDIsoMuonsPt", selectedIDIsoMuonsPt, "selectedIDIsoMuonsPt[selectedIDIsoMuonsNum]/F");
+	 tPrediction_->Branch("selectedIDIsoMuonsEta", selectedIDIsoMuonsEta, "selectedIDIsoMuonsEta[selectedIDIsoMuonsNum]/F");
+	 tPrediction_->Branch("selectedIDIsoMuonsPhi", selectedIDIsoMuonsPhi, "selectedIDIsoMuonsPhi[selectedIDIsoMuonsNum]/F");
+	 tPrediction_->Branch("RecoIsoMuonE", selectedIDIsoMuonsE, "RecoIsoMuonE[selectedIDIsoMuonsNum]/F");
+	 tPrediction_->Branch("selectedIDIsoElectronsNum",&selectedIDIsoElectronsNum,"selectedIDIsoElectronsNum/s");
+	 tPrediction_->Branch("RecoIsoElecPt", selectedIDIsoElectronsPt, "RecoIsoElecPt[selectedIDIsoElectronsNum]/F");
+	 tPrediction_->Branch("RecoIsoElecEta", selectedIDIsoElectronsEta, "RecoIsoElecEta[selectedIDIsoElectronsNum]/F");
+	 tPrediction_->Branch("RecoIsoElecPhi", selectedIDIsoElectronsPhi, "RecoIsoElecPhi[selectedIDIsoElectronsNum]/F");
+	 tPrediction_->Branch("RecoIsoElecE", selectedIDIsoElectronsE, "RecoIsoElecE[selectedIDIsoElectronsNum]/F");
    tPrediction_->Branch("MTW",&mtw,"MTW/F"); 
    applyDiLepCorrection=applyDiLepCorrection_;
    tPrediction_->Branch("applyDiLepCorrection",&applyDiLepCorrection,"applyDiLepCorrection/O");
@@ -246,6 +250,39 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
    tPrediction_->Branch("elecIsoEffBTag",&elecIsoEffBTag_,"elecIsoEffBTag/F");
    tPrediction_->Branch("elecRecoEffBTag",&elecRecoEffBTag_,"elecRecoEffBTag/F");
    tPrediction_->Branch("elecAccEffBTag",&elecAccEffBTag_,"elecAccEffBTag/F");
+	 
+	 tPrediction_->Branch("ElecCSTotalWeight",&ElecCSTotalWeight_,"ElecCSTotalWeight/F");
+	 tPrediction_->Branch("ElecCSTotalWeightMTW",&ElecCSTotalWeightMTW_,"ElecCSTotalWeightMTW/F");
+	 tPrediction_->Branch("ElecCSTotalWeightMTWDiLep",&ElecCSTotalWeightMTWDiLep_,"ElecCSTotalWeightMTWDiLep/F");
+	 
+	 tPrediction_->Branch("ElecCSPurityEff",&ElecCSPurityEff_,"ElecCSPurityEff/F");
+	 tPrediction_->Branch("ElecCSPurityWeight",&ElecCSPurityWeight_,"ElecCSPurityWeight/F");
+	 
+	 tPrediction_->Branch("ElecCSElecIsoEff",&ElecCSElecIsoEff_,"ElecCSElecIsoEff/F");
+	 tPrediction_->Branch("ElecCSElecIsoWeight",&ElecCSElecIsoWeight_,"ElecCSElecIsoWeight/F");
+	 tPrediction_->Branch("ElecCSElecRecoEff",&ElecCSElecRecoEff_,"ElecCSElecRecoEff/F");
+	 tPrediction_->Branch("ElecCSElecRecoWeight",&ElecCSElecRecoWeight_,"ElecCSElecRecoWeight/F");
+	 tPrediction_->Branch("ElecCSElecAccEff",&ElecCSElecAccEff_,"ElecCSElecAccEff/F");
+	 tPrediction_->Branch("ElecCSElecAccWeight",&ElecCSElecAccWeight_,"ElecCSElecAccWeight/F");
+	 tPrediction_->Branch("ElecCSTotalElecWeight",&ElecCSTotalElecWeight_,"ElecCSTotalElecWeight/F");
+	 
+	 tPrediction_->Branch("ElecCSMuAccEff",&ElecCSMuAccEff_,"ElecCSMuAccEff/F");
+	 tPrediction_->Branch("ElecCSMuAccWeight",&ElecCSMuAccWeight_,"ElecCSMuAccWeight/F");
+	 tPrediction_->Branch("ElecCSMuRecoEff",&ElecCSMuRecoEff_,"ElecCSMuRecoEff/F");
+	 tPrediction_->Branch("ElecCSMuRecoWeight",&ElecCSMuRecoWeight_,"ElecCSMuRecoWeight/F");
+	 tPrediction_->Branch("ElecCSMuIsoEff",&ElecCSMuIsoEff_,"ElecCSMuIsoEff/F");
+	 tPrediction_->Branch("ElecCSMuIsoWeight",&ElecCSMuIsoWeight_,"ElecCSMuIsoWeight/F");
+	 tPrediction_->Branch("ElecCSTotalMuWeight",&ElecCSTotalMuWeight_,"ElecCSTotalMuWeight/F");
+	 tPrediction_->Branch("ElecCSTotalElectrons",&ElecCSTotalElectrons_,"ElecCSTotalElectrons/F");
+	 if(applyDiLepCorrection_)
+	 {
+		 tPrediction_->Branch("diLepElecCSCorrectionEff",&diLepElecCSCorrectionEff_,"diLepElecCSCorrectionEff/F");
+		 tPrediction_->Branch("diLepElecCSCorrectionEffErro_",&diLepElecCSCorrectionEffError_,"diLepElecCSCorrectionEffError/F");
+		 tPrediction_->Branch("diLepElecCSMuEff",&diLepElecCSMuEff_,"diLepElecCSMuEff/F");
+		 tPrediction_->Branch("diLepElecCSMuEffError",&diLepElecCSMuEffError_,"diLepElecCSMuEffError/F");
+		 tPrediction_->Branch("diLepElecCSElecEff",&diLepElecCSElecEff_,"diLepElecCSElecEff/F");
+		 tPrediction_->Branch("diLepElecCSElecEffError",&diLepElecCSElecEffError_,"diLepElecCSElecEffError/F");
+	 }
    GetOutputList()->Add(tPrediction_);
 }
 
@@ -255,18 +292,19 @@ Bool_t Prediction::Process(Long64_t entry)
 	fChain->GetTree()->GetEntry(entry);
 	if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_||  DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ ) return kTRUE;
 	if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
-	if(RecoIsoMuonNum!=1 || RecoIsoElecNum!=0) return kTRUE;
+	if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0)
+	{
 	if(useGenInfoToMatchCSMuonToGen_)
 	{
-		if(GenMuNum!=0)if(deltaR(GenMuEta[0],GenMuPhi[0],RecoIsoMuonEta[0],RecoIsoMuonPhi[0])<maxDeltaRGenToRecoIsoMuon_ || std::abs(GenMuPt[0]-RecoIsoMuonPt[0])/GenMuPt[0]<maxDiffPtGenToRecoIsoMuon_)
+		if(GenMuNum!=0)if(deltaR(GenMuEta[0],GenMuPhi[0],selectedIDIsoMuonsEta[0],selectedIDIsoMuonsPhi[0])<maxDeltaRGenToRecoIsoMuon_ || std::abs(GenMuPt[0]-selectedIDIsoMuonsPt[0])/GenMuPt[0]<maxDiffPtGenToRecoIsoMuon_)
 		{
 			Matched_=1;
 		}
 		if(GenMuNum!=1 || GenElecNum!=0) Matched_=0;
 	}
-	deltaRGenToRecoIsoMuon_=deltaR(GenMuEta[0],GenMuPhi[0],RecoIsoMuonEta[0],RecoIsoMuonPhi[0]);
-	diffPtGenToRecoIsoMuon_=std::abs(GenMuPt[0]-RecoIsoMuonPt[0])/GenMuPt[0];
-	mtw =  MTWCalculator(METPt,METPhi, RecoIsoMuonPt[0], RecoIsoMuonPhi[0]);
+	deltaRGenToRecoIsoMuon_=deltaR(GenMuEta[0],GenMuPhi[0],selectedIDIsoMuonsEta[0],selectedIDIsoMuonsPhi[0]);
+	diffPtGenToRecoIsoMuon_=std::abs(GenMuPt[0]-selectedIDIsoMuonsPt[0])/GenMuPt[0];
+	mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuonsPt[0], selectedIDIsoMuonsPhi[0]);
 	if( NJets==NJetsLow_ )
 	{
 		
@@ -341,10 +379,10 @@ Bool_t Prediction::Process(Long64_t entry)
 		diLepElecEff_ = ElecDiLepEff_->GetBinContent(ElecDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
 		diLepElecEffError_ = ElecDiLepEff_->GetBinError(ElecDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
 	}
-	double diLepCorrectedWeight =WeightProducer;
+	double diLepCorrectedWeight =Weight;
 	if(applyDiLepCorrection_)
 	{
-		diLepCorrectedWeight = WeightProducer * diLepCorrectionEff_;
+		diLepCorrectedWeight = Weight * diLepCorrectionEff_;
 	}
 	// muon iso weight & uncertaint
 	muIsoWeight_ = diLepCorrectedWeight* (1 - muIsoEff_)/muIsoEff_;	
@@ -403,8 +441,8 @@ Bool_t Prediction::Process(Long64_t entry)
 	}
 	totalWeightMTW_ = totalWeight_ / MuMTWMHTNJet_->GetBinContent(MTWBinX,MTWBinY);
 	totalMuonsMTW_= totalMuons_ / MuMTWMHTNJet_->GetBinContent(MTWBinX,MTWBinY);
-	//totalWeightMTWDiLep_ = totalWeightMTW_ + (1-diLepCorrectionEff_)*WeightProducer *(1-diLepMuEff_)/diLepMuEff_ * (1-diLepElecEff_)/diLepElecEff_;
-	totalWeightMTWDiLep_ = totalWeightMTW_ + (1-diLepCorrectionEff_)*WeightProducer *(1-diLepMuEff_)/diLepMuEff_ ;
+	//totalWeightMTWDiLep_ = totalWeightMTW_ + (1-diLepCorrectionEff_)*Weight *(1-diLepMuEff_)/diLepMuEff_ * (1-diLepElecEff_)/diLepElecEff_;
+	totalWeightMTWDiLep_ = totalWeightMTW_ + (1-diLepCorrectionEff_)*Weight *(1-diLepMuEff_)/diLepMuEff_ ;
 	// Btag information prediction
 	if(BTags==0)
 	{
@@ -465,7 +503,7 @@ Bool_t Prediction::Process(Long64_t entry)
 	}
 	if(applyDiLepCorrection_)
 	{
-	  diLepCorrectedWeight = WeightProducer * diLepCorrectionEffBTag_;
+	  diLepCorrectedWeight = Weight * diLepCorrectionEffBTag_;
 	}
 	// muon iso weight & uncertaint
 	muIsoWeightBTag_ = diLepCorrectedWeight* (1 - muIsoEffBTag_)/muIsoEffBTag_;	
@@ -524,9 +562,82 @@ Bool_t Prediction::Process(Long64_t entry)
 	}
 	totalWeightMTWBTag_ = totalWeightBTag_ / MuMTWMHTBTag->GetBinContent(MTWBinX,MTWBinY);
 	totalMuonsMTWBTag_= totalMuonsBTag_ / MuMTWMHTBTag->GetBinContent(MTWBinX,MTWBinY);
-//	totalWeightMTWDiLepBTag_ = totalWeightMTWBTag_ + (1-diLepCorrectionEffBTag_)*WeightProducer *(1-diLepMuEffBTag_)/diLepMuEffBTag_ * (1-diLepElecEffBTag_)/diLepElecEffBTag_;
-	totalWeightMTWDiLepBTag_ = totalWeightMTWBTag_ + (1-diLepCorrectionEff_)*WeightProducer *(1-diLepMuEff_)/diLepMuEff_ ;
-	
+//	totalWeightMTWDiLepBTag_ = totalWeightMTWBTag_ + (1-diLepCorrectionEffBTag_)*Weight *(1-diLepMuEffBTag_)/diLepMuEffBTag_ * (1-diLepElecEffBTag_)/diLepElecEffBTag_;
+	totalWeightMTWDiLepBTag_ = totalWeightMTWBTag_ + (1-diLepCorrectionEff_)*Weight *(1-diLepMuEff_)/diLepMuEff_ ;
+	}
+	else if(selectedIDIsoMuonsNum==0 && selectedIDIsoElectronsNum==1)
+	{
+		mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectronsPt[0], selectedIDIsoElectronsPhi[0]);
+		if( NJets==NJetsLow_ )
+		{
+			ElecCSElecIsoEff_ = getEff(ElecIsoLow_,HT,MHT);
+			ElecCSElecRecoEff_ = getEff(ElecRecoLow_,HT,MHT);
+			ElecCSMuIsoEff_ = getEff(MuonIsoLow_,HT,MHT);
+			ElecCSMuRecoEff_ = getEff(MuonRecoLow_,HT,MHT);
+		}
+		if (NJetsLow_<NJets &&NJets <= NJetsMedium_ )
+		{
+			ElecCSElecIsoEff_ = getEff(ElecIso0_,HT,MHT);
+			ElecCSElecRecoEff_ = getEff(ElecReco0_,HT,MHT);
+			ElecCSMuIsoEff_ = getEff(MuonIso0_,HT,MHT);
+			ElecCSMuRecoEff_ = getEff(MuonReco0_,HT,MHT);
+		}
+		if (NJetsMedium_ < NJets && NJets <= NJetsMedium2_)
+		{
+			ElecCSElecIsoEff_ = getEff(ElecIso1_,HT,MHT);
+			ElecCSElecRecoEff_ = getEff(ElecReco1_,HT,MHT);
+			ElecCSMuIsoEff_ = getEff(MuonIso1_,HT,MHT);
+			ElecCSMuRecoEff_ = getEff(MuonReco1_,HT,MHT);
+		}
+		if (NJets >= NJetsHigh_)
+		{
+			ElecCSElecIsoEff_ = getEff(ElecIso2_,HT,MHT);
+			ElecCSElecRecoEff_ = getEff(ElecReco2_,HT,MHT);
+			ElecCSMuIsoEff_ = getEff(MuonIso2_,HT,MHT);
+			ElecCSMuRecoEff_ = getEff(MuonReco2_,HT,MHT);
+		}
+
+		ElecCSElecAccEff_= getEff(ElecAcc_, MHT,NJets);
+		ElecCSMuAccEff_ = getEff(MuonAcc_,MHT,NJets);
+		ElecCSPurityEff_ = getEff(ElecPurity_,MHT,NJets+0.001); 
+		// prediction
+		ElecCSPurityWeight_ = Weight * ElecCSPurityEff_;
+		double diLepElecCSCorrectedWeight =ElecCSPurityWeight_;
+		
+		if(applyDiLepCorrection_)
+		{
+			diLepElecCSCorrectionEff_ = getEff(ElecDiLepMTW_,MHT,NJets+0.01);
+
+			diLepElecCSElecEff_ = ElecDiLepEff_->GetBinContent(ElecDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
+
+			diLepElecCSMuEff_ = MuDiLepEff_->GetBinContent(MuDiLepEff_->GetXaxis()->FindBin(NJets+0.01));
+
+		}
+		if(applyDiLepCorrection_)
+		{
+			diLepElecCSCorrectedWeight = ElecCSPurityWeight_ * diLepElecCSCorrectionEff_;
+		}
+
+		ElecCSElecIsoWeight_ = diLepElecCSCorrectedWeight * (1-ElecCSElecIsoEff_)/ElecCSElecIsoEff_;
+		ElecCSElecRecoWeight_ = diLepElecCSCorrectedWeight* 1 / ElecCSElecIsoEff_ * (1-ElecCSElecRecoEff_)/ElecCSElecRecoEff_;
+		ElecCSElecAccWeight_ = diLepElecCSCorrectedWeight* 1/ElecCSElecIsoEff_ * 1/ElecCSElecRecoEff_ *(1-ElecCSElecAccEff_)/ElecCSElecAccEff_;
+		
+		ElecCSTotalElecWeight_ = ElecCSElecIsoWeight_ + ElecCSElecRecoWeight_ + ElecCSElecAccWeight_;
+		ElecCSTotalElectrons_ = diLepElecCSCorrectedWeight /(ElecCSElecIsoEff_ * ElecCSElecRecoEff_ * ElecCSElecAccEff_);
+		
+		ElecCSMuAccWeight_ = ElecCSTotalElectrons_ * (1 - ElecCSMuAccEff_);
+		ElecCSMuRecoWeight_ = ElecCSTotalElectrons_ * ElecCSMuAccEff_ * (1 - ElecCSMuRecoEff_);
+		ElecCSMuIsoWeight_ = ElecCSTotalElectrons_ * ElecCSMuAccEff_ * ElecCSMuRecoEff_ *  (1 - ElecCSMuIsoEff_);
+		
+		ElecCSTotalMuWeight_ = ElecCSMuAccWeight_ + ElecCSMuRecoWeight_ + ElecCSMuIsoWeight_;
+		
+		// final results
+		ElecCSTotalWeight_ = ElecCSTotalElecWeight_ + ElecCSTotalMuWeight_;
+		
+		ElecCSTotalWeightMTW_ = ElecCSTotalWeight_ / getEff(ElecMTWMHTNJet_,MHT,NJets+0.001);
+		ElecCSTotalWeightMTWDiLep_ = ElecCSTotalWeightMTW_ + (1 - diLepElecCSCorrectionEff_) * ElecCSPurityWeight_ *(1-diLepElecCSElecEff_)/diLepElecCSElecEff_;
+	}
+	else return kTRUE;
 	tPrediction_->Fill();
    return kTRUE;
 }
@@ -632,6 +743,33 @@ void Prediction::resetValues()
 	diLepElecEffBTag_=0.;
 	diLepElecEffErrorBTag_=0.;
 	totalWeightMTWDiLepBTag_=0.;
+	// elec control sample
+	ElecCSTotalWeight_=0.;
+	ElecCSTotalWeightMTW_=0.;
+	ElecCSTotalWeightMTWDiLep_=0.;
+	ElecCSElecIsoEff_=0.;
+	ElecCSElecIsoWeight_=0.;
+	ElecCSElecRecoEff_=0.;
+	ElecCSElecRecoWeight_=0.;
+	ElecCSElecAccEff_=0.;
+	ElecCSElecAccWeight_=0.;
+	ElecCSMuAccEff_=0.;
+	ElecCSMuAccWeight_=0.;
+	ElecCSMuRecoEff_=0.;
+	ElecCSMuRecoWeight_=0.;
+	ElecCSMuIsoEff_=0.;
+	ElecCSMuIsoWeight_=0.;
+	diLepElecCSCorrectionEff_=0.;
+	diLepElecCSCorrectionEffError_=0.;
+	diLepElecCSMuEff_=0.;
+	diLepElecCSMuEffError_=0.;
+	diLepElecCSElecEff_=0.;
+	diLepElecCSElecEffError_=0.;
+	ElecCSPurityEff_=0.;
+	ElecCSPurityWeight_=0.;
+	ElecCSTotalElecWeight_=0.;
+	ElecCSTotalMuWeight_=0.;
+	ElecCSTotalElectrons_=0.;
 }
 bool Prediction::FiltersPass()
 {
@@ -661,5 +799,43 @@ double Prediction::effDown(double eff, double down)
 {
 	double result = eff - down;
 	if(result<0.01)result=eff * 0.1;
+	return result;
+}
+
+double Prediction::getEff(TH2F* effTH2F, double xValue, double yValue)
+{
+	double result = 0;
+	if(xValue < effTH2F->GetXaxis()->GetXmin() )
+	{
+		std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<effTH2F->GetName()<<std::endl;
+		xValue= effTH2F->GetXaxis()->GetXmin()+0.001;
+	}
+	else if(xValue > effTH2F->GetXaxis()->GetXmax() )
+	{
+		std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<effTH2F->GetName()<<std::endl;
+		xValue= effTH2F->GetXaxis()->GetXmax()-0.001;
+	}
+	
+	if(yValue < effTH2F->GetYaxis()->GetXmin() )
+	{
+		std::cout<<"Warning yValue: "<<yValue<<" is smaller than minimum of histo: "<<effTH2F->GetName()<<std::endl;
+		yValue= effTH2F->GetYaxis()->GetXmin()+0.001;
+	}
+	else if(yValue > effTH2F->GetYaxis()->GetXmax() )
+	{
+		std::cout<<"Warning yValue: "<<yValue<<" is bigger than maximum of histo: "<<effTH2F->GetName()<<std::endl;
+		yValue= effTH2F->GetYaxis()->GetXmax()-0.001;
+	}
+	result = effTH2F->GetBinContent(effTH2F->GetXaxis()->FindBin(xValue),effTH2F->GetYaxis()->FindBin(yValue));
+	if(result<0)
+	{
+		std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0 for histo: "<<effTH2F->GetName()<<std::endl;
+		result =0.0001;
+	}
+	if(result>1)
+	{
+		std::cout<<"Warning efficiency is: "<<result<<" is bigger than 1 for histo: "<<effTH2F->GetName()<<std::endl;
+		result =0.99;
+	}
 	return result;
 }
