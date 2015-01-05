@@ -75,7 +75,8 @@ METDouble::METDouble(const edm::ParameterSet& iConfig)
 	//register your produc
 	metTag_ = iConfig.getParameter<edm::InputTag> ("METTag");
 	
-	produces<double>("");
+	produces<double>("Pt");
+	produces<double>("Phi");
 	/* Examples
 	 *   produces<ExampleData2>();
 	 * 
@@ -108,13 +109,18 @@ void
 METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
-	double met_=0;
+	double metpt_=0, metphi_=0;;
 	edm::Handle< edm::View<reco::MET> > MET;
 	iEvent.getByLabel(metTag_,MET); 
-	if(MET.isValid() )met_=MET->at(0).pt();
+	if(MET.isValid() ){
+		metpt_=MET->at(0).pt();
+		metphi_=MET->at(0).phi();
+	}
 	else std::cout<<"METDouble::Invlide Tag: "<<metTag_.label()<<std::endl;
-	std::auto_ptr<double> htp(new double(met_));
-	iEvent.put(htp);
+	std::auto_ptr<double> htp(new double(metpt_));
+	iEvent.put(htp,"Pt");
+	std::auto_ptr<double> htp2(new double(metphi_));
+	iEvent.put(htp2,"Phi");
 	
 }
 

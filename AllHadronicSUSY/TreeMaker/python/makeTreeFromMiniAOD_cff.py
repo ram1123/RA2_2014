@@ -228,6 +228,11 @@ numProcessedEvt=1000):
     JetTag  = cms.InputTag('MHTJets'),
     BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
+    from AllHadronicSUSY.Utils.jetproperties_cfi import jetproperties
+    process.JetsProperties = jetproperties.clone(
+    JetTag  = cms.InputTag('slimmedJets'),
+    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
+    )
     from AllHadronicSUSY.Utils.mhtdouble_cfi import mhtdouble
     process.MHT = mhtdouble.clone(
     JetTag  = cms.InputTag('MHTJets'),
@@ -257,7 +262,7 @@ numProcessedEvt=1000):
     RecoCandVector.extend(['selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks']) # basic muons electrons and isoalted tracks
     RecoCandVector.extend(['selectedIDMuons','selectedIDElectrons']) # mu and e no isolation cuts
     RecoCandVector.extend(['GenLeptons:Boson(GenBoson)|GenLeptons:BosonPDGId(I_GenBosonPDGId)','GenLeptons:Muon(GenMu)|GenLeptons:MuonTauDecay(I_GenMuFromTau)' ,'GenLeptons:Electron(GenElec)|GenLeptons:ElectronTauDecay(I_GenElecFromTau)','GenLeptons:Tau(GenTau)|GenLeptons:TauHadronic(I_GenTauHad)'] ) # gen information on leptons
-    RecoCandVector.extend(['MHTJetsProperties(MHTJets)|MHTJetsProperties:bDiscriminator(F_bDiscriminator)|MHTJetsProperties:chargedEmEnergyFraction(F_chargedEmEnergyFraction)|MHTJetsProperties:chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|MHTJetsProperties:chargedHadronMultiplicity(I_chargedHadronMultiplicity)|MHTJetsProperties:electronMultiplicity(I_electronMultiplicity)|MHTJetsProperties:jetArea(F_jetArea)|MHTJetsProperties:muonEnergyFraction(F_muonEnergyFraction)|MHTJetsProperties:muonMultiplicity(I_muonMultiplicity)|MHTJetsProperties:neutralEmEnergyFraction(F_neutralEmEnergyFraction)|MHTJetsProperties:neutralHadronMultiplicity(I_neutralHadronMultiplicity)|MHTJetsProperties:photonEnergyFraction(F_photonEnergyFraction)|MHTJetsProperties:photonMultiplicity(I_photonMultiplicity)'] ) # jet information on various variables
+    RecoCandVector.extend(['JetsProperties(Jets)|JetsProperties:bDiscriminator(F_bDiscriminator)|JetsProperties:chargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsProperties:chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsProperties:chargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsProperties:electronMultiplicity(I_electronMultiplicity)|JetsProperties:jetArea(F_jetArea)|JetsProperties:muonEnergyFraction(F_muonEnergyFraction)|JetsProperties:muonMultiplicity(I_muonMultiplicity)|JetsProperties:neutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsProperties:neutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsProperties:photonEnergyFraction(F_photonEnergyFraction)|JetsProperties:photonMultiplicity(I_photonMultiplicity)'] ) # jet information on various variables
 
     
     from AllHadronicSUSY.TreeMaker.treeMaker import TreeMaker
@@ -265,7 +270,7 @@ numProcessedEvt=1000):
     	TreeName          = cms.string("PreSelection"),
     	VarsRecoCand = RecoCandVector,
     	#VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
-    	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MHT','MET','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)'),
+    	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MHT','MET:Pt(METPt)','MET:Phi(METPhi)','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)'),
     	VarsInt = cms.vstring('NJets','BTags','Leptons','NVtx',),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
     debug = debug,
@@ -291,6 +296,7 @@ numProcessedEvt=1000):
       process.BTags *
       process.MHTJets *
       process.MHTJetsProperties *
+      process.JetsProperties *
       process.MHT *
       process.Leptons *
       process.MET *

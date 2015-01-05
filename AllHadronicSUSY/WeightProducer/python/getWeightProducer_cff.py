@@ -364,6 +364,38 @@ def getWeightProducer(fileName):
 			print "TTJets_MSDecaysCKM_central_Tune4C_13TeV_PU50x25_V5_v2 : '"+fileName+"'"
 			applyWeight = True
 			weightProducer.weight = cms.double(-1.)
+    if "WJetsToLNu_HT-100to200_Tune4C_13TeV" in fileName and "PU20bx25_PHYS14_25_V1-v1" in fileName:
+			mcVersion = "Phys14DR"
+			weightProducer.Method     = cms.string("Constant")
+			weightProducer.XS         = cms.double(1817.0)
+			weightProducer.NumberEvts = cms.double(5262265)  
+			print "WJetsToLNu_HT-100to200_Tune4C_13TeV Phys14DR: '"+fileName+"'"
+			applyWeight = True
+			weightProducer.weight = cms.double(-1.)
+    if "WJetsToLNu_HT-200to400_Tune4C_13TeV" in fileName and "PU20bx25_PHYS14_25_V1-v1" in fileName:
+			mcVersion = "Phys14DR"
+			weightProducer.Method     = cms.string("Constant")
+			weightProducer.XS         = cms.double(471.6)
+			weightProducer.NumberEvts = cms.double(4936077)  
+			print "WJetsToLNu_HT-200to400_Tune4C_13TeV Phys14DR: '"+fileName+"'"
+			applyWeight = True
+			weightProducer.weight = cms.double(-1.)
+    if "WJetsToLNu_HT-400to600_Tune4C_13TeV" in fileName and "PU20bx25_PHYS14_25_V1-v1" in fileName:
+			mcVersion = "Phys14DR"
+			weightProducer.Method     = cms.string("Constant")
+			weightProducer.XS         = cms.double(55.61)
+			weightProducer.NumberEvts = cms.double(4640594)  
+			print "WJetsToLNu_HT-400to600_Tune4C_13TeV Phys14DR: '"+fileName+"'"
+			applyWeight = True
+			weightProducer.weight = cms.double(-1.)
+    if "WJetsToLNu_HT-600toInf_Tune4C_13TeV" in fileName and "PU20bx25_PHYS14_25_V1-v1" in fileName:
+			mcVersion = "Phys14DR"
+			weightProducer.Method     = cms.string("Constant")
+			weightProducer.XS         = cms.double(18.81)
+			weightProducer.NumberEvts = cms.double(4581841)  
+			print "WJetsToLNu_HT-600toInf_Tune4C_13TeV Phys14DR: '"+fileName+"'"
+			applyWeight = True
+			weightProducer.weight = cms.double(-1.)
         
     ## --- PU Reweighting and Lumi ------------------------------------------------
          
