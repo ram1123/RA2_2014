@@ -156,7 +156,6 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<double> > muonEnergyFraction(new std::vector<double>);
 	std::auto_ptr< std::vector<int> > muonMultiplicity(new std::vector<int>);
 	std::auto_ptr< std::vector<double> > bDiscriminator(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > JetGroomedMass(new std::vector<double>);
 	using namespace edm;
 	using namespace reco;
 	using namespace pat;
