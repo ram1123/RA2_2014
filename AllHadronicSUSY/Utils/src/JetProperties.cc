@@ -117,8 +117,6 @@ JetProperties::JetProperties(const edm::ParameterSet& iConfig)
 	produces<std::vector<int> > (string12).setBranchAlias(string12);
 	const std::string string13("bDiscriminator");
 	produces<std::vector<double> > (string13).setBranchAlias(string13);
-	const std::string string14("JetGroomedMass");
-	produces<std::vector<double> > (string14).setBranchAlias(string14);
 	
 }
 
@@ -183,8 +181,6 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			muonEnergyFraction->push_back( Jets->at(i).muonEnergyFraction() );
 			muonMultiplicity->push_back( Jets->at(i).muonMultiplicity() );
 			bDiscriminator->push_back( Jets->at(i).bDiscriminator(btagname_) );
-
-			JetGroomedMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSPrunedLinks");
 		}
 	}
 	const std::string string00("");
@@ -218,8 +214,6 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(muonMultiplicity,string12);
 	const std::string string13("bDiscriminator");
 	iEvent.put(bDiscriminator,string13);
-	const std::string string14("JetGroomedMass");
-	iEvent.put(JetGroomedMass,string14);
 	
 }
 
