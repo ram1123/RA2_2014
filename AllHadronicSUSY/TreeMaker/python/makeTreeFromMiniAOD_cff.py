@@ -109,7 +109,7 @@ numProcessedEvt=1000):
     FilterNames.append(cms.InputTag("toomanystripclus53X"))
     FilterNames.append(cms.InputTag("logErrorTooManyClusters"))
     FilterNames.append(cms.InputTag("RA2HONoiseFilter"))
-    
+
     
     ## --- Setup WeightProducer -------------------------------------------
     from AllHadronicSUSY.WeightProducer.getWeightProducer_cff import getWeightProducer
@@ -135,15 +135,15 @@ numProcessedEvt=1000):
     #slimmedJetsPFSimpleSecondaryVertexBJetTags = simpleSecondaryVertexBJetTags.clone()
     #slimmedJetsPFSimpleSecondaryVertexBJetTags.tagInfos = cms.VInputTag( cms.InputTag("slimmedJetsPFSecondaryVertexTagInfos") )
     process.slimmedJetsPFCombinedSecondaryVertexBJetTags = combinedInclusiveSecondaryVertexV2BJetTags.clone()
-    process.slimmedJetsPFStandardCombinedSecondaryVertex = combinedSecondaryVertex.clone()
-    process.slimmedJetsPFCombinedSecondaryVertexBJetTags.jetTagComputer = cms.string('slimmedJetsPFStandardCombinedSecondaryVertex')
-    process. slimmedJetsPFCombinedSecondaryVertexBJetTags.tagInfos = cms.VInputTag( cms.InputTag("slimmedJetsPFImpactParameterTagInfos"), cms.InputTag("slimmedJetsPFSecondaryVertexTagInfos") )
+ #   process.slimmedJetsPFStandardCombinedSecondaryVertex = combinedSecondaryVertex.clone()
+ #   process.slimmedJetsPFCombinedSecondaryVertexBJetTags.jetTagComputer = cms.string('slimmedJetsPFStandardCombinedSecondaryVertex')
+ #   process. slimmedJetsPFCombinedSecondaryVertexBJetTags.tagInfos = cms.VInputTag( cms.InputTag("slimmedJetsPFImpactParameterTagInfos"), cms.InputTag("slimmedJetsPFSecondaryVertexTagInfos") )
     
     process.slimmedJetsPFJetBtaggingSV = cms.Sequence(
     	process.slimmedJetsPFImpactParameterTagInfos *
-    process.slimmedJetsPFSecondaryVertexTagInfos *
+    process.slimmedJetsPFSecondaryVertexTagInfos 
     # slimmedJetsPFStandardCombinedSecondaryVertex *
-    process.slimmedJetsPFCombinedSecondaryVertexBJetTags
+#    process.slimmedJetsPFCombinedSecondaryVertexBJetTags
     )
     process.slimmedJetsPFJetsBtag = cms.Sequence(
     process.slimmedJetsPFJetTracksAssociatorAtVertex *
@@ -197,6 +197,18 @@ numProcessedEvt=1000):
       )
 
     # Producers
+    from AllHadronicSUSY.Utils.electron_cfi import electron
+    process.Electrons = electron.clone(
+        VertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
+        EleTag = cms.InputTag("slimmedElectrons"),
+        RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
+    )
+    from AllHadronicSUSY.Utils.muon_cfi import muon
+    process.Muons = muon.clone(
+        VertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
+        MuTag = cms.InputTag("slimmedMuons"),
+        RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
+    )
     from AllHadronicSUSY.Utils.subJetSelection_cfi import SubJetSelection
     process.HTJets = SubJetSelection.clone(
     JetTag  = cms.InputTag('slimmedJets'),
@@ -231,7 +243,7 @@ numProcessedEvt=1000):
     from AllHadronicSUSY.Utils.jetproperties_cfi import jetproperties
     process.MHTJetsProperties = jetproperties.clone(
     JetTag  = cms.InputTag('MHTJets'),
-    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
+#    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
     from AllHadronicSUSY.Utils.jetpropertiesAK8_cfi import jetpropertiesAK8
     process.MHTJetsPropertiesAK8 = jetpropertiesAK8.clone(
@@ -241,12 +253,12 @@ numProcessedEvt=1000):
     from AllHadronicSUSY.Utils.jetproperties_cfi import jetproperties
     process.JetsProperties = jetproperties.clone(
     JetTag  = cms.InputTag('slimmedJets'),
-    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
+#    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
     from AllHadronicSUSY.Utils.jetpropertiesAK8_cfi import jetpropertiesAK8
     process.JetsPropertiesAK8 = jetpropertiesAK8.clone(
     JetTag  = cms.InputTag('slimmedJetsAK8'),
-    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
+#    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
     from AllHadronicSUSY.Utils.mhtdouble_cfi import mhtdouble
     process.MHT = mhtdouble.clone(
@@ -274,12 +286,14 @@ numProcessedEvt=1000):
     PrunedGenParticleTag  = cms.InputTag("prunedGenParticles"),
     )
     RecoCandVector = cms.vstring()
-    RecoCandVector.extend(['selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks']) # basic muons electrons and isoalted tracks
-    RecoCandVector.extend(['selectedIDMuons','selectedIDElectrons']) # mu and e no isolation cuts
+    RecoCandVector.extend(['IsolatedTracks']) # basic muons electrons and isoalted tracks
+#    RecoCandVector.extend(['selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks']) # basic muons electrons and isoalted tracks
+#    RecoCandVector.extend(['selectedIDMuons','selectedIDElectrons']) # mu and e no isolation cuts
     RecoCandVector.extend(['GenLeptons:Boson(GenBoson)|GenLeptons:BosonPDGId(I_GenBosonPDGId)','GenLeptons:Muon(GenMu)|GenLeptons:MuonTauDecay(I_GenMuFromTau)' ,'GenLeptons:Electron(GenElec)|GenLeptons:ElectronTauDecay(I_GenElecFromTau)','GenLeptons:Tau(GenTau)|GenLeptons:TauHadronic(I_GenTauHad)','GenLeptons:Neutrino(GenNu)'] ) # gen information on leptons
-    RecoCandVector.extend(['JetsProperties(Jets)|JetsProperties:bDiscriminator(F_bDiscriminator)|JetsProperties:chargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsProperties:chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsProperties:chargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsProperties:electronMultiplicity(I_electronMultiplicity)|JetsProperties:jetArea(F_jetArea)|JetsProperties:muonEnergyFraction(F_muonEnergyFraction)|JetsProperties:muonMultiplicity(I_muonMultiplicity)|JetsProperties:neutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsProperties:neutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsProperties:photonEnergyFraction(F_photonEnergyFraction)|JetsProperties:photonMultiplicity(I_photonMultiplicity)'] ) # jet information on various variables
-    RecoCandVector.extend(['JetsPropertiesAK8(AK8Jets)|JetsPropertiesAK8:AK8chargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsPropertiesAK8:AK8chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsPropertiesAK8:AK8chargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsPropertiesAK8:AK8electronMultiplicity(I_electronMultiplicity)|JetsPropertiesAK8:AK8jetArea(F_jetArea)|JetsPropertiesAK8:AK8muonEnergyFraction(F_muonEnergyFraction)|JetsPropertiesAK8:AK8muonMultiplicity(I_muonMultiplicity)|JetsPropertiesAK8:AK8neutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsPropertiesAK8:AK8neutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsPropertiesAK8:AK8photonEnergyFraction(F_photonEnergyFraction)|JetsPropertiesAK8:AK8photonMultiplicity(I_photonMultiplicity)|JetsPropertiesAK8:AK8prunedMass(F_prunedMass)|JetsPropertiesAK8:AK8trimmedMass(F_trimmedMass)|JetsPropertiesAK8:AK8filteredMass(F_filteredMass)|JetsPropertiesAK8:AK8tau1(F_tau1)|JetsPropertiesAK8:AK8tau2(F_tau2)|JetsPropertiesAK8:AK8tau3(F_tau3)'] ) # AK8 jet information on various variables
-
+    RecoCandVector.extend(['JetsProperties(Jets)|JetsProperties:bDiscriminatorCSV(F_bDiscriminatorCSV)|JetsProperties:bDiscriminatorICSV(F_bDiscriminatorICSV)|JetsProperties:chargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsProperties:chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsProperties:chargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsProperties:electronMultiplicity(I_electronMultiplicity)|JetsProperties:jetArea(F_jetArea)|JetsProperties:muonEnergyFraction(F_muonEnergyFraction)|JetsProperties:muonMultiplicity(I_muonMultiplicity)|JetsProperties:neutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsProperties:neutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsProperties:photonEnergyFraction(F_photonEnergyFraction)|JetsProperties:photonMultiplicity(I_photonMultiplicity)|JetsProperties:isLooseJetId(b_isLooseJetId)'] ) # jet information on various variables
+    RecoCandVector.extend(['JetsPropertiesAK8(AK8Jets)|JetsPropertiesAK8:AK8bDiscriminatorCSV(F_bDiscriminatorCSV)|JetsPropertiesAK8:AK8bDiscriminatorICSV(F_bDiscriminatorICSV)|JetsPropertiesAK8:AK8chargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsPropertiesAK8:AK8chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsPropertiesAK8:AK8chargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsPropertiesAK8:AK8electronMultiplicity(I_electronMultiplicity)|JetsPropertiesAK8:AK8jetArea(F_jetArea)|JetsPropertiesAK8:AK8muonEnergyFraction(F_muonEnergyFraction)|JetsPropertiesAK8:AK8muonMultiplicity(I_muonMultiplicity)|JetsPropertiesAK8:AK8neutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsPropertiesAK8:AK8neutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsPropertiesAK8:AK8photonEnergyFraction(F_photonEnergyFraction)|JetsPropertiesAK8:AK8photonMultiplicity(I_photonMultiplicity)|JetsPropertiesAK8:AK8prunedMass(F_prunedMass)|JetsPropertiesAK8:AK8softDropMass(F_softDropMass)|JetsPropertiesAK8:AK8trimmedMass(F_trimmedMass)|JetsPropertiesAK8:AK8filteredMass(F_filteredMass)|JetsPropertiesAK8:AK8tau1(F_tau1)|JetsPropertiesAK8:AK8tau2(F_tau2)|JetsPropertiesAK8:AK8tau3(F_tau3)|JetsPropertiesAK8:AK8isLooseJetId(b_AK8isLooseJetId)'] ) # AK8 jet information on various variables
+    RecoCandVector.extend(['Electrons(Electrons)|Electrons:charge(I_charge)|Electrons:isHEEP(b_isHEEP)|Electrons:isHEEPv50(b_isHEEPv50)|Electrons:type(I_type)|Electrons:mass(F_mass)|Electrons:pfDeltaCorrRelIso(F_pfDeltaCorrRelIso)|Electrons:pfRhoCorrRelIso04(F_pfRhoCorrRelIso04)|Electrons:pfRhoCorrRelIso03(F_pfRhoCorrRelIso03)|Electrons:pfRelIso(F_pfRelIso)|Electrons:photonIso(F_photonIso)|Electrons:neutralHadIso(F_neutralHadIso)|Electrons:chargedHadIso(F_chargedHadIso)|Electrons:trackIso(F_trackIso)|Electrons:isLoose(b_isLoose)'] ) # electron information on various variables
+    RecoCandVector.extend(['Muons(Muons)|Muons:charge(I_charge)|Muons:isHighPt(b_isHighPt)|Muons:type(I_type)|Muons:mass(F_mass)|Muons:pfDeltaCorrRelIso(F_pfDeltaCorrRelIso)|Muons:pfRelIso(F_pfRelIso)|Muons:photonIso(F_photonIso)|Muons:neutralHadIso(F_neutralHadIso)|Muons:chargedHadIso(F_chargedHadIso)|Muons:trackIso(F_trackIso)|Muons:isLoose(b_isLoose)|'] ) # muon information on various variables
     
     from AllHadronicSUSY.TreeMaker.treeMaker import TreeMaker
     process.TreeMaker2 = TreeMaker.clone(
@@ -287,7 +301,7 @@ numProcessedEvt=1000):
     	VarsRecoCand = RecoCandVector,
     	#VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
     	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MHT','MET:Pt(METPt)','MET:Phi(METPhi)','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)'),
-    	VarsInt = cms.vstring('NJets','BTags','Leptons','NVtx',),
+    	VarsInt = cms.vstring('NJets','BTags','NVtx'),#,'Leptons'),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
     debug = debug,
     	)
@@ -296,10 +310,12 @@ numProcessedEvt=1000):
 
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
-    	process.selectedIDIsoMuons *
-    	process.selectedIDMuons *
-    	process.selectedIDIsoElectrons *
-    	process.selectedIDElectrons *
+        process.Muons *
+        process.Electrons *
+#    	process.selectedIDIsoMuons *
+#    	process.selectedIDMuons *
+#    	process.selectedIDIsoElectrons *
+#    	process.selectedIDElectrons *
     	process.WeightProducer *
     	process.IsolatedTracks *
  #   	process.IsolatedTracksPT10 *
@@ -317,7 +333,7 @@ numProcessedEvt=1000):
       process.MHTJetsPropertiesAK8 *
       process.JetsPropertiesAK8 *
       process.MHT *
-      process.Leptons *
+#      process.Leptons *
       process.MET *
       process.DeltaPhi *
       process.NVtx *
