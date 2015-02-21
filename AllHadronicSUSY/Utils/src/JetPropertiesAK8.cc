@@ -127,7 +127,15 @@ JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
 	produces<std::vector<double> > (string18).setBranchAlias(string18);
 	const std::string string19("AK8tau3");
 	produces<std::vector<double> > (string19).setBranchAlias(string19);
-	
+	const std::string string20("AK8isLooseJetId");
+	produces<std::vector<bool> > (string20).setBranchAlias(string20);
+	const std::string string21("AK8softDropMass");
+	produces<std::vector<double> > (string21).setBranchAlias(string21);
+        const std::string string22("AK8bDiscriminatorCSV");
+        produces<std::vector<double> > (string22).setBranchAlias(string22);
+        const std::string string23("AK8bDiscriminatorICSV");
+        produces<std::vector<double> > (string23).setBranchAlias(string23);
+
 }
 
 
@@ -166,11 +174,15 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<double> > AK8muonEnergyFraction(new std::vector<double>);
 	std::auto_ptr< std::vector<int> > AK8muonMultiplicity(new std::vector<int>);
 	std::auto_ptr< std::vector<double> > AK8prunedMass(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > AK8softDropMass(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > AK8trimmedMass(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > AK8filteredMass(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > AK8tau1(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > AK8tau2(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > AK8tau3(new std::vector<double>);
+	std::auto_ptr< std::vector<bool> > AK8isLooseJetId(new std::vector<bool>);
+	std::auto_ptr< std::vector<double> > AK8bDiscriminatorCSV(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > AK8bDiscriminatorICSV(new std::vector<double>);
 	using namespace edm;
 	using namespace reco;
 	using namespace pat;
@@ -179,6 +191,8 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	if( Jets.isValid() ) {
 		for(unsigned int i=0; i<Jets->size();i++)
 		{
+		  bool looseJetId=false;
+		  
 			AK8prodJets->push_back(pat::Jet(Jets->at(i)));
 			AK8jetArea->push_back( Jets->at(i).jetArea() );
 			AK8chargedHadronEnergyFraction->push_back( Jets->at(i).chargedHadronEnergyFraction() );
@@ -196,12 +210,28 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			AK8muonMultiplicity->push_back( Jets->at(i).muonMultiplicity() );
 
 			AK8prunedMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSPrunedLinks"));
+			AK8softDropMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSSoftDropLinks")); //not working in 72X
 			AK8trimmedMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSTrimmedLinks"));
 			AK8filteredMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSFilteredLinks"));
+			//						std::cout<<"DEBUG: "<<Jets->at(i).userFloat("ak8PFJetsCHSSoftDropLinks")<<std::endl;
 
 			AK8tau1->push_back( Jets->at(i).userFloat("NjettinessAK8:tau1"));
 			AK8tau2->push_back( Jets->at(i).userFloat("NjettinessAK8:tau2"));
 			AK8tau3->push_back( Jets->at(i).userFloat("NjettinessAK8:tau3"));
+
+                        AK8bDiscriminatorCSV->push_back( Jets->at(i).bDiscriminator("combinedSecondaryVertexBJetTags") );
+			AK8bDiscriminatorICSV->push_back( Jets->at(i).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags") );
+
+			if (Jets->at(i).nConstituents() > 1 &&
+			    Jets->at(i).photonEnergyFraction() < 0.99 &&
+			    Jets->at(i).neutralHadronEnergyFraction() < 0.99 &&
+			    Jets->at(i).muonEnergyFraction() < 0.8 &&
+			    Jets->at(i).electronEnergyFraction() < 0.9 &&
+			    (Jets->at(i).chargedHadronMultiplicity() > 0 || fabs(Jets->at(i).eta())>2.4 ) &&
+			    (Jets->at(i).chargedEmEnergyFraction() < 0.99 || fabs(Jets->at(i).eta())>2.4 ) &&
+			    (Jets->at(i).chargedHadronEnergyFraction() > 0. || fabs(Jets->at(i).eta())>2.4 ) )
+			  looseJetId = true;
+			AK8isLooseJetId->push_back(looseJetId);
 		}
 	}
 	const std::string string00("");
@@ -245,6 +275,14 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(AK8tau2,string18);
 	const std::string string19("AK8tau3");
 	iEvent.put(AK8tau3,string19);
+	const std::string string20("AK8isLooseJetId");
+	iEvent.put(AK8isLooseJetId,string20);
+	const std::string string21("AK8softDropMass");
+	iEvent.put(AK8softDropMass,string21);
+	const std::string string22("AK8bDiscriminatorCSV");
+	iEvent.put(AK8bDiscriminatorCSV,string22);
+	const std::string string23("AK8bDiscriminatorICSV");
+	iEvent.put(AK8bDiscriminatorICSV,string23);
 	
 }
 
