@@ -53,7 +53,7 @@ private:
 	virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	edm::InputTag JetTag_;
-	std::string   btagname_;
+  //	std::string   btagname_;
 
 	
 	
@@ -75,7 +75,7 @@ private:
 JetProperties::JetProperties(const edm::ParameterSet& iConfig)
 {
 	JetTag_ = iConfig.getParameter<edm::InputTag>("JetTag");
-	btagname_ = iConfig.getParameter<std::string>  ("BTagInputTag");
+	//	btagname_ = iConfig.getParameter<std::string>  ("BTagInputTag");
 	//register your products
 	/* Examples
 	 *   produces<ExampleData2>();
@@ -115,8 +115,12 @@ JetProperties::JetProperties(const edm::ParameterSet& iConfig)
 	produces<std::vector<double> > (string11).setBranchAlias(string11);
 	const std::string string12("muonMultiplicity");
 	produces<std::vector<int> > (string12).setBranchAlias(string12);
-	const std::string string13("bDiscriminator");
+	const std::string string13("bDiscriminatorCSV");
 	produces<std::vector<double> > (string13).setBranchAlias(string13);
+	const std::string string14("isLooseJetId");
+	produces<std::vector<bool> > (string14).setBranchAlias(string14);
+	const std::string string15("bDiscriminatorICSV");
+	produces<std::vector<double> > (string15).setBranchAlias(string15);
 	
 }
 
@@ -155,7 +159,9 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<int> > photonMultiplicity(new std::vector<int>);
 	std::auto_ptr< std::vector<double> > muonEnergyFraction(new std::vector<double>);
 	std::auto_ptr< std::vector<int> > muonMultiplicity(new std::vector<int>);
-	std::auto_ptr< std::vector<double> > bDiscriminator(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > bDiscriminatorCSV(new std::vector<double>);
+	std::auto_ptr< std::vector<bool> > isLooseJetId(new std::vector<bool>);
+	std::auto_ptr< std::vector<double> > bDiscriminatorICSV(new std::vector<double>);
 	using namespace edm;
 	using namespace reco;
 	using namespace pat;
@@ -164,6 +170,8 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	if( Jets.isValid() ) {
 		for(unsigned int i=0; i<Jets->size();i++)
 		{
+		  bool looseJetId=false;
+
 			prodJets->push_back(pat::Jet(Jets->at(i)));
 			jetArea->push_back( Jets->at(i).jetArea() );
 			chargedHadronEnergyFraction->push_back( Jets->at(i).chargedHadronEnergyFraction() );
@@ -179,7 +187,19 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			photonMultiplicity->push_back( Jets->at(i).photonMultiplicity() );
 			muonEnergyFraction->push_back( Jets->at(i).muonEnergyFraction() );
 			muonMultiplicity->push_back( Jets->at(i).muonMultiplicity() );
-			bDiscriminator->push_back( Jets->at(i).bDiscriminator(btagname_) );
+			bDiscriminatorCSV->push_back( Jets->at(i).bDiscriminator("combinedSecondaryVertexBJetTags") );
+			bDiscriminatorICSV->push_back( Jets->at(i).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags") );
+
+			if (Jets->at(i).nConstituents() > 1 &&
+                            Jets->at(i).photonEnergyFraction() < 0.99 &&
+                            Jets->at(i).neutralHadronEnergyFraction() < 0.99 &&
+                            Jets->at(i).muonEnergyFraction() < 0.8 &&
+                            Jets->at(i).electronEnergyFraction() < 0.9 &&
+                            (Jets->at(i).chargedHadronMultiplicity() > 0 || fabs(Jets->at(i).eta())>2.4 ) &&
+			    (Jets->at(i).chargedEmEnergyFraction() < 0.99 || fabs(Jets->at(i).eta())>2.4 ) &&
+                            (Jets->at(i).chargedHadronEnergyFraction() > 0. || fabs(Jets->at(i).eta())>2.4 ) )
+                          looseJetId = true;
+                        isLooseJetId->push_back(looseJetId);
 		}
 	}
 	const std::string string00("");
@@ -211,8 +231,12 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(muonEnergyFraction,string11);
 	const std::string string12("muonMultiplicity");
 	iEvent.put(muonMultiplicity,string12);
-	const std::string string13("bDiscriminator");
-	iEvent.put(bDiscriminator,string13);
+	const std::string string13("bDiscriminatorCSV");
+	iEvent.put(bDiscriminatorCSV,string13);
+	const std::string string14("isLooseJetId");
+	iEvent.put(isLooseJetId,string14);
+	const std::string string15("bDiscriminatorICSV");
+	iEvent.put(bDiscriminatorICSV,string15);
 	
 }
 
