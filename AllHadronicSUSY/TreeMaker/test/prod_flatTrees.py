@@ -27,6 +27,7 @@ if __name__ == '__main__':
     def submit(config):
         res = crabCommand('submit', config = config)
 
+    
     #########    From now on that's what users should modify: this is the a-la-CRAB2 configuration part.
     config.General.requestName = 'RSGraviton1000'
     config.Data.inputDataset = '/RSGravitonToWW_kMpl01_M_1000_Tune4C_13TeV_pythia8/Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v2/MINIAODSIM'
@@ -115,15 +116,17 @@ if __name__ == '__main__':
 #    config.Data.unitsPerJob = 3
 #    config.Data.totalUnits = 8
     submit(config)
-
+    
+    
     config.General.requestName = 'tch_bar'
-    config.Data.inputDataset = 'TBarToLeptons_t-channel_Tune4C_CSA14_13TeV-aMCatNLO-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'
+    config.Data.inputDataset = '/TBarToLeptons_t-channel_Tune4C_CSA14_13TeV-aMCatNLO-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'
 #    config.General.workArea = 'ntuple/RSGraviton4000'
     config.Data.outLFN = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/tch_bar/'
 #    config.Data.unitsPerJob = 3
 #    config.Data.totalUnits = 8
     submit(config)
-
+ 
+    
     config.General.requestName = 'tWch_bar'
     config.Data.inputDataset = '/Tbar_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'
 #    config.General.workArea = 'ntuple/RSGraviton4000'
@@ -132,15 +135,15 @@ if __name__ == '__main__':
 #    config.Data.totalUnits = 8
     submit(config)
 
-#    config.General.requestName = 'RSGraviton2000'
-#    config.Data.inputDataset = '/RSGravitonToWW_kMpl01_M_2000_Tune4C_13TeV_pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'
-#    config.Data.outLFN = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/RSGraviton2000/'
-#    submit(config)
+    config.General.requestName = 'RSGraviton2000'
+    config.Data.inputDataset = '/RSGravitonToWW_kMpl01_M_2000_Tune4C_13TeV_pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'
+    config.Data.outLFN = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/RSGraviton2000/'
+    submit(config)
 
-#    config.General.requestName = 'RSGraviton3000'
-#    config.Data.inputDataset = '/RSGravitonToWW_kMpl01_M_3000_Tune4C_13TeV_pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'
-#    config.Data.outLFN = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/RSGraviton3000/'
-#    submit(config)
-
+    config.General.requestName = 'RSGraviton3000'
+    config.Data.inputDataset = '/RSGravitonToWW_kMpl01_M_3000_Tune4C_13TeV_pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'
+    config.Data.outLFN = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/RSGraviton3000/'
+    submit(config)
+    
 
     #...
