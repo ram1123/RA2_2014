@@ -32,6 +32,10 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrectorCalculator.h"
+
 //
 // class declaration
 //
@@ -54,8 +58,8 @@ private:
 	virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	edm::InputTag JetTag_;
 	std::string   btagname_;
-
-	
+        edm::InputTag RhoTag_;
+  std::vector<std::string> jecPayloadNames_;
 	
 	// ----------member data ---------------------------
 };
@@ -72,10 +76,12 @@ private:
 //
 // constructors and destructor
 //
-JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
+JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig):
+  jecPayloadNames_( iConfig.getParameter<std::vector<std::string> >("jecPayloadNames") ) // JEC level payloads
 {
 	JetTag_ = iConfig.getParameter<edm::InputTag>("JetTag");
 	btagname_ = iConfig.getParameter<std::string>  ("BTagInputTag");
+	RhoTag_ = iConfig.getParameter<edm::InputTag>("RhoTag");
 	//register your products
 	/* Examples
 	 *   produces<ExampleData2>();
@@ -135,6 +141,14 @@ JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
         produces<std::vector<double> > (string22).setBranchAlias(string22);
         const std::string string23("AK8bDiscriminatorICSV");
         produces<std::vector<double> > (string23).setBranchAlias(string23);
+        const std::string string24("PtCorr");
+        produces<std::vector<double> > (string24).setBranchAlias(string24);
+        const std::string string25("EtaCorr");
+        produces<std::vector<double> > (string25).setBranchAlias(string25);
+        const std::string string26("PhiCorr");
+        produces<std::vector<double> > (string26).setBranchAlias(string26);
+        const std::string string27("ECorr");
+        produces<std::vector<double> > (string27).setBranchAlias(string27);
 
 }
 
@@ -183,17 +197,73 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<bool> > AK8isLooseJetId(new std::vector<bool>);
 	std::auto_ptr< std::vector<double> > AK8bDiscriminatorCSV(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > AK8bDiscriminatorICSV(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PtCorr(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > EtaCorr(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PhiCorr(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > ECorr(new std::vector<double>);
 	using namespace edm;
 	using namespace reco;
 	using namespace pat;
 	edm::Handle< edm::View<pat::Jet> > Jets;
 	iEvent.getByLabel(JetTag_,Jets);
+	edm::Handle<double> rho_ ;
+        iEvent.getByLabel(RhoTag_, rho_);
+
+	//  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
+	std::vector<JetCorrectorParameters> vPar;
+	for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNames_.begin(),
+		payloadEnd = jecPayloadNames_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+	  JetCorrectorParameters pars(*ipayload);
+	  vPar.push_back(pars);
+	}
+	
+	/*
+	JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters("JEC/PHYS14_25_V2::All_L3Absolute_AK8PFchs.txt");
+	JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters("JEC/PHYS14_25_V2::All_L2Relative_AK8PFchs.txt");
+	JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters("JEC/PHYS14_25_V2::All_L1FastJet_AK8PFchs.txt");
+
+	std::vector<JetCorrectorParameters> vPar;
+	vPar.push_back(*L1JetPar);
+	vPar.push_back(*L2JetPar);
+	vPar.push_back(*L3JetPar);
+	*/
+	FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
+
 	if( Jets.isValid() ) {
+	  edm::View<pat::Jet>::const_iterator ijet = Jets->begin();
 		for(unsigned int i=0; i<Jets->size();i++)
 		{
 		  bool looseJetId=false;
-		  
-			AK8prodJets->push_back(pat::Jet(Jets->at(i)));
+
+		  reco::Candidate::LorentzVector uncorrJet;
+		  // The pat::Jet "knows" if it has been corrected, so here
+		  // we can "uncorrect" the entire jet to apply the corrections
+		  // we want here.
+		  pat::Jet const * pJet = dynamic_cast<pat::Jet const *>( &*ijet );
+		  if ( pJet != 0 ) {
+		    uncorrJet = pJet->correctedP4(0);
+		  }
+		  // Otherwise, if we do not have pat::Jets on input, we just assume
+		  // the user has not corrected them upstream and use it as raw.
+		  else {
+		    uncorrJet = ijet->p4();
+		  }
+
+		  JetCorrector->setJetEta(uncorrJet.eta());
+		  JetCorrector->setJetPt(uncorrJet.pt());
+		  JetCorrector->setJetA(ijet->jetArea());
+		  JetCorrector->setRho(*(rho_.product())); 
+
+		  double correction = JetCorrector->getCorrection();
+		  ijet++;
+	//	(Jets->at(i)).scaleEnergy(correction);
+	//	reco::Candidate::LorentzVector jet4V = correction*(Jets->at(i).p4());		  
+		   AK8prodJets->push_back(pat::Jet(Jets->at(i)));
+		  //	  AK8prodJets->push_back(reco::Candidate::LorentzVector(jet4V));
+		  PtCorr->push_back(correction*uncorrJet.pt());
+		  EtaCorr->push_back(correction*uncorrJet.eta());
+		  PhiCorr->push_back(correction*uncorrJet.phi());
+		  ECorr->push_back(correction*uncorrJet.e());
 			AK8jetArea->push_back( Jets->at(i).jetArea() );
 			AK8chargedHadronEnergyFraction->push_back( Jets->at(i).chargedHadronEnergyFraction() );
 			AK8chargedHadronMultiplicity->push_back( Jets->at(i).chargedHadronMultiplicity() );
@@ -234,6 +304,8 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			AK8isLooseJetId->push_back(looseJetId);
 		}
 	}
+	delete JetCorrector;
+
 	const std::string string00("");
 	iEvent.put(AK8prodJets );
 	
@@ -283,6 +355,14 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(AK8bDiscriminatorCSV,string22);
 	const std::string string23("AK8bDiscriminatorICSV");
 	iEvent.put(AK8bDiscriminatorICSV,string23);
+	const std::string string24("PtCorr");
+	iEvent.put(PtCorr,string24);
+	const std::string string25("EtaCorr");
+	iEvent.put(EtaCorr,string25);
+	const std::string string26("PhiCorr");
+	iEvent.put(PhiCorr,string26);
+	const std::string string27("ECorr");
+	iEvent.put(ECorr,string27);
 	
 }
 
