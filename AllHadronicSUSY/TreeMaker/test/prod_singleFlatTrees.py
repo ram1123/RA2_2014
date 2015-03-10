@@ -5,9 +5,10 @@ config.General.transferOutputs = True
 config.General.requestName = 'RSGraviton1000'
 config.General.workArea = 'RSGraviton1000'
 config.section_('JobType')
-config.JobType.psetName = 'test/runMakeTreeFromMiniAOD_cfg.py'
+config.JobType.psetName = 'TreeMaker/test/runMakeTreeFromMiniAOD_cfg.py'
 config.JobType.pluginName = 'Analysis'
-config.JobType.pyCfgParams = ['global_tag=PHYS14_25_V1::All', 'MC=True']
+config.JobType.pyCfgParams = ['global_tag=PHYS14_25_V2::All', 'MC=True']
+config.JobType.allowNonProductionCMSSW = True
 config.section_('Data')
 config.Data.inputDataset = '/RSGravitonToWW_kMpl01_M_1000_Tune4C_13TeV_pythia8/Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v2/MINIAODSIM'
 config.Data.unitsPerJob = 50
