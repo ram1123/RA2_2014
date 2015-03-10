@@ -29,8 +29,14 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "DataFormats/JetReco/interface/Jet.h"
+//#include "DataFormats/JetReco/interface/Jet.h"
+#include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
+
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrectorCalculator.h"
 
 //
 // class declaration
@@ -53,7 +59,14 @@ private:
 	virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	edm::InputTag metTag_;
-	
+  edm::InputTag RhoTag_;
+	edm::InputTag MuTag_;
+	edm::InputTag JetTag_;
+  std::vector<std::string> jecPayloadNames_;
+  bool corrMet;
+	  double corrEx;
+	  double corrEy;
+	  double corrSumEt;
 	
 	// ----------member data ---------------------------
 };
@@ -70,13 +83,20 @@ private:
 //
 // constructors and destructor
 //
-METDouble::METDouble(const edm::ParameterSet& iConfig)
+METDouble::METDouble(const edm::ParameterSet& iConfig):
+  jecPayloadNames_( iConfig.getParameter<std::vector<std::string> >("jecPayloadNames") ) // JEC level payloads
 {
 	//register your produc
 	metTag_ = iConfig.getParameter<edm::InputTag> ("METTag");
+	RhoTag_ = iConfig.getParameter<edm::InputTag> ("RhoTag");
+	MuTag_ = iConfig.getParameter<edm::InputTag> ("MuTag");
+	JetTag_ = iConfig.getParameter<edm::InputTag> ("JetTag");
+	corrMet = iConfig.getParameter<bool> ("corrMet");
 	
 	produces<double>("Pt");
 	produces<double>("Phi");
+	produces<double>("PtRaw");
+	produces<double>("PhiRaw");
 	/* Examples
 	 *   produces<ExampleData2>();
 	 * 
@@ -109,18 +129,156 @@ void
 METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
-	double metpt_=0, metphi_=0;;
-	edm::Handle< edm::View<reco::MET> > MET;
+	double metpt_=0, metphi_=0;
+	double rawmetpt_=0, rawmetphi_=0;
+	edm::Handle< edm::View<pat::MET> > MET;
 	iEvent.getByLabel(metTag_,MET); 
-	if(MET.isValid() ){
-		metpt_=MET->at(0).pt();
-		metphi_=MET->at(0).phi();
+	edm::Handle<double> rho_ ;
+	iEvent.getByLabel(RhoTag_, rho_);
+	edm::Handle< edm::View<pat::Jet> > Jets;
+        iEvent.getByLabel(JetTag_,Jets);
+	edm::Handle< edm::View<pat::Muon> > Muons;
+        iEvent.getByLabel(MuTag_,Muons);
+
+	//  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
+	std::vector<JetCorrectorParameters> vPar;
+	for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNames_.begin(),
+		payloadEnd = jecPayloadNames_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+	  JetCorrectorParameters pars(*ipayload);
+	  vPar.push_back(pars);
 	}
-	else std::cout<<"METDouble::Invlide Tag: "<<metTag_.label()<<std::endl;
+
+	std::vector<JetCorrectorParameters> vParL1;
+	vParL1.push_back(JetCorrectorParameters(jecPayloadNames_[0]));
+	/*
+	JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters("JEC/PHYS14_25_V2::All_L3Absolute_AK8PFchs.txt");
+	JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters("JEC/PHYS14_25_V2::All_L2Relative_AK8PFchs.txt");
+	JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters("JEC/PHYS14_25_V2::All_L1FastJet_AK8PFchs.txt");
+
+	std::vector<JetCorrectorParameters> vPar;
+	vPar.push_back(*L1JetPar);
+	vPar.push_back(*L2JetPar);
+	vPar.push_back(*L3JetPar);
+	*/
+	FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
+	FactorizedJetCorrector *JetCorrectorL1 = new FactorizedJetCorrector(vParL1);
+	
+	if (corrMet) {
+	  corrEx = 0;
+	  corrEy = 0;
+	  corrSumEt = 0;
+
+	  bool skipEM_ = true;
+	  double skipEMfractionThreshold_ = 0.9;
+	  bool skipMuons_ = true;
+	  //double jetCorrEtaMax_ = 9.9;
+	  double type1JetPtThreshold_ = 10.0;
+
+	  edm::View<pat::Jet>::const_iterator ijet = Jets->begin()-1;
+	  for (const pat::Jet &jet : *Jets) {
+
+	    ijet++;
+
+	    reco::Candidate::LorentzVector uncorrJet;
+	    // The pat::Jet "knows" if it has been corrected, so here
+	    // we can "uncorrect" the entire jet to apply the corrections
+	    // we want here.
+	    pat::Jet const * pJet = dynamic_cast<pat::Jet const *>( &*ijet );
+	    if ( pJet != 0 ) {
+	      uncorrJet = pJet->correctedP4(0);
+	    }
+	    // Otherwise, if we do not have pat::Jets on input, we just assume
+	    // the user has not corrected them upstream and use it as raw.
+	    else {
+	      uncorrJet = ijet->p4();
+	    }
+	    
+	    JetCorrector->setJetEta(uncorrJet.eta());
+	    JetCorrector->setJetPt(uncorrJet.pt());
+	    JetCorrector->setJetA(ijet->jetArea());
+	    JetCorrector->setRho(*(rho_.product())); 
+
+	    double corr = JetCorrector->getCorrection();
+	    
+	    double emEnergyFraction = jet.chargedEmEnergyFraction() + jet.neutralEmEnergyFraction();
+	    if ( skipEM_ && emEnergyFraction > skipEMfractionThreshold_ ) continue;
+	    
+	    reco::Candidate::LorentzVector rawJetP4 = jet.correctedP4(0);
+	    
+	    if ( skipMuons_ && jet.muonMultiplicity() != 0 ) {
+	      for (const pat::Muon &muon : *Muons) {
+		if( !muon.isGlobalMuon() && !muon.isStandAloneMuon() ) continue;
+		TLorentzVector muonV; muonV.SetPtEtaPhiE(muon.p4().pt(),muon.p4().eta(),muon.p4().phi(),muon.p4().e());
+		TLorentzVector jetV; jetV.SetPtEtaPhiE(jet.p4().pt(),jet.p4().eta(),jet.p4().phi(),jet.p4().e());
+		if( muonV.DeltaR(jetV) < 0.5 ){
+		  reco::Candidate::LorentzVector muonP4 = muon.p4();
+		  rawJetP4 -= muonP4;
+		}
+	      }
+	    }
+
+	    reco::Candidate::LorentzVector corrJetP4 = corr*rawJetP4;
+
+	    if ( corrJetP4.pt() > type1JetPtThreshold_ ) {
+	      reco::Candidate::LorentzVector tmpP4 = jet.correctedP4(0);
+	      JetCorrectorL1->setJetEta(tmpP4.eta());
+	      JetCorrectorL1->setJetPt(tmpP4.pt());
+	      JetCorrectorL1->setJetA(ijet->jetArea());
+	      JetCorrectorL1->setRho(*(rho_.product())); 
+	    
+	      corr = JetCorrectorL1->getCorrection();
+	      reco::Candidate::LorentzVector rawJetP4offsetCorr = corr*rawJetP4;
+	      corrEx -= (corrJetP4.px() - rawJetP4offsetCorr.px());
+	      corrEy -= (corrJetP4.py() - rawJetP4offsetCorr.py());
+	      corrSumEt += (corrJetP4.Et() - rawJetP4offsetCorr.Et());
+	    }
+	    
+	  }
+	  //	  pat::MET pmet = pat::MET( &*(MET->at(0)) );
+
+	  const float rawPt = MET->at(0).shiftedPt(pat::MET::NoShift, pat::MET::Raw);
+	  const float rawPhi = MET->at(0).shiftedPhi(pat::MET::NoShift, pat::MET::Raw);
+	  //	  const float rawSumEt = MET->at(0).shiftedSumEt(pat::MET::NoShift, pat::MET::Raw);
+	  TVector2 rawMET_;
+	  rawMET_.SetMagPhi (rawPt, rawPhi );
+	  Double_t rawPx = rawMET_.Px();
+	  Double_t rawPy = rawMET_.Py();
+	  //	  Double_t rawEt = std::hypot(rawPx,rawPy);
+
+	  double pxcorr = rawPx+corrEx;
+	  double pycorr = rawPy+corrEy;
+	  double et = std::hypot(pxcorr,pycorr);
+	  //	  double sumEtcorr = rawSumEt+corrSumEt;
+	  TLorentzVector corrmet; corrmet.SetPxPyPzE(pxcorr,pycorr,0.,et);
+
+	  metpt_= et;
+	  metphi_ = corrmet.Phi();
+	  rawmetpt_ = rawPt;
+	  rawmetphi_ = rawPhi;
+
+	  //	  std::cout<<"corrEx: "<<corrEx<<" rawPx: "<<rawPx<<" raw met: "<<rawPt<<" new met: "<<et<<std::endl;
+	  //metcorrPx_ = corrEx;
+	  //metCorrPy_ = corrEy;
+	  //metSumEt_ = sumEtcorr;
+	}
+
+	else {
+	  if(MET.isValid() ){
+	    metpt_=MET->at(0).pt();
+	    metphi_=MET->at(0).phi();
+	    rawmetpt_ = MET->at(0).pt();
+	    rawmetphi_ = MET->at(0).phi();
+	  }	
+	  else std::cout<<"METDouble::Invlide Tag: "<<metTag_.label()<<std::endl;
+	}
 	std::auto_ptr<double> htp(new double(metpt_));
 	iEvent.put(htp,"Pt");
 	std::auto_ptr<double> htp2(new double(metphi_));
 	iEvent.put(htp2,"Phi");
+	std::auto_ptr<double> htp3(new double(rawmetpt_));
+	iEvent.put(htp3,"PtRaw");
+	std::auto_ptr<double> htp4(new double(rawmetphi_));
+	iEvent.put(htp4,"PhiRaw");
 	
 }
 
