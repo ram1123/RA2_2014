@@ -15,7 +15,8 @@ MC=False,
 debug = False,
 QCD=False,
 LostLepton=False,
-numProcessedEvt=1000):
+numProcessedEvt=1000,
+doAK8Reclustering=False):
 
     process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
     process.GlobalTag.globaltag = Global_Tag
@@ -196,6 +197,75 @@ numProcessedEvt=1000):
       minNumber = 1,
       )
 
+    jecLevelsAK8 = [
+        "JEC/PHYS14_25_V2::All_L1FastJet_AK8PFchs.txt",
+        "JEC/PHYS14_25_V2::All_L2Relative_AK8PFchs.txt",
+        "JEC/PHYS14_25_V2::All_L3Absolute_AK8PFchs.txt"
+        ]
+    jecLevelsAK4 = [
+        "JEC/PHYS14_25_V2::All_L1FastJet_AK4PFchs.txt",
+        "JEC/PHYS14_25_V2::All_L2Relative_AK4PFchs.txt",
+        "JEC/PHYS14_25_V2::All_L3Absolute_AK4PFchs.txt"
+        ]
+
+    process.substructureSequence = cms.Sequence()
+    process.softdrop_onMiniAOD = cms.Sequence()
+    process.pruning_onMiniAOD = cms.Sequence()
+    process.redoPatJets = cms.Sequence()
+
+    if (doAK8Reclustering):
+        from RecoJets.Configuration.RecoPFJets_cff import ak4PFJetsCHS, ak8PFJetsCHS, ak8PFJetsCHSPruned, ak8PFJetsCHSSoftDrop, ak8PFJetsCHSPrunedLinks, ak8PFJetsCHSSoftDropLinks
+
+        process.chs = cms.EDFilter("CandPtrSelector",
+                               src = cms.InputTag('packedPFCandidates'),
+                               cut = cms.string('fromPV')
+                               )
+
+        process.NjettinessAK8 = cms.EDProducer("NjettinessAdder",
+                            src=cms.InputTag("ak8PFJetsCHS"),
+                            Njets=cms.vuint32(1,2,3,4),          # compute 1-, 2-, 3-, 4- subjettiness
+                            # variables for measure definition : 
+                            measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
+                            beta = cms.double(1.0),              # CMS default is 1
+                            R0 = cms.double( 0.8 ),              # CMS default is jet cone size
+                            Rcutoff = cms.double( -999.0),       # not used by default
+                            # variables for axes definition :
+                            axesDefinition = cms.uint32( 6 ),    # CMS default is 1-pass KT axes
+                            nPass = cms.int32(-999),             # not used by default
+                            akAxesR0 = cms.double(-999.0)        # not used by default
+                            )
+
+        process.ak4PFJetsCHS = ak4PFJetsCHS.clone(src = 'chs')
+        process.ak8PFJetsCHS = ak8PFJetsCHS.clone( src = 'chs', jetPtMin = 100.0 )
+
+        process.ak8PFJetsCHSPruned = ak8PFJetsCHSPruned.clone( src = 'chs', jetPtMin = 100.0 )
+        process.ak8PFJetsCHSPrunedLinks = ak8PFJetsCHSPrunedLinks.clone()
+        process.ak8PFJetsCHSSoftDrop = ak8PFJetsCHSSoftDrop.clone( src = 'chs', jetPtMin = 100.0 )
+        process.ak8PFJetsCHSSoftDropLinks = ak8PFJetsCHSSoftDropLinks.clone()
+
+        process.substructureSequence+=process.chs
+        process.substructureSequence+=process.ak8PFJetsCHS
+        process.substructureSequence+=process.NjettinessAK8
+
+        process.softdrop_onMiniAOD += process.ak8PFJetsCHSSoftDrop + process.ak8PFJetsCHSSoftDropLinks
+        process.pruning_onMiniAOD += process.ak8PFJetsCHSPruned + process.ak8PFJetsCHSPrunedLinks
+
+        ####### Redo pat jets sequence ##########
+        from ExoDiBosonResonances.EDBRJets.redoPatJets_cff import patJetCorrFactorsAK8, patJetsAK8, selectedPatJetsAK8
+
+        # Redo pat jets from ak8PFJetsCHS
+
+        process.patJetCorrFactorsAK8 = patJetCorrFactorsAK8.clone( src = 'ak8PFJetsCHS' )
+        process.patJetsAK8 = patJetsAK8.clone( jetSource = 'ak8PFJetsCHS' )
+        #process.patJetsAK8.userData.userFloats.src = []
+        process.patJetsAK8.jetCorrFactorsSource = cms.VInputTag( cms.InputTag("patJetCorrFactorsAK8") )
+        process.selectedPatJetsAK8 = selectedPatJetsAK8.clone( cut = cms.string('pt > 20') )
+
+        process.redoPatJets+=process.patJetCorrFactorsAK8
+        process.redoPatJets+=process.patJetsAK8
+        process.redoPatJets+=process.selectedPatJetsAK8
+
+
     # Producers
     from AllHadronicSUSY.Utils.electron_cfi import electron
     process.Electrons = electron.clone(
@@ -253,13 +323,17 @@ numProcessedEvt=1000):
     from AllHadronicSUSY.Utils.jetproperties_cfi import jetproperties
     process.JetsProperties = jetproperties.clone(
     JetTag  = cms.InputTag('slimmedJets'),
+    jecPayloadNames      = cms.vstring(jecLevelsAK4),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
     from AllHadronicSUSY.Utils.jetpropertiesAK8_cfi import jetpropertiesAK8
     process.JetsPropertiesAK8 = jetpropertiesAK8.clone(
     JetTag  = cms.InputTag('slimmedJetsAK8'),
+    jecPayloadNames      = cms.vstring(jecLevelsAK8),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
+    if (doAK8Reclustering):
+        process.JetsPropertiesAK8.JetTag = cms.InputTag('selectedPatJetsAK8')
     from AllHadronicSUSY.Utils.mhtdouble_cfi import mhtdouble
     process.MHT = mhtdouble.clone(
     JetTag  = cms.InputTag('MHTJets'),
@@ -272,6 +346,11 @@ numProcessedEvt=1000):
     from AllHadronicSUSY.Utils.metdouble_cfi import metdouble
     process.MET = metdouble.clone(
     METTag  = cms.InputTag("slimmedMETs"),
+    JetTag  = cms.InputTag('slimmedJets'),
+    jecPayloadNames      = cms.vstring(jecLevelsAK4),
+    MuTag = cms.InputTag("slimmedMuons"),
+    RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
+    corrMet = cms.bool(True),
     )
     from AllHadronicSUSY.Utils.leptonint_cfi import leptonint
     process.Leptons = leptonint.clone(
@@ -290,8 +369,9 @@ numProcessedEvt=1000):
 #    RecoCandVector.extend(['selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks']) # basic muons electrons and isoalted tracks
 #    RecoCandVector.extend(['selectedIDMuons','selectedIDElectrons']) # mu and e no isolation cuts
     RecoCandVector.extend(['GenLeptons:Boson(GenBoson)|GenLeptons:BosonPDGId(I_GenBosonPDGId)','GenLeptons:Muon(GenMu)|GenLeptons:MuonTauDecay(I_GenMuFromTau)' ,'GenLeptons:Electron(GenElec)|GenLeptons:ElectronTauDecay(I_GenElecFromTau)','GenLeptons:Tau(GenTau)|GenLeptons:TauHadronic(I_GenTauHad)','GenLeptons:Neutrino(GenNu)'] ) # gen information on leptons
-    RecoCandVector.extend(['JetsProperties(Jets)|JetsProperties:bDiscriminatorCSV(F_bDiscriminatorCSV)|JetsProperties:bDiscriminatorICSV(F_bDiscriminatorICSV)|JetsProperties:chargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsProperties:chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsProperties:chargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsProperties:electronMultiplicity(I_electronMultiplicity)|JetsProperties:jetArea(F_jetArea)|JetsProperties:muonEnergyFraction(F_muonEnergyFraction)|JetsProperties:muonMultiplicity(I_muonMultiplicity)|JetsProperties:neutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsProperties:neutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsProperties:photonEnergyFraction(F_photonEnergyFraction)|JetsProperties:photonMultiplicity(I_photonMultiplicity)|JetsProperties:isLooseJetId(b_isLooseJetId)'] ) # jet information on various variables
-    RecoCandVector.extend(['JetsPropertiesAK8(AK8Jets)|JetsPropertiesAK8:AK8bDiscriminatorCSV(F_bDiscriminatorCSV)|JetsPropertiesAK8:AK8bDiscriminatorICSV(F_bDiscriminatorICSV)|JetsPropertiesAK8:AK8chargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsPropertiesAK8:AK8chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsPropertiesAK8:AK8chargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsPropertiesAK8:AK8electronMultiplicity(I_electronMultiplicity)|JetsPropertiesAK8:AK8jetArea(F_jetArea)|JetsPropertiesAK8:AK8muonEnergyFraction(F_muonEnergyFraction)|JetsPropertiesAK8:AK8muonMultiplicity(I_muonMultiplicity)|JetsPropertiesAK8:AK8neutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsPropertiesAK8:AK8neutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsPropertiesAK8:AK8photonEnergyFraction(F_photonEnergyFraction)|JetsPropertiesAK8:AK8photonMultiplicity(I_photonMultiplicity)|JetsPropertiesAK8:AK8prunedMass(F_prunedMass)|JetsPropertiesAK8:AK8softDropMass(F_softDropMass)|JetsPropertiesAK8:AK8trimmedMass(F_trimmedMass)|JetsPropertiesAK8:AK8filteredMass(F_filteredMass)|JetsPropertiesAK8:AK8tau1(F_tau1)|JetsPropertiesAK8:AK8tau2(F_tau2)|JetsPropertiesAK8:AK8tau3(F_tau3)|JetsPropertiesAK8:AK8isLooseJetId(b_AK8isLooseJetId)'] ) # AK8 jet information on various variables
+    RecoCandVector.extend(['JetsProperties(Jets)|JetsProperties:bDiscriminatorCSV(F_bDiscriminatorCSV)|JetsProperties:bDiscriminatorICSV(F_bDiscriminatorICSV)|JetsProperties:chargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsProperties:chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsProperties:chargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsProperties:electronMultiplicity(I_electronMultiplicity)|JetsProperties:jetArea(F_jetArea)|JetsProperties:muonEnergyFraction(F_muonEnergyFraction)|JetsProperties:muonMultiplicity(I_muonMultiplicity)|JetsProperties:neutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsProperties:neutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsProperties:photonEnergyFraction(F_photonEnergyFraction)|JetsProperties:photonMultiplicity(I_photonMultiplicity)|JetsProperties:isLooseJetId(b_isLooseJetId)|JetsProperties:PtCorr(F_PtCorr)|JetsProperties:EtaCorr(F_EtaCorr)|JetsProperties:PhiCorr(F_PhiCorr)|JetsProperties:ECorr(F_ECorr)'] ) # jet information on various variables
+    RecoCandVector.extend(['JetsPropertiesAK8(AK8Jets)|JetsPropertiesAK8:AK8bDiscriminatorCSV(F_bDiscriminatorCSV)|JetsPropertiesAK8:AK8bDiscriminatorICSV(F_bDiscriminatorICSV)|JetsPropertiesAK8:AK8chargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsPropertiesAK8:AK8chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsPropertiesAK8:AK8chargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsPropertiesAK8:AK8electronMultiplicity(I_electronMultiplicity)|JetsPropertiesAK8:AK8jetArea(F_jetArea)|JetsPropertiesAK8:AK8muonEnergyFraction(F_muonEnergyFraction)|JetsPropertiesAK8:AK8muonMultiplicity(I_muonMultiplicity)|JetsPropertiesAK8:AK8neutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsPropertiesAK8:AK8neutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsPropertiesAK8:AK8photonEnergyFraction(F_photonEnergyFraction)|JetsPropertiesAK8:AK8photonMultiplicity(I_photonMultiplicity)|JetsPropertiesAK8:AK8prunedMass(F_prunedMass)|JetsPropertiesAK8:AK8softDropMass(F_softDropMass)|JetsPropertiesAK8:AK8trimmedMass(F_trimmedMass)|JetsPropertiesAK8:AK8filteredMass(F_filteredMass)|JetsPropertiesAK8:AK8tau1(F_tau1)|JetsPropertiesAK8:AK8tau2(F_tau2)|JetsPropertiesAK8:AK8tau3(F_tau3)|JetsPropertiesAK8:AK8isLooseJetId(b_AK8isLooseJetId)|JetsPropertiesAK8:PtCorr(F_PtCorr)|JetsPropertiesAK8:EtaCorr(F_EtaCorr)|JetsPropertiesAK8:PhiCorr(F_PhiCorr)|JetsPropertiesAK8:ECorr(F_ECorr)'] ) # AK8 jet information on various variables
+# 
     RecoCandVector.extend(['Electrons(Electrons)|Electrons:charge(I_charge)|Electrons:isHEEP(b_isHEEP)|Electrons:isHEEPv50(b_isHEEPv50)|Electrons:type(I_type)|Electrons:mass(F_mass)|Electrons:pfDeltaCorrRelIso(F_pfDeltaCorrRelIso)|Electrons:pfRhoCorrRelIso04(F_pfRhoCorrRelIso04)|Electrons:pfRhoCorrRelIso03(F_pfRhoCorrRelIso03)|Electrons:pfRelIso(F_pfRelIso)|Electrons:photonIso(F_photonIso)|Electrons:neutralHadIso(F_neutralHadIso)|Electrons:chargedHadIso(F_chargedHadIso)|Electrons:trackIso(F_trackIso)|Electrons:isLoose(b_isLoose)'] ) # electron information on various variables
     RecoCandVector.extend(['Muons(Muons)|Muons:charge(I_charge)|Muons:isHighPt(b_isHighPt)|Muons:type(I_type)|Muons:mass(F_mass)|Muons:pfDeltaCorrRelIso(F_pfDeltaCorrRelIso)|Muons:pfRelIso(F_pfRelIso)|Muons:photonIso(F_photonIso)|Muons:neutralHadIso(F_neutralHadIso)|Muons:chargedHadIso(F_chargedHadIso)|Muons:trackIso(F_trackIso)|Muons:isLoose(b_isLoose)|'] ) # muon information on various variables
     
@@ -300,7 +380,7 @@ numProcessedEvt=1000):
     	TreeName          = cms.string("PreSelection"),
     	VarsRecoCand = RecoCandVector,
     	#VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
-    	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MHT','MET:Pt(METPt)','MET:Phi(METPhi)','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)'),
+    	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MHT','MET:Pt(METPt)','MET:Phi(METPhi)','MET:PtRaw(METPtRaw)','MET:PhiRaw(METPhiRaw)','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)'),
     	VarsInt = cms.vstring('NJets','BTags','NVtx'),#,'Leptons'),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
     debug = debug,
@@ -322,6 +402,10 @@ numProcessedEvt=1000):
  #   	process.IsolatedTracksPT10IsoCut08 *
  #   	process.IsolatedTracksPT10IsoCut12 *
   #  	process.slimmedJetsPFCombinedSecondaryVertexBJetTags *
+        process.substructureSequence *
+        process.softdrop_onMiniAOD *
+        process.pruning_onMiniAOD *
+        process.redoPatJets*
       process.HTJets *
       process.HT *
       process.NJets *
