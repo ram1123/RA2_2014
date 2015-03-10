@@ -32,6 +32,9 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrectorCalculator.h"
 //
 // class declaration
 //
@@ -53,6 +56,8 @@ private:
 	virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	edm::InputTag JetTag_;
+  edm::InputTag RhoTag_;
+  std::vector<std::string> jecPayloadNames_;
   //	std::string   btagname_;
 
 	
@@ -72,9 +77,12 @@ private:
 //
 // constructors and destructor
 //
-JetProperties::JetProperties(const edm::ParameterSet& iConfig)
+JetProperties::JetProperties(const edm::ParameterSet& iConfig):
+  jecPayloadNames_( iConfig.getParameter<std::vector<std::string> >("jecPayloadNames") ) // JEC level payloads   
 {
 	JetTag_ = iConfig.getParameter<edm::InputTag>("JetTag");
+	RhoTag_ = iConfig.getParameter<edm::InputTag>("RhoTag");
+
 	//	btagname_ = iConfig.getParameter<std::string>  ("BTagInputTag");
 	//register your products
 	/* Examples
@@ -121,7 +129,14 @@ JetProperties::JetProperties(const edm::ParameterSet& iConfig)
 	produces<std::vector<bool> > (string14).setBranchAlias(string14);
 	const std::string string15("bDiscriminatorICSV");
 	produces<std::vector<double> > (string15).setBranchAlias(string15);
-	
+        const std::string string24("PtCorr");
+        produces<std::vector<double> > (string24).setBranchAlias(string24);
+        const std::string string25("EtaCorr");
+        produces<std::vector<double> > (string25).setBranchAlias(string25);
+        const std::string string26("PhiCorr");
+        produces<std::vector<double> > (string26).setBranchAlias(string26);
+        const std::string string27("ECorr");
+        produces<std::vector<double> > (string27).setBranchAlias(string27);	
 }
 
 
@@ -162,17 +177,61 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<double> > bDiscriminatorCSV(new std::vector<double>);
 	std::auto_ptr< std::vector<bool> > isLooseJetId(new std::vector<bool>);
 	std::auto_ptr< std::vector<double> > bDiscriminatorICSV(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PtCorr(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > EtaCorr(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PhiCorr(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > ECorr(new std::vector<double>);
 	using namespace edm;
 	using namespace reco;
 	using namespace pat;
 	edm::Handle< edm::View<pat::Jet> > Jets;
 	iEvent.getByLabel(JetTag_,Jets);
+	edm::Handle<double> rho_ ;
+        iEvent.getByLabel(RhoTag_, rho_);
+
+	//  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
+	std::vector<JetCorrectorParameters> vPar;
+	for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNames_.begin(),
+		payloadEnd = jecPayloadNames_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+	  JetCorrectorParameters pars(*ipayload);
+	  vPar.push_back(pars);
+	}
+
+	FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
+
 	if( Jets.isValid() ) {
+	  edm::View<pat::Jet>::const_iterator ijet = Jets->begin();
 		for(unsigned int i=0; i<Jets->size();i++)
 		{
 		  bool looseJetId=false;
 
+		  reco::Candidate::LorentzVector uncorrJet;
+		  // The pat::Jet "knows" if it has been corrected, so here
+		  // we can "uncorrect" the entire jet to apply the corrections
+		  // we want here.
+		  pat::Jet const * pJet = dynamic_cast<pat::Jet const *>( &*ijet );
+		  if ( pJet != 0 ) {
+		    uncorrJet = pJet->correctedP4(0);
+		  }
+		  // Otherwise, if we do not have pat::Jets on input, we just assume
+		  // the user has not corrected them upstream and use it as raw.
+		  else {
+		    uncorrJet = ijet->p4();
+		  }
+
+		  JetCorrector->setJetEta(uncorrJet.eta());
+		  JetCorrector->setJetPt(uncorrJet.pt());
+		  JetCorrector->setJetA(ijet->jetArea());
+		  JetCorrector->setRho(*(rho_.product())); 
+
+		  double correction = JetCorrector->getCorrection();
+		  ijet++;
+
 			prodJets->push_back(pat::Jet(Jets->at(i)));
+			PtCorr->push_back(correction*uncorrJet.pt());
+			EtaCorr->push_back(correction*uncorrJet.eta());
+			PhiCorr->push_back(correction*uncorrJet.phi());
+			ECorr->push_back(correction*uncorrJet.e());
 			jetArea->push_back( Jets->at(i).jetArea() );
 			chargedHadronEnergyFraction->push_back( Jets->at(i).chargedHadronEnergyFraction() );
 			chargedHadronMultiplicity->push_back( Jets->at(i).chargedHadronMultiplicity() );
@@ -202,6 +261,8 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
                         isLooseJetId->push_back(looseJetId);
 		}
 	}
+	delete JetCorrector;
+
 	const std::string string00("");
 	iEvent.put(prodJets );
 	
@@ -237,7 +298,15 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(isLooseJetId,string14);
 	const std::string string15("bDiscriminatorICSV");
 	iEvent.put(bDiscriminatorICSV,string15);
-	
+	const std::string string24("PtCorr");
+	iEvent.put(PtCorr,string24);
+	const std::string string25("EtaCorr");
+	iEvent.put(EtaCorr,string25);
+	const std::string string26("PhiCorr");
+	iEvent.put(PhiCorr,string26);
+	const std::string string27("ECorr");
+	iEvent.put(ECorr,string27);
+		
 }
 
 // ------------ method called once each job just before starting event loop  ------------
