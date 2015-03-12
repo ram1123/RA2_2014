@@ -62,7 +62,7 @@ private:
   edm::InputTag RhoTag_;
 	edm::InputTag MuTag_;
 	edm::InputTag JetTag_;
-  std::vector<std::string> jecPayloadNames_;
+  //  std::vector<std::string> jecPayloadNames_;
   bool corrMet;
 	  double corrEx;
 	  double corrEy;
@@ -83,8 +83,8 @@ private:
 //
 // constructors and destructor
 //
-METDouble::METDouble(const edm::ParameterSet& iConfig):
-  jecPayloadNames_( iConfig.getParameter<std::vector<std::string> >("jecPayloadNames") ) // JEC level payloads
+METDouble::METDouble(const edm::ParameterSet& iConfig)
+  //  jecPayloadNames_( iConfig.getParameter<std::vector<std::string> >("jecPayloadNames") ) // JEC level payloads
 {
 	//register your produc
 	metTag_ = iConfig.getParameter<edm::InputTag> ("METTag");
@@ -142,24 +142,24 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	//  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
 	std::vector<JetCorrectorParameters> vPar;
-	for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNames_.begin(),
+	/*	for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNames_.begin(),
 		payloadEnd = jecPayloadNames_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
 	  JetCorrectorParameters pars(*ipayload);
 	  vPar.push_back(pars);
-	}
+	  }*/
 
 	std::vector<JetCorrectorParameters> vParL1;
-	vParL1.push_back(JetCorrectorParameters(jecPayloadNames_[0]));
-	/*
-	JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters("JEC/PHYS14_25_V2::All_L3Absolute_AK8PFchs.txt");
-	JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters("JEC/PHYS14_25_V2::All_L2Relative_AK8PFchs.txt");
-	JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters("JEC/PHYS14_25_V2::All_L1FastJet_AK8PFchs.txt");
+	//	vParL1.push_back(JetCorrectorParameters(jecPayloadNames_[0]));
+	
+	JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt");
+	JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L2Relative_AK4PFchs.txt");
+	JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt");
 
-	std::vector<JetCorrectorParameters> vPar;
 	vPar.push_back(*L1JetPar);
 	vPar.push_back(*L2JetPar);
 	vPar.push_back(*L3JetPar);
-	*/
+	vParL1.push_back(*L1JetPar);
+
 	FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
 	FactorizedJetCorrector *JetCorrectorL1 = new FactorizedJetCorrector(vParL1);
 	
@@ -271,6 +271,13 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  }	
 	  else std::cout<<"METDouble::Invlide Tag: "<<metTag_.label()<<std::endl;
 	}
+
+	delete JetCorrector;
+	delete JetCorrectorL1;
+	delete L1JetPar;
+	delete L2JetPar;
+	delete L3JetPar;
+
 	std::auto_ptr<double> htp(new double(metpt_));
 	iEvent.put(htp,"Pt");
 	std::auto_ptr<double> htp2(new double(metphi_));
