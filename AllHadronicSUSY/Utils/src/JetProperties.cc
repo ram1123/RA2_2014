@@ -20,6 +20,8 @@
 
 // system include files
 #include <memory>
+#include <iostream>
+#include <fstream>
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -57,7 +59,7 @@ private:
 	virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	edm::InputTag JetTag_;
   edm::InputTag RhoTag_;
-  std::vector<std::string> jecPayloadNames_;
+  //  std::vector<std::string> jecPayloadNames_;
   //	std::string   btagname_;
 
 	
@@ -77,8 +79,8 @@ private:
 //
 // constructors and destructor
 //
-JetProperties::JetProperties(const edm::ParameterSet& iConfig):
-  jecPayloadNames_( iConfig.getParameter<std::vector<std::string> >("jecPayloadNames") ) // JEC level payloads   
+JetProperties::JetProperties(const edm::ParameterSet& iConfig)
+  //  jecPayloadNames_( iConfig.getParameter<std::vector<std::string> >("jecPayloadNames") ) // JEC level payloads   
 {
 	JetTag_ = iConfig.getParameter<edm::InputTag>("JetTag");
 	RhoTag_ = iConfig.getParameter<edm::InputTag>("RhoTag");
@@ -191,11 +193,19 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	//  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
 	std::vector<JetCorrectorParameters> vPar;
-	for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNames_.begin(),
+	/*	for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNames_.begin(),
 		payloadEnd = jecPayloadNames_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
 	  JetCorrectorParameters pars(*ipayload);
 	  vPar.push_back(pars);
-	}
+	  }*/
+
+        JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt");        
+        JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L2Relative_AK4PFchs.txt");            
+        JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt");             
+
+        vPar.push_back(*L1JetPar);                                                                        
+        vPar.push_back(*L2JetPar);                                                                                                   
+        vPar.push_back(*L3JetPar); 
 
 	FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
 
@@ -262,6 +272,9 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 	}
 	delete JetCorrector;
+	delete L1JetPar;
+	delete L2JetPar;
+	delete L3JetPar;
 
 	const std::string string00("");
 	iEvent.put(prodJets );
