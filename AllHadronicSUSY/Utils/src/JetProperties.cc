@@ -59,7 +59,10 @@ private:
 	virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	edm::InputTag JetTag_;
   edm::InputTag RhoTag_;
-  //  std::vector<std::string> jecPayloadNames_;
+  std::vector<std::string> jecPayloadNames_;
+  std::string l1file;
+  std::string l2file;
+  std::string l3file;
   //	std::string   btagname_;
 
 	
@@ -80,11 +83,13 @@ private:
 // constructors and destructor
 //
 JetProperties::JetProperties(const edm::ParameterSet& iConfig)
-  //  jecPayloadNames_( iConfig.getParameter<std::vector<std::string> >("jecPayloadNames") ) // JEC level payloads   
+  //   jecPayloadNames_( iConfig.getParameter<std::vector<std::string> >("jecPayloadNames") ) // JEC level payloads   
 {
 	JetTag_ = iConfig.getParameter<edm::InputTag>("JetTag");
 	RhoTag_ = iConfig.getParameter<edm::InputTag>("RhoTag");
-
+	l1file = iConfig.getParameter<std::string> ("L1File");
+	l2file = iConfig.getParameter<std::string> ("L2File");
+	l3file = iConfig.getParameter<std::string> ("L3File");
 	//	btagname_ = iConfig.getParameter<std::string>  ("BTagInputTag");
 	//register your products
 	/* Examples
@@ -198,10 +203,12 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  JetCorrectorParameters pars(*ipayload);
 	  vPar.push_back(pars);
 	  }*/
+	//	std::cout << " l1file " << l1file << " - PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt" << std::endl;
 
-        JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt");        
-        JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L2Relative_AK4PFchs.txt");            
-        JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt");             
+        JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters(l3file);        
+        JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters(l2file);            
+        JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters(l1file);             
+	//        JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt");             
 
         vPar.push_back(*L1JetPar);                                                                        
         vPar.push_back(*L2JetPar);                                                                                                   
