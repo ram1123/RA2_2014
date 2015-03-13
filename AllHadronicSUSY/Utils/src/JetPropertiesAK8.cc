@@ -59,6 +59,9 @@ private:
 	edm::InputTag JetTag_;
 	std::string   btagname_;
         edm::InputTag RhoTag_;
+  std::string l1file;
+  std::string l2file;
+  std::string l3file;
   //  std::vector<std::string> jecPayloadNames_;
 	
 	// ----------member data ---------------------------
@@ -82,6 +85,9 @@ JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
 	JetTag_ = iConfig.getParameter<edm::InputTag>("JetTag");
 	btagname_ = iConfig.getParameter<std::string>  ("BTagInputTag");
 	RhoTag_ = iConfig.getParameter<edm::InputTag>("RhoTag");
+	l1file = iConfig.getParameter<std::string>  ("L1File");
+	l2file = iConfig.getParameter<std::string>  ("L2File");
+	l3file = iConfig.getParameter<std::string>  ("L3File");
 	//register your products
 	/* Examples
 	 *   produces<ExampleData2>();
@@ -217,9 +223,9 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  vPar.push_back(pars);
 	  }*/
 		
-	JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L3Absolute_AK8PFchs.txt");
-	JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L2Relative_AK8PFchs.txt");
-	JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt");
+	JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters(l3file);
+	JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters(l2file);
+	JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters(l1file);
 
 	vPar.push_back(*L1JetPar);
 	vPar.push_back(*L2JetPar);
