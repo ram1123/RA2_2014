@@ -199,15 +199,15 @@ doAK8Reclustering=False):
       )
 
     jecLevelsAK8 = [
-        os.environ['CMSSW_BASE']+"/src/AllHadronicSUSY/PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt",
-        os.environ['CMSSW_BASE']+"/src/AllHadronicSUSY/PHYS14_25_V2_All_L2Relative_AK8PFchs.txt",
-        os.environ['CMSSW_BASE']+"/src/AllHadronicSUSY/PHYS14_25_V2_All_L3Absolute_AK8PFchs.txt"
+        "PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt",
+        "PHYS14_25_V2_All_L2Relative_AK8PFchs.txt",
+        "PHYS14_25_V2_All_L3Absolute_AK8PFchs.txt"
         ]
     jecLevelsAK4 = [
 #        "AAA/src/AllHadronicSUSY/PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt",
-        os.environ['CMSSW_BASE']+"/src/AllHadronicSUSY/PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt",
-        os.environ['CMSSW_BASE']+"/src/AllHadronicSUSY/PHYS14_25_V2_All_L2Relative_AK4PFchs.txt",
-        os.environ['CMSSW_BASE']+"/src/AllHadronicSUSY/PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt"
+        "PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt",
+        "PHYS14_25_V2_All_L2Relative_AK4PFchs.txt",
+        "PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt"
         ]
 #    print cms.string(os.environ['CMSSW_BASE']+"/src/AllHadronicSUSY/PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt")
 
@@ -316,25 +316,37 @@ doAK8Reclustering=False):
     from AllHadronicSUSY.Utils.jetproperties_cfi import jetproperties
     process.MHTJetsProperties = jetproperties.clone(
     JetTag  = cms.InputTag('MHTJets'),
-    jecPayloadNames      = cms.vstring(jecLevelsAK4),
+    L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt"),
+    L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK4PFchs.txt"),
+    L3File = cms.string("PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt"),
+#    jecPayloadNames      = cms.vstring(jecLevelsAK4),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
     from AllHadronicSUSY.Utils.jetpropertiesAK8_cfi import jetpropertiesAK8
     process.MHTJetsPropertiesAK8 = jetpropertiesAK8.clone(
     JetTag  = cms.InputTag('MHTJetsAK8'),
-    jecPayloadNames      = cms.vstring(jecLevelsAK8),
+    L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt"),
+    L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK8PFchs.txt"),
+    L3File = cms.string("PHYS14_25_V2_All_L3Absolute_AK8PFchs.txt"),
+#    jecPayloadNames      = cms.vstring(jecLevelsAK8),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
     from AllHadronicSUSY.Utils.jetproperties_cfi import jetproperties
     process.JetsProperties = jetproperties.clone(
     JetTag  = cms.InputTag('slimmedJets'),
-    jecPayloadNames      = cms.vstring(jecLevelsAK4),
+    L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt"),
+    L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK4PFchs.txt"),
+    L3File = cms.string("PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt"),
+#    jecPayloadNames      = cms.vstring(jecLevelsAK4),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
     from AllHadronicSUSY.Utils.jetpropertiesAK8_cfi import jetpropertiesAK8
     process.JetsPropertiesAK8 = jetpropertiesAK8.clone(
     JetTag  = cms.InputTag('slimmedJetsAK8'),
-    jecPayloadNames      = cms.vstring(jecLevelsAK8),
+    L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt"),
+    L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK8PFchs.txt"),
+    L3File = cms.string("PHYS14_25_V2_All_L3Absolute_AK8PFchs.txt"),
+#    jecPayloadNames      = cms.vstring(jecLevelsAK8),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
     if (doAK8Reclustering):
@@ -352,7 +364,10 @@ doAK8Reclustering=False):
     process.MET = metdouble.clone(
     METTag  = cms.InputTag("slimmedMETs"),
     JetTag  = cms.InputTag('slimmedJets'),
-    jecPayloadNames      = cms.vstring(jecLevelsAK4),
+    L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt"),
+    L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK4PFchs.txt"),
+    L3File = cms.string("PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt"),
+#    jecPayloadNames      = cms.vstring(jecLevelsAK4),
     MuTag = cms.InputTag("slimmedMuons"),
     RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
     corrMet = cms.bool(True),
