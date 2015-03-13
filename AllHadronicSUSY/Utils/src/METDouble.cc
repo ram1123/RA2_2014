@@ -67,6 +67,9 @@ private:
 	  double corrEx;
 	  double corrEy;
 	  double corrSumEt;
+  std::string l1file;
+  std::string l2file;
+  std::string l3file;
 	
 	// ----------member data ---------------------------
 };
@@ -92,6 +95,9 @@ METDouble::METDouble(const edm::ParameterSet& iConfig)
 	MuTag_ = iConfig.getParameter<edm::InputTag> ("MuTag");
 	JetTag_ = iConfig.getParameter<edm::InputTag> ("JetTag");
 	corrMet = iConfig.getParameter<bool> ("corrMet");
+	l1file = iConfig.getParameter<std::string> ("L1File");
+	l2file = iConfig.getParameter<std::string> ("L2File");
+	l3file = iConfig.getParameter<std::string> ("L3File");
 	
 	produces<double>("Pt");
 	produces<double>("Phi");
@@ -151,9 +157,9 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::vector<JetCorrectorParameters> vParL1;
 	//	vParL1.push_back(JetCorrectorParameters(jecPayloadNames_[0]));
 	
-	JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt");
-	JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L2Relative_AK4PFchs.txt");
-	JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt");
+	JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters(l3file);
+	JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters(l2file);
+	JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters(l1file);
 
 	vPar.push_back(*L1JetPar);
 	vPar.push_back(*L2JetPar);
