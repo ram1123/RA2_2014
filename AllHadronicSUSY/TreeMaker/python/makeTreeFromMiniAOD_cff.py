@@ -407,6 +407,9 @@ doAK8Reclustering=False):
     	)
 
     ## --- Final paths ----------------------------------------------------
+    process.out = cms.OutputModule("PoolOutputModule",
+                                   fileName = cms.untracked.string("output.root"),
+                                   )
 
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
@@ -448,3 +451,5 @@ doAK8Reclustering=False):
     	process.TreeMaker2
 
         )
+
+#    process.outPath = cms.EndPath(process.out)
