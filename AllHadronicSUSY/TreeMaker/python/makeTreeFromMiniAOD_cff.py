@@ -17,7 +17,8 @@ debug = False,
 QCD=False,
 LostLepton=False,
 numProcessedEvt=1000,
-doAK8Reclustering=False):
+doAK8Reclustering=False,
+doJECCorrection=False):
 
     process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
     process.GlobalTag.globaltag = Global_Tag
@@ -316,6 +317,7 @@ doAK8Reclustering=False):
     from AllHadronicSUSY.Utils.jetproperties_cfi import jetproperties
     process.MHTJetsProperties = jetproperties.clone(
     JetTag  = cms.InputTag('MHTJets'),
+    doJEC  = cms.bool(doJECCorrection),
     L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt"),
     L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK4PFchs.txt"),
     L3File = cms.string("PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt"),
@@ -325,6 +327,7 @@ doAK8Reclustering=False):
     from AllHadronicSUSY.Utils.jetpropertiesAK8_cfi import jetpropertiesAK8
     process.MHTJetsPropertiesAK8 = jetpropertiesAK8.clone(
     JetTag  = cms.InputTag('MHTJetsAK8'),
+    doJEC  = cms.bool(doJECCorrection),
     L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt"),
     L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK8PFchs.txt"),
     L3File = cms.string("PHYS14_25_V2_All_L3Absolute_AK8PFchs.txt"),
@@ -334,6 +337,7 @@ doAK8Reclustering=False):
     from AllHadronicSUSY.Utils.jetproperties_cfi import jetproperties
     process.JetsProperties = jetproperties.clone(
     JetTag  = cms.InputTag('slimmedJets'),
+    doJEC  = cms.bool(doJECCorrection),
     L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt"),
     L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK4PFchs.txt"),
     L3File = cms.string("PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt"),
@@ -343,6 +347,7 @@ doAK8Reclustering=False):
     from AllHadronicSUSY.Utils.jetpropertiesAK8_cfi import jetpropertiesAK8
     process.JetsPropertiesAK8 = jetpropertiesAK8.clone(
     JetTag  = cms.InputTag('slimmedJetsAK8'),
+    doJEC  = cms.bool(doJECCorrection),
     L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt"),
     L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK8PFchs.txt"),
     L3File = cms.string("PHYS14_25_V2_All_L3Absolute_AK8PFchs.txt"),
@@ -364,6 +369,7 @@ doAK8Reclustering=False):
     process.MET = metdouble.clone(
     METTag  = cms.InputTag("slimmedMETs"),
     JetTag  = cms.InputTag('slimmedJets'),
+    doJEC  = cms.bool(doJECCorrection),
     L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt"),
     L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK4PFchs.txt"),
     L3File = cms.string("PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt"),
