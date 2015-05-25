@@ -70,7 +70,8 @@ private:
   std::string l1file;
   std::string l2file;
   std::string l3file;
-	
+  bool doJEC;
+
 	// ----------member data ---------------------------
 };
 
@@ -95,6 +96,7 @@ METDouble::METDouble(const edm::ParameterSet& iConfig)
 	MuTag_ = iConfig.getParameter<edm::InputTag> ("MuTag");
 	JetTag_ = iConfig.getParameter<edm::InputTag> ("JetTag");
 	corrMet = iConfig.getParameter<bool> ("corrMet");
+	doJEC = iConfig.getParameter<bool> ("doJEC");
 	l1file = iConfig.getParameter<std::string> ("L1File");
 	l2file = iConfig.getParameter<std::string> ("L2File");
 	l3file = iConfig.getParameter<std::string> ("L3File");
@@ -169,6 +171,8 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
 	FactorizedJetCorrector *JetCorrectorL1 = new FactorizedJetCorrector(vParL1);
 	
+	if (!doJEC)  corrMet=false; //it does not have any sense to correct met if no JEC applied
+
 	if (corrMet) {
 	  corrEx = 0;
 	  corrEy = 0;
