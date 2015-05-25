@@ -3,6 +3,7 @@ import FWCore.ParameterSet.Config as cms
 metdouble = cms.EDProducer('METDouble',
 METTag  = cms.InputTag("slimmedMETs"),
 corrMet = cms.bool(False),
+doJEC = cms.bool(False),
 JetTag_               = cms.InputTag('slimmedJets'),
 RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
 L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt"),
