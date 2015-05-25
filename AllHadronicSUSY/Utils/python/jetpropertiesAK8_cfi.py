@@ -2,6 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 jetpropertiesAK8 = cms.EDProducer('JetPropertiesAK8',
 JetTag_               = cms.InputTag('slimmedJetsAK8'),
+doJEC = cms.bool(False),
 RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
 BTagInputTag	        = cms.string('combinedSecondaryVertexBJetTags'),
 L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt"),
