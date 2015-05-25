@@ -53,4 +53,5 @@ makeTreeTreeFromMiniADO(process,
 		LostLepton=LostLepton,
 		debug = debug,
                 numProcessedEvt=-1,
-                doAK8Reclustering=True)
+                doAK8Reclustering=False,
+                        doJECCorrection=False)
