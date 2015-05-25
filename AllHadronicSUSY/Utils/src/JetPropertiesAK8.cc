@@ -62,6 +62,7 @@ private:
   std::string l1file;
   std::string l2file;
   std::string l3file;
+  bool doJEC;
   //  std::vector<std::string> jecPayloadNames_;
 	
 	// ----------member data ---------------------------
@@ -88,6 +89,7 @@ JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
 	l1file = iConfig.getParameter<std::string>  ("L1File");
 	l2file = iConfig.getParameter<std::string>  ("L2File");
 	l3file = iConfig.getParameter<std::string>  ("L3File");
+	doJEC = iConfig.getParameter<bool>  ("doJEC");
 	//register your products
 	/* Examples
 	 *   produces<ExampleData2>();
@@ -264,48 +266,56 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	//	reco::Candidate::LorentzVector jet4V = correction*(Jets->at(i).p4());		  
 		   AK8prodJets->push_back(pat::Jet(Jets->at(i)));
 		  //	  AK8prodJets->push_back(reco::Candidate::LorentzVector(jet4V));
-		  PtCorr->push_back(correction*uncorrJet.pt());
-		  EtaCorr->push_back(correction*uncorrJet.eta());
-		  PhiCorr->push_back(correction*uncorrJet.phi());
-		  ECorr->push_back(correction*uncorrJet.e());
-			AK8jetArea->push_back( Jets->at(i).jetArea() );
-			AK8chargedHadronEnergyFraction->push_back( Jets->at(i).chargedHadronEnergyFraction() );
-			AK8chargedHadronMultiplicity->push_back( Jets->at(i).chargedHadronMultiplicity() );
-			AK8neutralHadronEnergyFraction->push_back( Jets->at(i).neutralHadronEnergyFraction() );
-			AK8neutralHadronMultiplicity->push_back( Jets->at(i).neutralHadronMultiplicity() );
-			AK8chargedEmEnergyFraction->push_back( Jets->at(i).chargedEmEnergyFraction() );
-			AK8neutralEmEnergyFraction->push_back( Jets->at(i).neutralEmEnergyFraction() );
-// 			AK8patJetsNeutralEmFractionPBNR->push_back( Jets->at(i).patJetsNeutralEmFractionPBNR() / Jets->at(i).jecFactor(0) );
-			AK8electronEnergyFraction->push_back( Jets->at(i).electronEnergyFraction() );
-			AK8electronMultiplicity->push_back( Jets->at(i).electronMultiplicity() );
-			AK8photonEnergyFraction->push_back( Jets->at(i).photonEnergyFraction() );
-			AK8photonMultiplicity->push_back( Jets->at(i).photonMultiplicity() );
-			AK8muonEnergyFraction->push_back( Jets->at(i).muonEnergyFraction() );
-			AK8muonMultiplicity->push_back( Jets->at(i).muonMultiplicity() );
+		   if (doJEC) {
+		     PtCorr->push_back(correction*uncorrJet.pt());
+		     EtaCorr->push_back(correction*uncorrJet.eta());
+		     PhiCorr->push_back(correction*uncorrJet.phi());
+		     ECorr->push_back(correction*uncorrJet.e());
+		   }
+		   else {
+		     PtCorr->push_back(Jets->at(i).pt());
+		     EtaCorr->push_back(Jets->at(i).eta());
+		     PhiCorr->push_back(Jets->at(i).phi());
+		     ECorr->push_back(Jets->at(i).energy());
+		   }
+		   AK8jetArea->push_back( Jets->at(i).jetArea() );
+		   AK8chargedHadronEnergyFraction->push_back( Jets->at(i).chargedHadronEnergyFraction() );
+		   AK8chargedHadronMultiplicity->push_back( Jets->at(i).chargedHadronMultiplicity() );
+		   AK8neutralHadronEnergyFraction->push_back( Jets->at(i).neutralHadronEnergyFraction() );
+		   AK8neutralHadronMultiplicity->push_back( Jets->at(i).neutralHadronMultiplicity() );
+		   AK8chargedEmEnergyFraction->push_back( Jets->at(i).chargedEmEnergyFraction() );
+		   AK8neutralEmEnergyFraction->push_back( Jets->at(i).neutralEmEnergyFraction() );
+		   // 			AK8patJetsNeutralEmFractionPBNR->push_back( Jets->at(i).patJetsNeutralEmFractionPBNR() / Jets->at(i).jecFactor(0) );
+		   AK8electronEnergyFraction->push_back( Jets->at(i).electronEnergyFraction() );
+		   AK8electronMultiplicity->push_back( Jets->at(i).electronMultiplicity() );
+		   AK8photonEnergyFraction->push_back( Jets->at(i).photonEnergyFraction() );
+		   AK8photonMultiplicity->push_back( Jets->at(i).photonMultiplicity() );
+		   AK8muonEnergyFraction->push_back( Jets->at(i).muonEnergyFraction() );
+		   AK8muonMultiplicity->push_back( Jets->at(i).muonMultiplicity() );
+		   
+		   AK8prunedMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSPrunedMass"));
+		   AK8softDropMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSSoftDropMass"));
+		   AK8trimmedMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSTrimmedMass"));
+		   AK8filteredMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSFilteredMass"));
+		   //						std::cout<<"DEBUG: "<<Jets->at(i).userFloat("ak8PFJetsCHSSoftDropLinks")<<std::endl;
 
-			AK8prunedMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSPrunedLinks"));
-			AK8softDropMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSSoftDropLinks")); //not working in 72X
-			AK8trimmedMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSTrimmedLinks"));
-			AK8filteredMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSFilteredLinks"));
-			//						std::cout<<"DEBUG: "<<Jets->at(i).userFloat("ak8PFJetsCHSSoftDropLinks")<<std::endl;
-
-			AK8tau1->push_back( Jets->at(i).userFloat("NjettinessAK8:tau1"));
-			AK8tau2->push_back( Jets->at(i).userFloat("NjettinessAK8:tau2"));
-			AK8tau3->push_back( Jets->at(i).userFloat("NjettinessAK8:tau3"));
-
-                        AK8bDiscriminatorCSV->push_back( Jets->at(i).bDiscriminator("combinedSecondaryVertexBJetTags") );
-			AK8bDiscriminatorICSV->push_back( Jets->at(i).bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags") );
-
-			if (Jets->at(i).nConstituents() > 1 &&
-			    Jets->at(i).photonEnergyFraction() < 0.99 &&
-			    Jets->at(i).neutralHadronEnergyFraction() < 0.99 &&
-			    Jets->at(i).muonEnergyFraction() < 0.8 &&
-			    Jets->at(i).electronEnergyFraction() < 0.9 &&
-			    (Jets->at(i).chargedHadronMultiplicity() > 0 || fabs(Jets->at(i).eta())>2.4 ) &&
-			    (Jets->at(i).chargedEmEnergyFraction() < 0.99 || fabs(Jets->at(i).eta())>2.4 ) &&
-			    (Jets->at(i).chargedHadronEnergyFraction() > 0. || fabs(Jets->at(i).eta())>2.4 ) )
-			  looseJetId = true;
-			AK8isLooseJetId->push_back(looseJetId);
+		   AK8tau1->push_back( Jets->at(i).userFloat("NjettinessAK8:tau1"));
+		   AK8tau2->push_back( Jets->at(i).userFloat("NjettinessAK8:tau2"));
+		   AK8tau3->push_back( Jets->at(i).userFloat("NjettinessAK8:tau3"));
+		   
+		   AK8bDiscriminatorCSV->push_back( Jets->at(i).bDiscriminator("combinedSecondaryVertexBJetTags") );
+		   AK8bDiscriminatorICSV->push_back( Jets->at(i).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+		   
+		   if (Jets->at(i).nConstituents() > 1 &&
+		       Jets->at(i).photonEnergyFraction() < 0.99 &&
+		       Jets->at(i).neutralHadronEnergyFraction() < 0.99 &&
+		       Jets->at(i).muonEnergyFraction() < 0.8 &&
+		       Jets->at(i).electronEnergyFraction() < 0.9 &&
+		       (Jets->at(i).chargedHadronMultiplicity() > 0 || fabs(Jets->at(i).eta())>2.4 ) &&
+		       (Jets->at(i).chargedEmEnergyFraction() < 0.99 || fabs(Jets->at(i).eta())>2.4 ) &&
+		       (Jets->at(i).chargedHadronEnergyFraction() > 0. || fabs(Jets->at(i).eta())>2.4 ) )
+		     looseJetId = true;
+		   AK8isLooseJetId->push_back(looseJetId);
 		}
 	}
 	delete JetCorrector;
