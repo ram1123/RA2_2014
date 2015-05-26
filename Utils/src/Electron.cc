@@ -233,115 +233,11 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		{
 		  const auto el = Electrons->ptrAt(i);
 		  double rho = *(rho_.product());
-				  /*
-		  //		  bool isHEEPid = false;
-		  //		  bool isHEEPv50id = false;
-
-		  //		  float et = Electrons->at(i).energy()!=0. ? Electrons->at(i).et()/Electrons->at(i).energy()*Electrons->at(i).caloEnergy() : 0.;
-		  float etaSC = Electrons->at(i).superCluster()->eta();
-
-		  //		  double iso;
-		  //		  double isoCut;
-		  double dxy = ( Vertices->size() ? Electrons->at(i).gsfTrack()->dxy(Vertices->at(0).position()) : Electrons->at(i).gsfTrack()->dxy() );
-		  double dz = ( Vertices->size() ? Electrons->at(i).gsfTrack()->dz(Vertices->at(0).position()) : Electrons->at(i).gsfTrack()->dz() );
-		  */
-		  /*
-		  if (Electrons->at(i).gsfTrack().isNonnull()){
-		    if( et > 35. ) {
-		      if( fabs(etaSC) < 1.4442 ){
-			iso = Electrons->at(i).dr03EcalRecHitSumEt() + Electrons->at(i).dr03HcalDepth1TowerSumEt();
-			isoCut = 2 + 0.03*et + 0.28*rho;
-			if( Electrons->at(i).ecalDriven() == 1 && dEtaInSeed( Electrons->at(i) ) < 0.004 && 
-			    Electrons->at(i).deltaPhiSuperClusterTrackAtVtx() < 0.06 &&
-			    Electrons->at(i).hadronicOverEm() < (2./Electrons->at(i).superCluster()->energy()+0.05) &&
-			    (Electrons->at(i).full5x5_e2x5Max()/Electrons->at(i).full5x5_e5x5() > 0.94 || Electrons->at(i).full5x5_e1x5()/Electrons->at(i).full5x5_e5x5() > 0.83) && Electrons->at(i).dr03TkSumPt() < 5. && Electrons->at(i).gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS) <= 1 && iso < isoCut && fabs(dxy) < 0.02 ) 
-			  isHEEPid = true;
-		      }
-		      if( fabs(etaSC) > 1.566 && fabs(etaSC) < 2.5 ){
-			iso = Electrons->at(i).dr03EcalRecHitSumEt() + Electrons->at(i).dr03HcalDepth1TowerSumEt();
-			if( et <= 50 )
-			  isoCut = 2.5 + 0.28*rho;
-			else
-			  isoCut = 2.5+0.03*(et-50.) + 0.28*rho;
-			if( Electrons->at(i).ecalDriven() == 1 && dEtaInSeed( Electrons->at(i) ) < 0.006 && 
-			    Electrons->at(i).deltaPhiSuperClusterTrackAtVtx() < 0.06 &&
-			    Electrons->at(i).hadronicOverEm() < (12.5/Electrons->at(i).superCluster()->energy()+0.05) && Electrons->at(i).full5x5_sigmaIetaIeta() < 0.03 && Electrons->at(i).dr03TkSumPt() < 5. && Electrons->at(i).gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS) <= 1 && iso < isoCut && fabs(dxy) < 0.05 ) 
-			  isHEEPid = true;
-		      }
-		    }
-		  }
-		  if (Electrons->at(i).gsfTrack().isNonnull()){
-		    if( et > 35. ) {
-		      if( fabs(etaSC) < 1.4442 ){
-			iso = Electrons->at(i).dr03EcalRecHitSumEt() + Electrons->at(i).dr03HcalDepth1TowerSumEt();
-			isoCut = 2 + 0.03*et + 0.28*rho;
-			if( Electrons->at(i).ecalDriven() == 1 && Electrons->at(i).deltaEtaSuperClusterTrackAtVtx() < std::max(0.016-1E-4*et,0.004) && Electrons->at(i).deltaPhiSuperClusterTrackAtVtx() < 0.06 && Electrons->at(i).hadronicOverEm() < (2./Electrons->at(i).superCluster()->energy()+0.05) && (Electrons->at(i).full5x5_e2x5Max()/Electrons->at(i).full5x5_e5x5() > 0.94 || Electrons->at(i).full5x5_e1x5()/Electrons->at(i).full5x5_e5x5() > 0.83) && Electrons->at(i).dr03TkSumPt() < 5. && Electrons->at(i).gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS) <= 1 && iso < isoCut && fabs(dxy) < 0.02 ) 
-			  isHEEPv50id = true;
-		      }
-		      if( fabs(etaSC) > 1.566 && fabs(etaSC) < 2.5 ){
-			iso = Electrons->at(i).dr03EcalRecHitSumEt() + Electrons->at(i).dr03HcalDepth1TowerSumEt();
-			if( et <= 50 )
-			  isoCut = 2.5 + 0.28*rho;
-			else
-			  isoCut = 2.5+0.03*(et-50.) + 0.28*rho;
-			if( Electrons->at(i).ecalDriven() == 1 && Electrons->at(i).deltaEtaSuperClusterTrackAtVtx() < std::max(0.015-8.5E-5*et,0.006) && Electrons->at(i).deltaPhiSuperClusterTrackAtVtx() < 0.06 && Electrons->at(i).hadronicOverEm() < (12.5/Electrons->at(i).superCluster()->energy()+0.05) && Electrons->at(i).full5x5_sigmaIetaIeta() < 0.03 && Electrons->at(i).dr03TkSumPt() < 5. && Electrons->at(i).gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS) <= 1 && iso < isoCut && fabs(dxy) < 0.05 ) 
-			  isHEEPv50id = true;
-		      }
-		    }
-		  }
-
-		  //if( !isHEEP ) continue;
-		  */
-		  //looseID
-		  /*		  bool isPassLooseOLD = false;
-
-		  double iso_ch = Electrons->at(i).pfIsolationVariables().sumChargedHadronPt;
-		  double iso_em = Electrons->at(i).pfIsolationVariables().sumPhotonEt;
-		  double iso_nh = Electrons->at(i).pfIsolationVariables().sumNeutralHadronEt;
-		  double PU_ch = Electrons->at(i).pfIsolationVariables().sumPUPt;
-		  // apply to neutrals
-		  double iso_n = std::max(iso_nh + iso_em - PU_ch * 0.5, 0.0); //relIsoWithDBeta_:look inside EgammaAnalysis/ElectronTools/test/ElectronIDValidationAnalyzer.cc
-		  // compute final isolation
-		  double pfiso = (iso_n + iso_ch) / Electrons->at(i).pt();
-
-		  float ooemoop = (1.0/Electrons->at(i).ecalEnergy() - Electrons->at(i).eSuperClusterOverP()/Electrons->at(i).ecalEnergy());
-		  // Double_t etSCEle = Electrons->at(i).superCluster()->energy() *sin(Electrons->at(i).superCluster()->position().theta());
-
-		  // get the variables
-		  bool hasMatchedConversion = ConversionTools::hasMatchedConversion(Electrons->at(i), ConversionsHandle_, BeamSpotHandle_->position());
-
-		  if( fabs(etaSC) < 1.479 ){
-		    if( pfiso<0.120026 && Electrons->at(i).deltaEtaSuperClusterTrackAtVtx() < 0.012442 && Electrons->at(i).deltaPhiSuperClusterTrackAtVtx() < 0.072624 && Electrons->at(i).hadronicOverEm() < 0.121476 && ooemoop <  0.221803 && Electrons->at(i).gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS) <= 1 && fabs(dxy) < 0.022664 && fabs(dz) < 0.173670 && !hasMatchedConversion && Electrons->at(i).full5x5_sigmaIetaIeta() < 0.010557) {
-		    isPassLooseOLD = true; 
-		      		      std::cout<<
-		    "etaSC: "<<etaSC<<
-		    "pfiso: "<<pfiso<<
-		    "detain: "<<Electrons->at(i).deltaEtaSuperClusterTrackAtVtx()<<
-		    "dphiin: "<<Electrons->at(i).deltaPhiSuperClusterTrackAtVtx()<<
-		    "hoe: "<<Electrons->at(i).hadronicOverEm()<<
-		    "ooemoop: "<<ooemoop<<
-		    "misshits: "<<Electrons->at(i).gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<<
-		    "dxy: "<<fabs(dxy)<<
-		    "dz: "<<fabs(dz)<<
-		    "conv: "<<!hasMatchedConversion<<
-		    "sigmaietaieta: "<<Electrons->at(i).full5x5_sigmaIetaIeta()<<std::endl;
-		    std::cout<<"looseID: "<<isPassLoose<<std::endl; */
-		  /*		  		      }
-		   }
-		  if( fabs(etaSC) > 1.479 && fabs(etaSC) < 2.5 ){
-		    if( pfiso< 0.162914 && Electrons->at(i).deltaEtaSuperClusterTrackAtVtx() < 0.010654 && Electrons->at(i).deltaPhiSuperClusterTrackAtVtx() < 0.145129 && Electrons->at(i).hadronicOverEm() <  0.131862 && ooemoop <  0.142283 && Electrons->at(i).gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS) <= 1 && fabs(dxy) < 0.097358 && fabs(dz) < 0.198444 && !hasMatchedConversion && Electrons->at(i).full5x5_sigmaIetaIeta() < 0.032602) 
-		      isPassLooseOLD = true;
-		  		  }
-*/
 		  //		  bool isPassVeto = (*veto_id_decisions)[el];
 		  bool isPassLoose = (*loose_id_decisions)[el];
 		  //		  bool isPassMedium = (*medium_id_decisions)[el];
 		  //		  bool isPassTight = (*tight_id_decisions)[el];
 		  bool isPassHEEP = (*heep_id_decisions)[el];
-
-		  //		  std::cout<<isHEEPv50id<<" vs. "<<isPassHEEP<<", "<<isPassLoose<<" vs. "<<isPassLooseNEW<<" "<<isPassMedium<<" "<<isPassTight<<" "<<isPassVeto<<std::endl;
-		  //		  std::cout<<isPassHEEP<<", "<<isPassLoose<<std::endl;
-
 
 		  prodEle->push_back(pat::Electron(Electrons->at(i)));
 		  isHEEP->push_back( isPassHEEP );
