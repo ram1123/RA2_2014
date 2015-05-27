@@ -270,6 +270,16 @@ doJECCorrection=False):
         process.redoPatJets+=process.selectedPatJetsAK8
 
 
+    from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
+
+    process.ak4PFJets = ak4PFJets.clone(src = "packedPFCandidates")
+    process.ak4PFJets.doAreaFastjet = True
+
+    from AllHadronicSUSY.Utils.ak4pfjets_cfi import patJetCorrFactorsAK4, patJetsAK4
+
+    process.patJetCorrFactorsAK4 = patJetCorrFactorsAK4.clone( src = 'ak4PFJets' )
+    process.patJetsAK4 = patJetsAK4.clone( jetSource = 'ak4PFJets' )
+
     #
     # Set up electron ID (VID framework)
     #
@@ -465,6 +475,9 @@ doJECCorrection=False):
       process.HT *
       process.NJets *
       process.BTags *
+#      process.ak4PFJets *
+#      process.patJetCorrFactorsAK4 *
+#      process.patJetsAK4 *
       process.MHTJets *
       process.MHTJetsProperties *
       process.JetsProperties *
