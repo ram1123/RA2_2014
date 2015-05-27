@@ -273,7 +273,6 @@ doJECCorrection=False):
     from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 
     process.ak4PFJets = ak4PFJets.clone(src = "packedPFCandidates")
-    process.ak4PFJets.doAreaFastjet = True
 
     from AllHadronicSUSY.Utils.ak4pfjets_cfi import patJetCorrFactorsAK4, patJetsAK4
 
