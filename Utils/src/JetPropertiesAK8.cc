@@ -31,6 +31,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
+#include "DataFormats/Math/interface/deltaR.h"
 
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
@@ -63,6 +64,7 @@ private:
   std::string l2file;
   std::string l3file;
   bool doJEC;
+	edm::InputTag puppiJetTag_;
   //  std::vector<std::string> jecPayloadNames_;
 	
 	// ----------member data ---------------------------
@@ -90,6 +92,7 @@ JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
 	l2file = iConfig.getParameter<std::string>  ("L2File");
 	l3file = iConfig.getParameter<std::string>  ("L3File");
 	doJEC = iConfig.getParameter<bool>  ("doJEC");
+	puppiJetTag_ = iConfig.getParameter<edm::InputTag>("puppiJetTag");
 	//register your products
 	/* Examples
 	 *   produces<ExampleData2>();
@@ -157,6 +160,8 @@ JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
         produces<std::vector<double> > (string26).setBranchAlias(string26);
         const std::string string27("ECorr");
         produces<std::vector<double> > (string27).setBranchAlias(string27);
+        const std::string string28("AK8puppiMass");
+        produces<std::vector<double> > (string28).setBranchAlias(string28);
 
 }
 
@@ -209,6 +214,7 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<double> > EtaCorr(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > PhiCorr(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > ECorr(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > AK8puppiMass(new std::vector<double>);
 	using namespace edm;
 	using namespace reco;
 	using namespace pat;
@@ -216,6 +222,8 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.getByLabel(JetTag_,Jets);
 	edm::Handle<double> rho_ ;
         iEvent.getByLabel(RhoTag_, rho_);
+	edm::Handle< edm::View<pat::Jet> > puppiJets;
+	iEvent.getByLabel(puppiJetTag_,puppiJets);
 
 	//  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
 	std::vector<JetCorrectorParameters> vPar;
@@ -237,6 +245,7 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	if( Jets.isValid() ) {
 	  edm::View<pat::Jet>::const_iterator ijet = Jets->begin();
+	  //	  edm::View<pat::Jet>::const_iterator puppiJet = puppiJets->begin();
 		for(unsigned int i=0; i<Jets->size();i++)
 		{
 		  bool looseJetId=false;
@@ -297,6 +306,19 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		   AK8softDropMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSSoftDropMass"));
 		   AK8trimmedMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSTrimmedMass"));
 		   AK8filteredMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSFilteredMass"));
+
+		   double dR=1000.;
+		   double tempMass=0.;
+
+		   for (unsigned int j=0; j<puppiJets->size(); j++) {
+		     if (deltaR(Jets->at(i).eta(),Jets->at(i).phi(),puppiJets->at(j).eta(),puppiJets->at(j).phi()) < dR) {
+		       dR = deltaR(Jets->at(i).eta(),Jets->at(i).phi(),puppiJets->at(j).eta(),puppiJets->at(j).phi());
+		       if (dR<0.1)
+			 tempMass = puppiJets->at(j).mass();			 
+		     }
+		   }		    
+		   AK8puppiMass->push_back(tempMass); 		  
+	
 		   //						std::cout<<"DEBUG: "<<Jets->at(i).userFloat("ak8PFJetsCHSSoftDropLinks")<<std::endl;
 
 		   AK8tau1->push_back( Jets->at(i).userFloat("NjettinessAK8:tau1"));
@@ -380,6 +402,8 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(PhiCorr,string26);
 	const std::string string27("ECorr");
 	iEvent.put(ECorr,string27);
+	const std::string string28("AK8puppiMass");
+	iEvent.put(AK8puppiMass,string28);
 	
 }
 
