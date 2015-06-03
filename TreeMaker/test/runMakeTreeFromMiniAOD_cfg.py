@@ -54,4 +54,5 @@ makeTreeTreeFromMiniADO(process,
 		debug = debug,
                 numProcessedEvt=-1,
                 doAK8Reclustering=False,
-                doJECCorrection=False)
+                doJECCorrection=False,
+                        doPuppi=True)
