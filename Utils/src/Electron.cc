@@ -62,6 +62,7 @@ private:
 	edm::InputTag EleTag_;
 	edm::InputTag VertexTag_;
 	edm::InputTag RhoTag_;
+  double MinPt_;
   edm::EDGetTokenT<reco::ConversionCollection> ConversionTag_;
   edm::EDGetTokenT<reco::BeamSpot> BeamSpotTag_;
 
@@ -96,6 +97,7 @@ Electron::Electron(const edm::ParameterSet& iConfig):
   eleHEEPIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleHEEPIdMap")))
 {
 	EleTag_ = iConfig.getParameter<edm::InputTag>("EleTag");
+        MinPt_ = iConfig.getParameter <double> ("MinPt");
 	VertexTag_ = iConfig.getParameter<edm::InputTag>("VertexTag");
 	RhoTag_ = iConfig.getParameter<edm::InputTag>("RhoTag");
 	//	ConversionTag_ = iConfig.getParameter<edm::InputTag>("ConversionTag");
@@ -231,6 +233,8 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  //	  std::cout<<"Electrons: "<<Electrons->size()<<std::endl;
 		for(unsigned int i=0; i<Electrons->size();i++)
 		{
+		  if (Electrons->at(i).pt()<MinPt_) continue;
+
 		  const auto el = Electrons->ptrAt(i);
 		  double rho = *(rho_.product());
 		  //		  bool isPassVeto = (*veto_id_decisions)[el];
