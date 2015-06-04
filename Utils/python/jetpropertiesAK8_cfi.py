@@ -2,6 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 jetpropertiesAK8 = cms.EDProducer('JetPropertiesAK8',
 JetTag_               = cms.InputTag('slimmedJetsAK8'),
+MinPt = cms.double(15),
 puppiJetTag_               = cms.InputTag('ak8PFJetsPuppi'),
 doJEC = cms.bool(False),
 RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
