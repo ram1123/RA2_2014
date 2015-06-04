@@ -65,6 +65,7 @@ private:
   std::string l3file;
   bool doJEC;
 	edm::InputTag puppiJetTag_;
+  double MinPt_;
   //  std::vector<std::string> jecPayloadNames_;
 	
 	// ----------member data ---------------------------
@@ -93,6 +94,7 @@ JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
 	l3file = iConfig.getParameter<std::string>  ("L3File");
 	doJEC = iConfig.getParameter<bool>  ("doJEC");
 	puppiJetTag_ = iConfig.getParameter<edm::InputTag>("puppiJetTag");
+        MinPt_ = iConfig.getParameter <double> ("MinPt");
 	//register your products
 	/* Examples
 	 *   produces<ExampleData2>();
@@ -248,6 +250,8 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  //	  edm::View<pat::Jet>::const_iterator puppiJet = puppiJets->begin();
 		for(unsigned int i=0; i<Jets->size();i++)
 		{
+		  if (Jets->at(i).pt()<MinPt_)  continue;
+
 		  bool looseJetId=false;
 
 		  reco::Candidate::LorentzVector uncorrJet;
