@@ -64,6 +64,7 @@ private:
   std::string l2file;
   std::string l3file;
   bool doJEC;
+  double MinPt_;
   //	std::string   btagname_;
 
 	
@@ -92,6 +93,7 @@ JetProperties::JetProperties(const edm::ParameterSet& iConfig)
 	l2file = iConfig.getParameter<std::string> ("L2File");
 	l3file = iConfig.getParameter<std::string> ("L3File");
 	doJEC = iConfig.getParameter<bool> ("doJEC");
+	MinPt_ = iConfig.getParameter <double> ("MinPt");
 	//	btagname_ = iConfig.getParameter<std::string>  ("BTagInputTag");
 	//register your products
 	/* Examples
@@ -222,6 +224,8 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  edm::View<pat::Jet>::const_iterator ijet = Jets->begin();
 		for(unsigned int i=0; i<Jets->size();i++)
 		{
+		  if (Jets->at(i).pt()<MinPt_) continue;
+
 		  bool looseJetId=false;
 
 		  reco::Candidate::LorentzVector uncorrJet;
