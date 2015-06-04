@@ -55,6 +55,7 @@ private:
 	edm::InputTag MuTag_;
         edm::InputTag VertexTag_;
 	edm::InputTag RhoTag_;
+  double MinPt_;
 	// ----------member data ---------------------------
 };
 
@@ -73,6 +74,7 @@ private:
 Muon::Muon(const edm::ParameterSet& iConfig)
 {
 	MuTag_ = iConfig.getParameter<edm::InputTag>("MuTag");
+        MinPt_ = iConfig.getParameter <double> ("MinPt");
         VertexTag_ = iConfig.getParameter<edm::InputTag>("VertexTag");
 	RhoTag_ = iConfig.getParameter<edm::InputTag>("RhoTag");
 	//register your products
@@ -175,6 +177,8 @@ Muon::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  //	  std::cout<<"Muoni: "<<Muons->size()<<std::endl;
 		for(unsigned int i=0; i<Muons->size();i++)
 		{
+		  if (Muons->at(i).pt()<MinPt_) continue;
+
 		  bool isHighPtId = Muons->at(i).isHighPtMuon(Vertices->at(0));
 		  bool isLooseId = Muons->at(i).isLooseMuon();
 		  bool isPF = Muons->at(i).isPFMuon();
