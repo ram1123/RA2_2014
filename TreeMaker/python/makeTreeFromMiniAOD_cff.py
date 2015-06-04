@@ -336,7 +336,7 @@ doPuppi=True):
     process.Electrons = electron.clone(
         VertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
         EleTag = cms.InputTag("slimmedElectrons"),
-      #  MinPt = cms.double(15),
+        MinPt = cms.double(20),
         RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
         eleVetoIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto"),
         eleLooseIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"),
@@ -348,8 +348,8 @@ doPuppi=True):
     process.Muons = muon.clone(
         VertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
         MuTag = cms.InputTag("slimmedMuons"),
+        MinPt = cms.double(20),
         RhoTag = cms.InputTag("fixedGridRhoFastjetAll")
-#        MinPt = cms.double(20)
     )
     from AllHadronicSUSY.Utils.subJetSelection_cfi import SubJetSelection
     process.HTJets = SubJetSelection.clone(
@@ -406,6 +406,7 @@ doPuppi=True):
     from AllHadronicSUSY.Utils.jetproperties_cfi import jetproperties
     process.JetsProperties = jetproperties.clone(
     JetTag  = cms.InputTag('slimmedJets'),
+    MinPt = cms.double(15),
     doJEC  = cms.bool(doJECCorrection),
     L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt"),
     L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK4PFchs.txt"),
@@ -417,7 +418,7 @@ doPuppi=True):
     process.JetsPropertiesAK8 = jetpropertiesAK8.clone(
     JetTag  = cms.InputTag('slimmedJetsAK8'),
     puppiJetTag = cms.InputTag('selectedPuppiJetsAK8'),
-  #  MinPt = cms.double(20),
+    MinPt = cms.double(20),
     doJEC  = cms.bool(doJECCorrection),
     L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt"),
     L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK8PFchs.txt"),
