@@ -462,6 +462,8 @@ doPuppi=True):
     process.GenLeptons = genLeptonRecoCand.clone(
     PrunedGenParticleTag  = cms.InputTag("prunedGenParticles"),
     )
+    if not MC:
+        process.GenLeptons = cms.Sequence()
     RecoCandVector = cms.vstring()
     RecoCandVector.extend(['IsolatedTracks']) # basic muons electrons and isoalted tracks
 #    RecoCandVector.extend(['selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks']) # basic muons electrons and isoalted tracks
