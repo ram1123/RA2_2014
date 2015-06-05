@@ -20,6 +20,12 @@ debug= parameters.value("debug", False)
 nJetsMin    = parameters.value("njets_min",0)
 htMin       = parameters.value("ht_min",0)
 mhtMin      = parameters.value("mht_min",0)
+NumProcessedEvt=parameters.value("NumProcessedEvt",-1)
+DoAK8Reclustering=parameters.value("DoAK8Reclustering",False)
+DoJECCorrection=parameters.value("DoJECCorrection",False)
+DoPuppi=parameters.value("DoPuppi",True)
+
+processName      = parameters.value("name","RSGraviton1000")
 
 
 print "***** SETUP ************************************"
@@ -32,12 +38,17 @@ print "     nJetsMin : "+str(nJetsMin)
 print "        htMin : "+str(htMin)
 print "       mhtMin : "+str(mhtMin)
 print "       debug : "+str(debug)
+print "       num of events : "+str(NumProcessedEvt)
+print "       doAK8Reclustering : "+str(DoAK8Reclustering)
+print "       doJECCorrection : "+str(DoJECCorrection)
+print "       doPuppi : "+str(DoPuppi)
 print "************************************************"
 
 # The process needs to be defined AFTER reading sys.argv,
 # otherwise edmConfigHash fails
 import FWCore.ParameterSet.Config as cms
-process = cms.Process("RA2EventSelection")
+#process = cms.Process("RA2EventSelection")
+process = cms.Process(processName)
 
 from AllHadronicSUSY.TreeMaker.makeTreeFromMiniAOD_cff import makeTreeTreeFromMiniADO
 makeTreeTreeFromMiniADO(process,
@@ -52,7 +63,7 @@ makeTreeTreeFromMiniADO(process,
 		QCD=QCD,
 		LostLepton=LostLepton,
 		debug = debug,
-                numProcessedEvt=-1,
-                doAK8Reclustering=False,
-                doJECCorrection=False,
-                        doPuppi=True)
+                numProcessedEvt=NumProcessedEvt,
+                doAK8Reclustering=DoAK8Reclustering,
+                doJECCorrection=DoJECCorrection,
+                        doPuppi=DoPuppi)
