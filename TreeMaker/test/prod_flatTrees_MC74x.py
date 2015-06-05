@@ -24,7 +24,7 @@ if __name__ == '__main__':
     from CRABAPI.RawCommand import crabCommand
 
     #Make sure you set this parameter (here or above in the config it does not matter)
-    config.General.workArea = 'ntuple'
+    config.General.workArea = 'ntuple3'
 
     def submit(config):
         res = crabCommand('submit', config = config)
@@ -32,28 +32,30 @@ if __name__ == '__main__':
     #########    From now on that's what users should modify: this is the a-la-CRAB2 configuration part.
         
     config.General.requestName = 'RSGraviton600'
+    config.JobType.pyCfgParams = ['global_tag=MCRUN2_74_V9::All', 'MC=True', 'name=RSGraviton600']
     config.Data.inputDataset = '/RSGravToWWToLNQQ_kMpl01_M-600_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/RSGraviton600/'
     submit(config)
 
     config.General.requestName = 'RSGraviton800'
+    config.JobType.pyCfgParams = ['global_tag=MCRUN2_74_V9::All', 'MC=True', 'name=RSGraviton800']
     config.Data.inputDataset = '/RSGravToWWToLNQQ_kMpl01_M-800_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/RSGraviton800/'
     submit(config)
-
+    
     config.General.requestName = 'RSGraviton1000'
     config.Data.inputDataset = '/RSGravToWWToLNQQ_kMpl01_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
-#    config.General.workArea = 'ntuple/RSGraviton1000'
+    config.JobType.pyCfgParams = ['global_tag=MCRUN2_74_V9::All', 'MC=True', 'name=RSGraviton1000']
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/RSGraviton1000/'
-#    config.Data.unitsPerJob = 2
-#    config.Data.totalUnits = 4
     submit(config)
 
     config.General.requestName = 'RSGraviton1200'
     config.Data.inputDataset = '/RSGravToWWToLNQQ_kMpl01_M-1200_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.JobType.pyCfgParams = ['global_tag=MCRUN2_74_V9::All', 'MC=True', 'name=RSGraviton1200']
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/RSGraviton1200/'
     submit(config)
 
+    '''
     config.General.requestName = 'RSGraviton1400'
     config.Data.inputDataset = '/RSGravToWWToLNQQ_kMpl01_M-1400_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/RSGraviton1400/'
@@ -153,6 +155,6 @@ if __name__ == '__main__':
     config.Data.inputDataset = '/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/tWch/'
     submit(config)
-
+    '''
 
     #...
