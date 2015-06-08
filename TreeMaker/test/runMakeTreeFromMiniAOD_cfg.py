@@ -23,7 +23,7 @@ mhtMin      = parameters.value("mht_min",0)
 NumProcessedEvt=parameters.value("NumProcessedEvt",-1)
 DoAK8Reclustering=parameters.value("DoAK8Reclustering",False)
 DoJECCorrection=parameters.value("DoJECCorrection",False)
-DoPuppi=parameters.value("DoPuppi",True)
+DoPuppi=parameters.value("DoPuppi",False)
 
 processName      = parameters.value("name","RSGraviton1000")
 
