@@ -19,7 +19,7 @@ LostLepton=False,
 numProcessedEvt=1000,
 doAK8Reclustering=False,
 doJECCorrection=False,
-doPuppi=True):
+doPuppi=False):
 
     process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
     process.GlobalTag.globaltag = Global_Tag
@@ -221,7 +221,7 @@ doPuppi=True):
     process.redoPuppiJets = cms.Sequence()
 
     if (doAK8Reclustering):
-        from RecoJets.Configuration.RecoPFJets_cff import ak4PFJetsCHS, ak8PFJetsCHS, ak8PFJetsCHSPruned, ak8PFJetsCHSSoftDrop, ak8PFJetsCHSPrunedLinks, ak8PFJetsCHSSoftDropLinks
+        from RecoJets.Configuration.RecoPFJets_cff import ak4PFJetsCHS, ak8PFJetsCHS, ak8PFJetsCHSPruned, ak8PFJetsCHSSoftDrop, ak8PFJetsCHSPrunedMass, ak8PFJetsCHSSoftDropMass
 
         process.chs = cms.EDFilter("CandPtrSelector",
                                src = cms.InputTag('packedPFCandidates'),
@@ -246,16 +246,16 @@ doPuppi=True):
         process.ak8PFJetsCHS = ak8PFJetsCHS.clone( src = 'chs', jetPtMin = 100.0 )
 
         process.ak8PFJetsCHSPruned = ak8PFJetsCHSPruned.clone( src = 'chs', jetPtMin = 100.0 )
-        process.ak8PFJetsCHSPrunedLinks = ak8PFJetsCHSPrunedLinks.clone()
+        process.ak8PFJetsCHSPrunedMass = ak8PFJetsCHSPrunedMass.clone()
         process.ak8PFJetsCHSSoftDrop = ak8PFJetsCHSSoftDrop.clone( src = 'chs', jetPtMin = 100.0 )
-        process.ak8PFJetsCHSSoftDropLinks = ak8PFJetsCHSSoftDropLinks.clone()
+        process.ak8PFJetsCHSSoftDropMass = ak8PFJetsCHSSoftDropMass.clone()
 
         process.substructureSequence+=process.chs
         process.substructureSequence+=process.ak8PFJetsCHS
         process.substructureSequence+=process.NjettinessAK8
 
-        process.softdrop_onMiniAOD += process.ak8PFJetsCHSSoftDrop + process.ak8PFJetsCHSSoftDropLinks
-        process.pruning_onMiniAOD += process.ak8PFJetsCHSPruned + process.ak8PFJetsCHSPrunedLinks
+        process.softdrop_onMiniAOD += process.ak8PFJetsCHSSoftDrop + process.ak8PFJetsCHSSoftDropMass
+        process.pruning_onMiniAOD += process.ak8PFJetsCHSPruned + process.ak8PFJetsCHSPrunedMass
 
         ####### Redo pat jets sequence ##########
         from ExoDiBosonResonances.EDBRJets.redoPatJets_cff import patJetCorrFactorsAK8, patJetsAK8, selectedPatJetsAK8
@@ -264,7 +264,7 @@ doPuppi=True):
 
         process.patJetCorrFactorsAK8 = patJetCorrFactorsAK8.clone( src = 'ak8PFJetsCHS' )
         process.patJetsAK8 = patJetsAK8.clone( jetSource = 'ak8PFJetsCHS' )
-        #process.patJetsAK8.userData.userFloats.src = []
+        process.patJetsAK8.userData.userFloats.src = [ cms.InputTag("ak8PFJetsCHSPrunedMass"), cms.InputTag("ak8PFJetsCHSSoftDropMass"), cms.InputTag("NjettinessAK8:tau1"), cms.InputTag("NjettinessAK8:tau2"), cms.InputTag("NjettinessAK8:tau3")]
         process.patJetsAK8.jetCorrFactorsSource = cms.VInputTag( cms.InputTag("patJetCorrFactorsAK8") )
         process.selectedPatJetsAK8 = selectedPatJetsAK8.clone( cut = cms.string('pt > 20') )
 
@@ -283,6 +283,43 @@ doPuppi=True):
 
         process.puppi_onMiniAOD = cms.Sequence(process.puppi + process.ak8PFJetsPuppi)
 
+        from RecoJets.Configuration.RecoPFJets_cff import ak4PFJetsCHS, ak8PFJetsCHS, ak8PFJetsCHSPruned, ak8PFJetsCHSSoftDrop, ak8PFJetsCHSPrunedMass, ak8PFJetsCHSSoftDropMass
+
+        process.NjettinessAK8 = cms.EDProducer("NjettinessAdder",
+                            src=cms.InputTag("ak8PFJetsPuppi"),
+                            Njets=cms.vuint32(1,2,3,4),          # compute 1-, 2-, 3-, 4- subjettiness
+                            # variables for measure definition : 
+                            measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
+                            beta = cms.double(1.0),              # CMS default is 1
+                            R0 = cms.double( 0.8 ),              # CMS default is jet cone size
+                            Rcutoff = cms.double( -999.0),       # not used by default
+                            # variables for axes definition :
+                            axesDefinition = cms.uint32( 6 ),    # CMS default is 1-pass KT axes
+                            nPass = cms.int32(-999),             # not used by default
+                            akAxesR0 = cms.double(-999.0)        # not used by default
+                            )
+
+        process.ak4PFJetsPuppi = ak4PFJetsPuppi.clone(src = 'puppi')
+        process.ak8PFJetsPuppi = process.ak8PFJetsPuppi.clone( src = 'puppi', jetPtMin = 100.0 )
+
+        process.ak8PFJetsCHSPruned = ak8PFJetsCHSPruned.clone( src = 'puppi', jetPtMin = 100.0 )
+        process.ak8PFJetsCHSPrunedMass = ak8PFJetsCHSPrunedMass.clone(    
+            matched = cms.InputTag("ak8PFJetsCHSPruned"),
+            src = cms.InputTag("ak8PFJetsPuppi")
+            )
+        process.ak8PFJetsCHSSoftDrop = ak8PFJetsCHSSoftDrop.clone( src = 'puppi', jetPtMin = 100.0 )
+        process.ak8PFJetsCHSSoftDropMass = ak8PFJetsCHSSoftDropMass.clone(
+            matched = cms.InputTag("ak8PFJetsCHSSoftDrop"),
+            src = cms.InputTag("ak8PFJetsPuppi")
+            )
+
+        process.substructureSequence+=process.puppi
+        process.substructureSequence+=process.ak8PFJetsPuppi
+        process.substructureSequence+=process.NjettinessAK8
+
+        process.softdrop_onMiniAOD += process.ak8PFJetsCHSSoftDrop + process.ak8PFJetsCHSSoftDropMass
+        process.pruning_onMiniAOD += process.ak8PFJetsCHSPruned + process.ak8PFJetsCHSPrunedMass
+
         ####### Redo pat jets sequence ##########
         from ExoDiBosonResonances.EDBRJets.redoPatJets_cff import patJetCorrFactorsAK8, patJetsAK8, selectedPatJetsAK8
 
@@ -290,13 +327,15 @@ doPuppi=True):
 
         process.puppiJetCorrFactorsAK8 = patJetCorrFactorsAK8.clone( src = 'ak8PFJetsPuppi' )
         process.puppiJetsAK8 = patJetsAK8.clone( jetSource = 'ak8PFJetsPuppi' )
-        process.puppiJetsAK8.userData.userFloats.src = []
+        process.puppiJetsAK8.userData.userFloats.src = [ cms.InputTag("ak8PFJetsCHSPrunedMass"), cms.InputTag("ak8PFJetsCHSSoftDropMass"), cms.InputTag("NjettinessAK8:tau1"), cms.InputTag("NjettinessAK8:tau2"), cms.InputTag("NjettinessAK8:tau3")]
         process.puppiJetsAK8.jetCorrFactorsSource = cms.VInputTag( cms.InputTag("puppiJetCorrFactorsAK8") )
         process.selectedPuppiJetsAK8 = selectedPatJetsAK8.clone( src = 'puppiJetsAK8', cut = cms.string('pt > 20') )
 
         process.redoPuppiJets+=process.puppiJetCorrFactorsAK8
         process.redoPuppiJets+=process.puppiJetsAK8
         process.redoPuppiJets+=process.selectedPuppiJetsAK8
+
+
 
 ######### A4PF-nonCHS jets ###########
 
@@ -417,7 +456,7 @@ doPuppi=True):
     from AllHadronicSUSY.Utils.jetpropertiesAK8_cfi import jetpropertiesAK8
     process.JetsPropertiesAK8 = jetpropertiesAK8.clone(
     JetTag  = cms.InputTag('slimmedJetsAK8'),
-    puppiJetTag = cms.InputTag('selectedPuppiJetsAK8'),
+#    puppiJetTag = cms.InputTag('selectedPuppiJetsAK8'),
     MinPt = cms.double(20),
     doJEC  = cms.bool(doJECCorrection),
     L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt"),
@@ -428,6 +467,8 @@ doPuppi=True):
     )
     if doAK8Reclustering:
         process.JetsPropertiesAK8.JetTag = cms.InputTag('selectedPatJetsAK8')
+    if doPuppi:
+        process.JetsPropertiesAK8.JetTag = cms.InputTag('selectedPuppiJetsAK8')
     from AllHadronicSUSY.Utils.mhtdouble_cfi import mhtdouble
     process.MHT = mhtdouble.clone(
     JetTag  = cms.InputTag('MHTJets'),
@@ -507,11 +548,11 @@ doPuppi=True):
  #   	process.IsolatedTracksPT10IsoCut12 *
   #  	process.slimmedJetsPFCombinedSecondaryVertexBJetTags *
         process.puppi_onMiniAOD *
-        process.redoPuppiJets*
         process.substructureSequence *
         process.softdrop_onMiniAOD *
         process.pruning_onMiniAOD *
         process.redoPatJets*
+        process.redoPuppiJets*
       process.HTJets *
       process.HT *
       process.NJets *
