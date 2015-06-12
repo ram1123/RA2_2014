@@ -19,7 +19,8 @@ LostLepton=False,
 numProcessedEvt=1000,
 doAK8Reclustering=False,
 doJECCorrection=False,
-doPuppi=False):
+doPuppi=False,
+leptonFilter=False):
 
     process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
     process.GlobalTag.globaltag = Global_Tag
@@ -93,6 +94,43 @@ doPuppi=False):
     gsfTrack.isAvailable() &&
     gsfTrack.hitPattern().numberOfLostHits('MISSING_INNER_HITS')<2'''))
 
+
+
+    process.filterSeq = cms.Sequence ()
+
+    process.selectedElectrons = cms.EDFilter("CandPtrSelector",
+                                     src = cms.InputTag( 'slimmedElectrons' ),
+                                     cut = cms.string("pt>20")
+                                     )
+
+#    process.eleFilter = cms.EDFilter("CandViewCountFilter",
+#                              src = cms.InputTag("selectedElectrons"),
+#                              minNumber = cms.uint32(1)
+#                              )
+
+    process.selectedMuons = cms.EDFilter("CandPtrSelector",
+                                     src = cms.InputTag( 'slimmedMuons' ),
+                                     cut = cms.string("pt>15")
+                                     )
+
+#    process.muFilter = cms.EDFilter("CandViewCountFilter",
+#                              src = cms.InputTag("selectedMuons"),
+#                              minNumber = cms.uint32(1)
+#                              )
+
+# merge muons and electrons into leptons
+    process.selectedLeptons = cms.EDProducer("CandMerger",
+                                 src = cms.VInputTag(cms.InputTag("slimmedElectrons"), cms.InputTag("slimmedMuons")),
+                                             cut = cms.string("pt>15")
+                                 )
+
+    process.lepFilter = cms.EDFilter("CandViewCountFilter",
+                              src = cms.InputTag("selectedLeptons"),
+                              minNumber = cms.uint32(1)
+                              )
+    
+    if (leptonFilter):
+        process.filterSeq = cms.Sequence (process.selectedElectrons*process.selectedMuons*process.selectedLeptons*process.lepFilter)
     
        ## --- Setup of TreeMaker ----------------------------------------------
     FilterNames = cms.VInputTag()
@@ -375,7 +413,7 @@ doPuppi=False):
     process.Electrons = electron.clone(
         VertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
         EleTag = cms.InputTag("slimmedElectrons"),
-        MinPt = cms.double(20),
+        MinPt = cms.double(-1),
         RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
         eleVetoIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto"),
         eleLooseIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"),
@@ -387,7 +425,7 @@ doPuppi=False):
     process.Muons = muon.clone(
         VertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
         MuTag = cms.InputTag("slimmedMuons"),
-        MinPt = cms.double(20),
+        MinPt = cms.double(-1),
         RhoTag = cms.InputTag("fixedGridRhoFastjetAll")
     )
     from AllHadronicSUSY.Utils.subJetSelection_cfi import SubJetSelection
@@ -445,7 +483,7 @@ doPuppi=False):
     from AllHadronicSUSY.Utils.jetproperties_cfi import jetproperties
     process.JetsProperties = jetproperties.clone(
     JetTag  = cms.InputTag('slimmedJets'),
-    MinPt = cms.double(15),
+    MinPt = cms.double(-1),
     doJEC  = cms.bool(doJECCorrection),
     L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt"),
     L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK4PFchs.txt"),
@@ -457,7 +495,7 @@ doPuppi=False):
     process.JetsPropertiesAK8 = jetpropertiesAK8.clone(
     JetTag  = cms.InputTag('slimmedJetsAK8'),
 #    puppiJetTag = cms.InputTag('selectedPuppiJetsAK8'),
-    MinPt = cms.double(20),
+    MinPt = cms.double(-1),
     doJEC  = cms.bool(doJECCorrection),
     L1File = cms.string("PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt"),
     L2File = cms.string("PHYS14_25_V2_All_L2Relative_AK8PFchs.txt"),
@@ -534,6 +572,7 @@ doPuppi=False):
 
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
+#        process.filterSeq *
         process.Muons *
         process.egmGsfElectronIDSequence*
         process.Electrons *
