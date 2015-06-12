@@ -24,6 +24,7 @@ NumProcessedEvt=parameters.value("NumProcessedEvt",-1)
 DoAK8Reclustering=parameters.value("DoAK8Reclustering",False)
 DoJECCorrection=parameters.value("DoJECCorrection",False)
 DoPuppi=parameters.value("DoPuppi",False)
+LeptonFilter=parameters.value("leptonFilter",False)
 
 processName      = parameters.value("name","RSGraviton1000")
 
@@ -42,6 +43,7 @@ print "       num of events : "+str(NumProcessedEvt)
 print "       doAK8Reclustering : "+str(DoAK8Reclustering)
 print "       doJECCorrection : "+str(DoJECCorrection)
 print "       doPuppi : "+str(DoPuppi)
+print "       LeptonFilter : "+str(LeptonFilter)
 print "************************************************"
 
 # The process needs to be defined AFTER reading sys.argv,
@@ -66,4 +68,5 @@ makeTreeTreeFromMiniADO(process,
                 numProcessedEvt=NumProcessedEvt,
                 doAK8Reclustering=DoAK8Reclustering,
                 doJECCorrection=DoJECCorrection,
-                        doPuppi=DoPuppi)
+                        doPuppi=DoPuppi,
+                        leptonFilter=LeptonFilter)
