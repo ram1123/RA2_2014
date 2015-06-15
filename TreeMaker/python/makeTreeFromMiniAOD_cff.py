@@ -95,42 +95,19 @@ leptonFilter=False):
     gsfTrack.hitPattern().numberOfLostHits('MISSING_INNER_HITS')<2'''))
 
 
-
+###Lepton Filter
     process.filterSeq = cms.Sequence ()
 
-    process.selectedElectrons = cms.EDFilter("CandPtrSelector",
-                                     src = cms.InputTag( 'slimmedElectrons' ),
-                                     cut = cms.string("pt>20")
-                                     )
+#    from AllHadronicSUSY.Utils.leptonfilter_cfi import leptonFilter
+    process.load('AllHadronicSUSY.Utils.leptonfilter_cfi')
 
-#    process.eleFilter = cms.EDFilter("CandViewCountFilter",
-#                              src = cms.InputTag("selectedElectrons"),
-#                              minNumber = cms.uint32(1)
-#                              )
-
-    process.selectedMuons = cms.EDFilter("CandPtrSelector",
-                                     src = cms.InputTag( 'slimmedMuons' ),
-                                     cut = cms.string("pt>15")
-                                     )
-
-#    process.muFilter = cms.EDFilter("CandViewCountFilter",
-#                              src = cms.InputTag("selectedMuons"),
-#                              minNumber = cms.uint32(1)
-#                              )
-
-# merge muons and electrons into leptons
-    process.selectedLeptons = cms.EDProducer("CandMerger",
-                                 src = cms.VInputTag(cms.InputTag("slimmedElectrons"), cms.InputTag("slimmedMuons")),
-                                             cut = cms.string("pt>15")
-                                 )
-
-    process.lepFilter = cms.EDFilter("CandViewCountFilter",
-                              src = cms.InputTag("selectedLeptons"),
-                              minNumber = cms.uint32(1)
-                              )
+    process.leptonFilter.electronsInputTag = cms.InputTag("slimmedElectrons")
+    process.leptonFilter.muonsInputTag = cms.InputTag("slimmedMuons")
+    process.leptonFilter.eleFilterPtCut = cms.double(20.0)
+    process.leptonFilter.muFilterPtCut = cms.double(20.0)
     
     if (leptonFilter):
-        process.filterSeq = cms.Sequence (process.selectedElectrons*process.selectedMuons*process.selectedLeptons*process.lepFilter)
+        process.filterSeq = cms.Sequence (process.leptonFilter)
     
        ## --- Setup of TreeMaker ----------------------------------------------
     FilterNames = cms.VInputTag()
@@ -572,7 +549,7 @@ leptonFilter=False):
 
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
-#        process.filterSeq *
+        process.filterSeq *
         process.Muons *
         process.egmGsfElectronIDSequence*
         process.Electrons *
