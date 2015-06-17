@@ -162,6 +162,8 @@ JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
         produces<std::vector<double> > (string26).setBranchAlias(string26);
         const std::string string27("ECorr");
         produces<std::vector<double> > (string27).setBranchAlias(string27);
+	const std::string string28("AK8isTightJetId");
+	produces<std::vector<bool> > (string28).setBranchAlias(string28);
 	//        const std::string string28("AK8puppiMass");
         //produces<std::vector<double> > (string28).setBranchAlias(string28);
 
@@ -210,6 +212,7 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<double> > AK8tau2(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > AK8tau3(new std::vector<double>);
 	std::auto_ptr< std::vector<bool> > AK8isLooseJetId(new std::vector<bool>);
+	std::auto_ptr< std::vector<bool> > AK8isTightJetId(new std::vector<bool>);
 	std::auto_ptr< std::vector<double> > AK8bDiscriminatorCSV(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > AK8bDiscriminatorICSV(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > PtCorr(new std::vector<double>);
@@ -253,6 +256,7 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  if (Jets->at(i).pt()<MinPt_)  continue;
 
 		  bool looseJetId=false;
+		  bool tightJetId=false;
 
 		  reco::Candidate::LorentzVector uncorrJet;
 		  // The pat::Jet "knows" if it has been corrected, so here
@@ -332,7 +336,18 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		   AK8bDiscriminatorCSV->push_back( Jets->at(i).bDiscriminator("combinedSecondaryVertexBJetTags") );
 		   AK8bDiscriminatorICSV->push_back( Jets->at(i).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
 		   
-		   if (Jets->at(i).nConstituents() > 1 &&
+		   float NHF = Jets->at(i).neutralHadronEnergyFraction();
+		   float NEMF = Jets->at(i).neutralEmEnergyFraction();
+		   float CHF = Jets->at(i).chargedHadronEnergyFraction();
+		   float MUF = Jets->at(i).muonEnergyFraction();
+		   float CEMF = Jets->at(i).chargedEmEnergyFraction();
+		   int NumConst = Jets->at(i).chargedMultiplicity()+Jets->at(i).neutralMultiplicity();
+		   int CHM = Jets->at(i).chargedMultiplicity(); 
+
+		   if ((NHF<0.99 && NEMF<0.99 && NumConst>1 && MUF<0.8) && ((abs(Jets->at(i).eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abs(Jets->at(i).eta())>2.4))  looseJetId=true;
+		   if ((NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((abs(Jets->at(i).eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || abs(Jets->at(i).eta())>2.4))  tightJetId=true;
+
+		   /*		   if (Jets->at(i).nConstituents() > 1 && //OLD JET LOOSE ID
 		       Jets->at(i).photonEnergyFraction() < 0.99 &&
 		       Jets->at(i).neutralHadronEnergyFraction() < 0.99 &&
 		       Jets->at(i).muonEnergyFraction() < 0.8 &&
@@ -341,7 +356,9 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		       (Jets->at(i).chargedEmEnergyFraction() < 0.99 || fabs(Jets->at(i).eta())>2.4 ) &&
 		       (Jets->at(i).chargedHadronEnergyFraction() > 0. || fabs(Jets->at(i).eta())>2.4 ) )
 		     looseJetId = true;
+		   */
 		   AK8isLooseJetId->push_back(looseJetId);
+		   AK8isTightJetId->push_back(tightJetId);
 		}
 	}
 	delete JetCorrector;
@@ -406,6 +423,8 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(PhiCorr,string26);
 	const std::string string27("ECorr");
 	iEvent.put(ECorr,string27);
+	const std::string string28("AK8isTightJetId");
+	iEvent.put(AK8isTightJetId,string28);
 	//	const std::string string28("AK8puppiMass");
 	//iEvent.put(AK8puppiMass,string28);
 	
