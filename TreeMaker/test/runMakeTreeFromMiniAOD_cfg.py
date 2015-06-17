@@ -24,7 +24,7 @@ NumProcessedEvt=parameters.value("NumProcessedEvt",-1)
 DoAK8Reclustering=parameters.value("DoAK8Reclustering",False)
 DoJECCorrection=parameters.value("DoJECCorrection",False)
 DoPuppi=parameters.value("DoPuppi",False)
-LeptonFilter=parameters.value("leptonFilter",False)
+LeptonFilter=parameters.value("leptonFilter",True)
 
 processName      = parameters.value("name","RSGraviton1000")
 
