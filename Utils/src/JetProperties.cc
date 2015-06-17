@@ -148,6 +148,8 @@ JetProperties::JetProperties(const edm::ParameterSet& iConfig)
         produces<std::vector<double> > (string26).setBranchAlias(string26);
         const std::string string27("ECorr");
         produces<std::vector<double> > (string27).setBranchAlias(string27);	
+	const std::string string28("isTightJetId");
+	produces<std::vector<bool> > (string28).setBranchAlias(string28);
 }
 
 
@@ -187,6 +189,7 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<int> > muonMultiplicity(new std::vector<int>);
 	std::auto_ptr< std::vector<double> > bDiscriminatorCSV(new std::vector<double>);
 	std::auto_ptr< std::vector<bool> > isLooseJetId(new std::vector<bool>);
+	std::auto_ptr< std::vector<bool> > isTightJetId(new std::vector<bool>);
 	std::auto_ptr< std::vector<double> > bDiscriminatorICSV(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > PtCorr(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > EtaCorr(new std::vector<double>);
@@ -227,6 +230,7 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  if (Jets->at(i).pt()<MinPt_) continue;
 
 		  bool looseJetId=false;
+		  bool tightJetId=false;
 
 		  reco::Candidate::LorentzVector uncorrJet;
 		  // The pat::Jet "knows" if it has been corrected, so here
@@ -280,6 +284,20 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  bDiscriminatorCSV->push_back( Jets->at(i).bDiscriminator("combinedSecondaryVertexBJetTags") );
 		  bDiscriminatorICSV->push_back( Jets->at(i).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
 
+		  float NHF = Jets->at(i).neutralHadronEnergyFraction();
+		  float NEMF = Jets->at(i).neutralEmEnergyFraction();
+		  float CHF = Jets->at(i).chargedHadronEnergyFraction();
+		  float MUF = Jets->at(i).muonEnergyFraction();
+		  float CEMF = Jets->at(i).chargedEmEnergyFraction();
+		  int NumConst = Jets->at(i).chargedMultiplicity()+Jets->at(i).neutralMultiplicity();
+		  int CHM = Jets->at(i).chargedMultiplicity();
+
+		  if ((NHF<0.99 && NEMF<0.99 && NumConst>1 && MUF<0.8) && ((abs(Jets->at(i).eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abs(Jets->at(i).eta()\
+																	       )>2.4))  looseJetId=true;
+		  if ((NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((abs(Jets->at(i).eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || abs(Jets->at(i).eta()\
+																	       )>2.4))  tightJetId=true;
+
+		  /*
 		  if (Jets->at(i).nConstituents() > 1 &&
 		      Jets->at(i).photonEnergyFraction() < 0.99 &&
 		      Jets->at(i).neutralHadronEnergyFraction() < 0.99 &&
@@ -289,7 +307,10 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		      (Jets->at(i).chargedEmEnergyFraction() < 0.99 || fabs(Jets->at(i).eta())>2.4 ) &&
 		      (Jets->at(i).chargedHadronEnergyFraction() > 0. || fabs(Jets->at(i).eta())>2.4 ) )
 		    looseJetId = true;
+		  */
+
 		  isLooseJetId->push_back(looseJetId);
+		  isTightJetId->push_back(tightJetId);
 		}
 	}
 	delete JetCorrector;
@@ -340,6 +361,8 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(PhiCorr,string26);
 	const std::string string27("ECorr");
 	iEvent.put(ECorr,string27);
+	const std::string string28("isTightJetId");
+	iEvent.put(isTightJetId,string28);
 		
 }
 
