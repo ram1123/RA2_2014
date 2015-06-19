@@ -105,6 +105,8 @@ METDouble::METDouble(const edm::ParameterSet& iConfig)
 	produces<double>("Phi");
 	produces<double>("PtRaw");
 	produces<double>("PhiRaw");
+	produces<double>("CaloMetPt");
+	produces<double>("CaloMetPhi");
 	/* Examples
 	 *   produces<ExampleData2>();
 	 * 
@@ -139,6 +141,7 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace edm;
 	double metpt_=0, metphi_=0;
 	double rawmetpt_=0, rawmetphi_=0;
+	double calometpt_=0, calometphi_=0;
 	edm::Handle< edm::View<pat::MET> > MET;
 	iEvent.getByLabel(metTag_,MET); 
 	edm::Handle<double> rho_ ;
@@ -278,6 +281,8 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	    metphi_=MET->at(0).phi();
 	    rawmetpt_ = MET->at(0).pt();
 	    rawmetphi_ = MET->at(0).phi();
+	    calometpt_ = MET->at(0).caloMETPt();
+	    calometphi_ = MET->at(0).caloMETPhi();
 	  }	
 	  else std::cout<<"METDouble::Invlide Tag: "<<metTag_.label()<<std::endl;
 	}
@@ -296,6 +301,10 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(htp3,"PtRaw");
 	std::auto_ptr<double> htp4(new double(rawmetphi_));
 	iEvent.put(htp4,"PhiRaw");
+	std::auto_ptr<double> htp5(new double(calometpt_));
+	iEvent.put(htp5,"CaloMetPt");
+	std::auto_ptr<double> htp6(new double(calometphi_));
+	iEvent.put(htp6,"CaloMetPhi");
 	
 }
 
