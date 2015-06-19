@@ -25,6 +25,7 @@ DoAK8Reclustering=parameters.value("DoAK8Reclustering",False)
 DoJECCorrection=parameters.value("DoJECCorrection",False)
 DoPuppi=parameters.value("DoPuppi",False)
 LeptonFilter=parameters.value("leptonFilter",True)
+GenJetsAK8Reclustering=parameters.value("genJetsAK8Reclustering",True)
 
 processName      = parameters.value("name","RSGraviton1000")
 
@@ -44,6 +45,7 @@ print "       doAK8Reclustering : "+str(DoAK8Reclustering)
 print "       doJECCorrection : "+str(DoJECCorrection)
 print "       doPuppi : "+str(DoPuppi)
 print "       LeptonFilter : "+str(LeptonFilter)
+print "       GenJetsAK8Reclustering : "+str(GenJetsAK8Reclustering)
 print "************************************************"
 
 # The process needs to be defined AFTER reading sys.argv,
@@ -69,4 +71,5 @@ makeTreeTreeFromMiniADO(process,
                 doAK8Reclustering=DoAK8Reclustering,
                 doJECCorrection=DoJECCorrection,
                         doPuppi=DoPuppi,
-                        leptonFilter=LeptonFilter)
+                        leptonFilter=LeptonFilter,
+                        genJetsAK8Reclustering=GenJetsAK8Reclustering)
