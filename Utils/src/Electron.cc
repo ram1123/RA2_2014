@@ -152,6 +152,17 @@ Electron::Electron(const edm::ParameterSet& iConfig):
 	produces<std::vector<double> > (string16).setBranchAlias(string16);
         const std::string string17("isLoose");
 	produces<std::vector<bool> > (string17).setBranchAlias(string17);
+
+        const std::string string18("SCEnergy");
+	produces<std::vector<double> > (string18).setBranchAlias(string18);
+        const std::string string19("deltaEtaSCTracker");
+	produces<std::vector<double> > (string19).setBranchAlias(string19);
+        const std::string string20("deltaPhiSCTracker");
+	produces<std::vector<double> > (string20).setBranchAlias(string20);
+        const std::string string21("sigmaIetaIeta");
+	produces<std::vector<double> > (string21).setBranchAlias(string21);
+        const std::string string22("sigmaIphiIphi");
+	produces<std::vector<double> > (string22).setBranchAlias(string22);
 }
 
 
@@ -198,6 +209,12 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<double> > chargedHadIso(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > trackIso(new std::vector<double>);
 	std::auto_ptr< std::vector<bool> > isLoose(new std::vector<bool>);
+
+	std::auto_ptr< std::vector<double> > SCEnergy(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > deltaEtaSCTracker(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > deltaPhiSCTracker(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > sigmaIetaIeta(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > sigmaIphiIphi(new std::vector<double>);
 
 	using namespace edm;
 	using namespace reco;
@@ -285,6 +302,13 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  neutralHadIso->push_back(Electrons->at(i).neutralHadronIso());
 		  chargedHadIso->push_back(Electrons->at(i).chargedHadronIso());
 		  trackIso->push_back(Electrons->at(i).trackIso());		  
+
+		  //		  std::cout<<Electrons->at(i).superCluster()->energy()<<std::endl;
+		  SCEnergy->push_back(Electrons->at(i).superCluster()->energy());
+		  deltaEtaSCTracker->push_back(Electrons->at(i).deltaEtaSuperClusterTrackAtVtx());
+		  deltaPhiSCTracker->push_back(Electrons->at(i).deltaPhiSuperClusterTrackAtVtx());
+		  sigmaIetaIeta->push_back(Electrons->at(i).sigmaIetaIeta());
+		  sigmaIphiIphi->push_back(Electrons->at(i).sigmaIphiIphi());
 		}
 	}
 
@@ -327,6 +351,17 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(trackIso,string16);
 	const std::string string17("isLoose");
 	iEvent.put(isLoose,string17);
+
+	const std::string string18("SCEnergy");
+	iEvent.put(SCEnergy,string18);
+	const std::string string19("deltaEtaSCTracker");
+	iEvent.put(deltaEtaSCTracker,string19);
+	const std::string string20("deltaPhiSCTracker");
+	iEvent.put(deltaPhiSCTracker,string20);
+	const std::string string21("sigmaIetaIeta");
+	iEvent.put(sigmaIetaIeta,string21);
+	const std::string string22("sigmaIphiIphi");
+	iEvent.put(sigmaIphiIphi,string22);
 }
 
 
