@@ -305,9 +305,27 @@ if __name__ == '__main__':
     p.join()
 
 
+    config.General.requestName = 'WW_excl'
+    config.Data.inputDataset = '/WWToLNuQQ_13TeV-powheg/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple25ns/WW_excl/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
     config.General.requestName = 'WZ'
     config.Data.inputDataset = '/WZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple25ns/WZ/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'WZ_excl'
+    config.Data.inputDataset = '/WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple25ns/WZ_excl/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -317,6 +335,15 @@ if __name__ == '__main__':
     config.General.requestName = 'ZZ'
     config.Data.inputDataset = '/ZZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple25ns/ZZ/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'ZZ_excl'
+    config.Data.inputDataset = '/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple25ns/ZZ_excl/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
