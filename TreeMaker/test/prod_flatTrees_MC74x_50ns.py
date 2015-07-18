@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
 
     config.General.requestName = 'TTbar_powheg_50ns'
-    config.Data.inputDataset = '/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v3/MINIAODSIM'
+    config.Data.inputDataset = '/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v4/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/TTbar_powheg_50ns/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
