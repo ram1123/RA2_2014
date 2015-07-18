@@ -26,8 +26,7 @@ DoJECCorrection=parameters.value("DoJECCorrection",False)
 DoPuppi=parameters.value("DoPuppi",False)
 LeptonFilter=parameters.value("leptonFilter",True)
 GenJetsAK8Reclustering=parameters.value("genJetsAK8Reclustering",True)
-#JsonFileName=parameters.value("jsonFileName","json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt") #ELECTRONS
-JsonFileName=parameters.value("jsonFileName","json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON_MuonPhys.txt") #MUONS
+JsonFileName=parameters.value("jsonFileName","json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt")
 IsCrab=parameters.value("isCrab",False)
 
 processName      = parameters.value("name","RSGraviton1000")

@@ -13,7 +13,7 @@ config.JobType.inputFiles = ['PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt','PHYS14_2
 config.section_('Data')
 config.Data.inputDataset = '/SingleMuon/Run2015B-PromptReco-v1/MINIAOD'
 config.Data.unitsPerJob = 50
-config.Data.lumiMask = 'json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON_MuonPhys.txt'
+config.Data.lumiMask = 'json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt'
 config.Data.inputDBS = 'global' #'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet'
 config.Data.splitting = 'LumiBased'
 config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple_data_mu/'
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     config.General.requestName = 'data_mu'
     config.Data.inputDataset = '/SingleMuon/Run2015B-PromptReco-v1/MINIAOD'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/data_mu/'
-    config.Data.lumiMask = 'json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON_MuonPhys.txt'
+    config.Data.lumiMask = 'json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
