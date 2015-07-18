@@ -25,7 +25,10 @@ genJetsAK8Reclustering=True,
 jsonFileName="",
 isCrab=False):
 
-    process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+    if (MC):
+        process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+    else:
+        process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
     process.GlobalTag.globaltag = Global_Tag
 
     ## --- Log output ------------------------------------------------------
