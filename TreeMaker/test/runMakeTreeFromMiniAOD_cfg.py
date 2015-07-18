@@ -26,8 +26,9 @@ DoJECCorrection=parameters.value("DoJECCorrection",False)
 DoPuppi=parameters.value("DoPuppi",False)
 LeptonFilter=parameters.value("leptonFilter",True)
 GenJetsAK8Reclustering=parameters.value("genJetsAK8Reclustering",True)
-#JsonFileName=parameters.value("jsonFileName","/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt") #ELECTRONS
-JsonFileName=parameters.value("jsonFileName","/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON_MuonPhys.txt") #MUONS
+#JsonFileName=parameters.value("jsonFileName","json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt") #ELECTRONS
+JsonFileName=parameters.value("jsonFileName","json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON_MuonPhys.txt") #MUONS
+IsCrab=parameters.value("isCrab",False)
 
 processName      = parameters.value("name","RSGraviton1000")
 
@@ -46,9 +47,10 @@ print "       num of events : "+str(NumProcessedEvt)
 print "       doAK8Reclustering : "+str(DoAK8Reclustering)
 print "       doJECCorrection : "+str(DoJECCorrection)
 print "       doPuppi : "+str(DoPuppi)
-print "       LeptonFilter : "+str(LeptonFilter)
-print "       GenJetsAK8Reclustering : "+str(GenJetsAK8Reclustering)
-print "       JsonFileName : "+str(JsonFileName)
+print "       leptonFilter : "+str(LeptonFilter)
+print "       genJetsAK8Reclustering : "+str(GenJetsAK8Reclustering)
+print "       jsonFileName : "+str(JsonFileName)
+print "       isCrab : "+str(False)
 print "************************************************"
 
 # The process needs to be defined AFTER reading sys.argv,
@@ -56,13 +58,6 @@ print "************************************************"
 import FWCore.ParameterSet.Config as cms
 #process = cms.Process("RA2EventSelection")
 process = cms.Process(processName)
-
-import sys
-import FWCore.PythonUtilities.LumiList as LumiList
-if not MC:
-    if not(len(JsonFileName)>0):
-        print "ERROR!! running on data with no json file applied!"
-        sys.exit()
 
 from AllHadronicSUSY.TreeMaker.makeTreeFromMiniAOD_cff import makeTreeTreeFromMiniADO
 makeTreeTreeFromMiniADO(process,
@@ -83,4 +78,5 @@ makeTreeTreeFromMiniADO(process,
                         doPuppi=DoPuppi,
                         leptonFilter=LeptonFilter,
                         genJetsAK8Reclustering=GenJetsAK8Reclustering,
-                        jsonFileName=JsonFileName)
+                        jsonFileName=JsonFileName,
+                        isCrab=IsCrab)

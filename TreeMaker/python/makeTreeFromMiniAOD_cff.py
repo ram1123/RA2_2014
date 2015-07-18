@@ -22,7 +22,8 @@ doJECCorrection=False,
 doPuppi=False,
 leptonFilter=True,
 genJetsAK8Reclustering=True,
-jsonFileName=""):
+jsonFileName="",
+isCrab=False):
 
     process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
     process.GlobalTag.globaltag = Global_Tag
@@ -75,13 +76,15 @@ jsonFileName=""):
 
 ############### JSON Filter            
     import FWCore.PythonUtilities.LumiList as LumiList
+    import sys
 
-    if not MC:
+    if not MC and not isCrab:
         if(len(jsonFileName)>0):
             import FWCore.PythonUtilities.LumiList as LumiList
             process.source.lumisToProcess = LumiList.LumiList(filename = jsonFileName).getVLuminosityBlockRange()
         else:
             print "ERROR!! running on data with no json file applied!"
+            sys.exit()
 	    
     ## --- Selection sequences ---------------------------------------------
     # leptons
