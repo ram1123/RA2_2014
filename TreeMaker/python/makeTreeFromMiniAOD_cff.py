@@ -21,9 +21,10 @@ doAK8Reclustering=False,
 doJECCorrection=False,
 doPuppi=False,
 leptonFilter=True,
-genJetsAK8Reclustering=True):
+genJetsAK8Reclustering=True,
+jsonFileName=""):
 
-    process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+    process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
     process.GlobalTag.globaltag = Global_Tag
 
     ## --- Log output ------------------------------------------------------
@@ -71,6 +72,16 @@ genJetsAK8Reclustering=True):
         "TFileService",
         fileName = cms.string(outFileName+".root")
         )
+
+############### JSON Filter            
+    import FWCore.PythonUtilities.LumiList as LumiList
+
+    if not MC:
+        if(len(jsonFileName)>0):
+            import FWCore.PythonUtilities.LumiList as LumiList
+            process.source.lumisToProcess = LumiList.LumiList(filename = jsonFileName).getVLuminosityBlockRange()
+        else:
+            print "ERROR!! running on data with no json file applied!"
 	    
     ## --- Selection sequences ---------------------------------------------
     # leptons
