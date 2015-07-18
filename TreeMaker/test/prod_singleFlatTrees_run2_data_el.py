@@ -11,7 +11,7 @@ config.JobType.pyCfgParams = ['global_tag=74X_dataRun2_Prompt_v0', 'MC=False', '
 config.JobType.allowUndistributedCMSSW = True
 config.JobType.inputFiles = ['PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt','PHYS14_25_V2_All_L2Relative_AK8PFchs.txt','PHYS14_25_V2_All_L3Absolute_AK8PFchs.txt','PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt','PHYS14_25_V2_All_L2Relative_AK4PFchs.txt','PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt' ]
 config.section_('Data')
-config.Data.inputDataset = '/SingleMuon/Run2015B-PromptReco-v1/MINIAOD'
+config.Data.inputDataset = '/SingleElectron/Run2015B-PromptReco-v1/MINIAOD'
 config.Data.unitsPerJob = 50
 config.Data.lumiMask = 'json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt'
 config.Data.inputDBS = 'global' #'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet'
