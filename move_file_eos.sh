@@ -55,3 +55,5 @@ mv tch_50ns/*/*/*/*/ReducedSelection_* tch_50ns/
 mv tch_bar_50ns/*/*/*/*/ReducedSelection_* tch_bar_50ns/
 mv tWch_50ns/*/*/*/*/ReducedSelection_* tWch_50ns/
 mv tWch_bar_50ns/*/*/*/*/ReducedSelection_* tWch_bar_50ns/
+mv data_mu/*/*/*/*/ReducedSelection_* data_mu/
+mv data_el/*/*/*/*/ReducedSelection_* data_el/

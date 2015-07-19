@@ -3,4 +3,6 @@ rm -r BulkGraviton*/Bulk*
 rm -r W*/W*
 rm -r Z*/Z*
 rm -r TTbar*/T*
-rm -r *ch*/ST*
+rm -r s*ch*/ST*
+rm -r t*ch*/ST*
+rm -r data_*/Single*
