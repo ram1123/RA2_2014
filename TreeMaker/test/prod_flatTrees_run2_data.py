@@ -7,7 +7,7 @@ config.General.workArea = 'data_mu'
 config.section_('JobType')
 config.JobType.psetName = 'TreeMaker/test/runMakeTreeFromMiniAOD_cfg.py'
 config.JobType.pluginName = 'Analysis'
-config.JobType.pyCfgParams = ['global_tag=74X_dataRun2_Prompt_v0', 'MC=False', 'isCrab=True']
+config.JobType.pyCfgParams = ['global_tag=74X_dataRun2_Prompt_v1', 'MC=False', 'isCrab=True']
 config.JobType.allowUndistributedCMSSW = True
 config.JobType.inputFiles = ['PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt','PHYS14_25_V2_All_L2Relative_AK8PFchs.txt','PHYS14_25_V2_All_L3Absolute_AK8PFchs.txt','PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt','PHYS14_25_V2_All_L2Relative_AK4PFchs.txt','PHYS14_25_V2_All_L3Absolute_AK4PFchs.txt' ]
 config.section_('Data')
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     config.General.requestName = 'data_mu'
     config.Data.inputDataset = '/SingleMuon/Run2015B-PromptReco-v1/MINIAOD'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/data_mu/'
-    config.Data.lumiMask = 'json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt'
+    config.Data.lumiMask = 'json/Cert_246908-251642_13TeV_PromptReco_Collisions15_JSON.txt'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     config.General.requestName = 'data_el'
     config.Data.inputDataset = '/SingleElectron/Run2015B-PromptReco-v1/MINIAOD'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/data_el/'
-    config.Data.lumiMask = 'json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt'
+    config.Data.lumiMask = 'json/Cert_246908-251642_13TeV_PromptReco_Collisions15_JSON.txt'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
