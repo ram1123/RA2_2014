@@ -4,7 +4,7 @@
 import FWCore.ParameterSet.Config as cms
 import os
 
-def makeTreeTreeFromMiniADO(process,
+def makeTreeTreeFromMiniAOD(process,
 outFileName,
 NJetsMin=2,
 HTMin=350.,
@@ -22,6 +22,7 @@ doJECCorrection=False,
 doPuppi=False,
 leptonFilter=True,
 genJetsAK8Reclustering=True,
+customizeHBHENoiseForEarlyData=True,
 jsonFileName="",
 isCrab=False):
 
@@ -29,6 +30,7 @@ isCrab=False):
         process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
     else:
         process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+
     process.GlobalTag.globaltag = Global_Tag
 
     ## --- Log output ------------------------------------------------------
@@ -685,9 +687,38 @@ isCrab=False):
     process.out = cms.OutputModule("PoolOutputModule",
                                    fileName = cms.untracked.string("output.root"),
                                    )
+    ##### MET filters #####
+
+    #### -----> HBHE noise filter <----- ####
+    process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
+    if customizeHBHENoiseForEarlyData:
+        process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
+    
+    process.ApplyBaselineHBHENoiseFilter = cms.EDFilter(
+        'BooleanFlagFilter',
+        inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
+        reverseDecision = cms.bool(False)
+        )
+    
+    #### -----> CSC Beam Halo Filter <----- ####
+    process.load(’RecoMET.METFilters.CSCTightHaloFilter_cfi’)
+    
+    #### -----> Good Vertices Event Filter <----- ####
+    process.goodVertices = cms.EDFilter( "VertexSelector", 
+                                         filter = cms.bool(True), 
+                                         src = cms.InputTag("offlinePrimaryVertices"), 
+                                         cut = cms.string("!isFake && ndof > 4 && abs(z) <= 24 && position.rho < 2") )
 
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
+        ### HBHE noise filter
+        process.HBHENoiseFilterResultProducer*
+        process.ApplyBaselineHBHENoiseFilter*
+        ### CSC beamhalo
+        process.CSCTightHaloFilter*
+        ### GoodVertices Flag
+        process.goodVertices*
+        ### rest of ntupling starts after here
         process.filterSeq *
         process.Muons *
         process.egmGsfElectronIDSequence*

@@ -26,6 +26,7 @@ DoJECCorrection=parameters.value("DoJECCorrection",False)
 DoPuppi=parameters.value("DoPuppi",False)
 LeptonFilter=parameters.value("leptonFilter",True)
 GenJetsAK8Reclustering=parameters.value("genJetsAK8Reclustering",True)
+isHBHEEarlyData = ( parameters.value("isHBHEEarlyData",True) and not MC )
 JsonFileName=parameters.value("jsonFileName","json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt")
 IsCrab=parameters.value("isCrab",False)
 
@@ -48,6 +49,7 @@ print "       doJECCorrection : "+str(DoJECCorrection)
 print "       doPuppi : "+str(DoPuppi)
 print "       leptonFilter : "+str(LeptonFilter)
 print "       genJetsAK8Reclustering : "+str(GenJetsAK8Reclustering)
+print "       isHBHEEarlyData : "+str(isHBHEEarlyData)
 print "       jsonFileName : "+str(JsonFileName)
 print "       isCrab : "+str(False)
 print "************************************************"
@@ -58,8 +60,8 @@ import FWCore.ParameterSet.Config as cms
 #process = cms.Process("RA2EventSelection")
 process = cms.Process(processName)
 
-from AllHadronicSUSY.TreeMaker.makeTreeFromMiniAOD_cff import makeTreeTreeFromMiniADO
-makeTreeTreeFromMiniADO(process,
+from AllHadronicSUSY.TreeMaker.makeTreeFromMiniAOD_cff import makeTreeTreeFromMiniAOD
+makeTreeTreeFromMiniAOD(process,
                 outFileName="ReducedSelection",
                 NJetsMin=nJetsMin,
                 HTMin=htMin,
@@ -74,8 +76,10 @@ makeTreeTreeFromMiniADO(process,
                 numProcessedEvt=NumProcessedEvt,
                 doAK8Reclustering=DoAK8Reclustering,
                 doJECCorrection=DoJECCorrection,
-                        doPuppi=DoPuppi,
-                        leptonFilter=LeptonFilter,
-                        genJetsAK8Reclustering=GenJetsAK8Reclustering,
-                        jsonFileName=JsonFileName,
-                        isCrab=IsCrab)
+                doPuppi=DoPuppi,
+                leptonFilter=LeptonFilter,
+                genJetsAK8Reclustering=GenJetsAK8Reclustering,
+                customizeHBHENoiseForEarlyData=isHBHEEarlyData,
+                jsonFileName=JsonFileName,
+                isCrab=IsCrab)
+
