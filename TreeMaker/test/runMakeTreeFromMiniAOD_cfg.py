@@ -21,12 +21,13 @@ nJetsMin    = parameters.value("njets_min",0)
 htMin       = parameters.value("ht_min",0)
 mhtMin      = parameters.value("mht_min",0)
 NumProcessedEvt=parameters.value("NumProcessedEvt",-1)
+METFiltersProcess=parameters.value("METFiltersProcess","")
 DoAK8Reclustering=parameters.value("DoAK8Reclustering",False)
 DoJECCorrection=parameters.value("DoJECCorrection",False)
 DoPuppi=parameters.value("DoPuppi",False)
 LeptonFilter=parameters.value("leptonFilter",True)
 GenJetsAK8Reclustering=parameters.value("genJetsAK8Reclustering",True)
-isHBHEEarlyData = ( parameters.value("isHBHEEarlyData",True) and not MC )
+isHBHEEarlyData = parameters.value("isHBHEEarlyData",True)
 JsonFileName=parameters.value("jsonFileName","json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt")
 IsCrab=parameters.value("isCrab",False)
 
@@ -69,6 +70,7 @@ makeTreeTreeFromMiniAOD(process,
                 reportEveryEvt=1000,
                 testFileName=dataSetName,
 		Global_Tag=global_tag,
+                METFiltersProcess=METFiltersProcess,
 		MC=MC,
 		QCD=QCD,
 		LostLepton=LostLepton,

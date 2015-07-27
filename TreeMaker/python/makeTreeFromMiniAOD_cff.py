@@ -12,6 +12,7 @@ MHTMin=0.,
 reportEveryEvt=10,
 testFileName="",
 Global_Tag="",
+METFiltersProcess="",
 MC=False,
 debug = False,
 QCD=False,
@@ -689,6 +690,17 @@ isCrab=False):
                                    )
     ##### MET filters #####
 
+    #### -----> MET Filter Flags from MiniAOD/TWiki <----- ####
+    import HLTrigger.HLTfilters.triggerResultsFilter_cfi as hlt
+    process.metBits_miniAOD = hlt.triggerResultsFilter.clone()
+    # default is to use the latest process (but can set different process through Commandline Args)
+    process.metBits_miniAOD.hltResults = cms.InputTag('TriggerResults::%s'%METFiltersProcess) 
+    process.metBits_miniAOD.l1tResults = cms.InputTag('')
+    #currently configured for CSCTightHaloFilter + GoodVertices
+    met_bits = ['(Flag_CSCTightHaloFilter)','(Flag_goodVertices)']
+    bitsexpr = ' AND '.join(met_bits)
+    process.metBits_miniAOD.triggerConditions = cms.vstring(bitsexpr)
+
     #### -----> HBHE noise filter <----- ####
     process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
     if customizeHBHENoiseForEarlyData:
@@ -699,25 +711,14 @@ isCrab=False):
         inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
         reverseDecision = cms.bool(False)
         )
-    
-    #### -----> CSC Beam Halo Filter <----- ####
-    process.load(’RecoMET.METFilters.CSCTightHaloFilter_cfi’)
-    
-    #### -----> Good Vertices Event Filter <----- ####
-    process.goodVertices = cms.EDFilter( "VertexSelector", 
-                                         filter = cms.bool(True), 
-                                         src = cms.InputTag("offlinePrimaryVertices"), 
-                                         cut = cms.string("!isFake && ndof > 4 && abs(z) <= 24 && position.rho < 2") )
-
+        
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
+        ### MET Filter Bits
+        process.metBits_miniAOD*
         ### HBHE noise filter
         process.HBHENoiseFilterResultProducer*
-        process.ApplyBaselineHBHENoiseFilter*
-        ### CSC beamhalo
-        process.CSCTightHaloFilter*
-        ### GoodVertices Flag
-        process.goodVertices*
+        process.ApplyBaselineHBHENoiseFilter*        
         ### rest of ntupling starts after here
         process.filterSeq *
         process.Muons *
