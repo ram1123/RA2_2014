@@ -28,7 +28,7 @@ DoPuppi=parameters.value("DoPuppi",False)
 LeptonFilter=parameters.value("leptonFilter",True)
 GenJetsAK8Reclustering=parameters.value("genJetsAK8Reclustering",True)
 isHBHEEarlyData = parameters.value("isHBHEEarlyData",True)
-JsonFileName=parameters.value("jsonFileName","json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt")
+JsonFileName=parameters.value("jsonFileName","json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt")
 IsCrab=parameters.value("isCrab",False)
 
 processName      = parameters.value("name","RSGraviton1000")

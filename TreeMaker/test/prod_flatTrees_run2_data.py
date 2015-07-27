@@ -13,7 +13,7 @@ config.JobType.inputFiles = ['PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt','PHYS14_2
 config.section_('Data')
 config.Data.inputDataset = '/SingleMuon/Run2015B-PromptReco-v1/MINIAOD'
 config.Data.unitsPerJob = 50
-config.Data.lumiMask = 'json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt'
+config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
 config.Data.inputDBS = 'global' #'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet'
 config.Data.splitting = 'LumiBased'
 config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple_data_mu/'
@@ -32,19 +32,37 @@ if __name__ == '__main__':
 
     #########    From now on that's what users should modify: this is the a-la-CRAB2 configuration part.
         
-    config.General.requestName = 'data_mu'
+    config.General.requestName = 'data_mu_prompt'
     config.Data.inputDataset = '/SingleMuon/Run2015B-PromptReco-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/data_mu/'
-    config.Data.lumiMask = 'json/Cert_246908-251642_13TeV_PromptReco_Collisions15_JSON.txt'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/data_mu_prompt/'
+#    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+    config.General.requestName = 'data_mu_17jul' #needed for runs<251585
+    config.Data.inputDataset = '/SingleMuon/Run2015B-17Jul2015-v1/MINIAOD'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/data_mu_17jul/'
+#    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
     p.join()
     
-    config.General.requestName = 'data_el'
+    config.General.requestName = 'data_el_prompt'
     config.Data.inputDataset = '/SingleElectron/Run2015B-PromptReco-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/data_el/'
-    config.Data.lumiMask = 'json/Cert_246908-251642_13TeV_PromptReco_Collisions15_JSON.txt'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/data_el_prompt/'
+#    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+    config.General.requestName = 'data_el_17jul' #needed for runs<251585
+    config.Data.inputDataset = '/SingleElectron/Run2015B-17Jul2015-v1/MINIAOD'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/data_el_17jul/'
+#    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()

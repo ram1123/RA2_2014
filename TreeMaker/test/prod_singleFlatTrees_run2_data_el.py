@@ -13,7 +13,7 @@ config.JobType.inputFiles = ['PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt','PHYS14_2
 config.section_('Data')
 config.Data.inputDataset = '/SingleElectron/Run2015B-PromptReco-v1/MINIAOD'
 config.Data.unitsPerJob = 50
-config.Data.lumiMask = 'json/Cert_246908-251642_13TeV_PromptReco_Collisions15_JSON.txt'
+config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
 config.Data.inputDBS = 'global' #'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet'
 config.Data.splitting = 'LumiBased'
 config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple_data_el/'
