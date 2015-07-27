@@ -4,7 +4,7 @@
 import FWCore.ParameterSet.Config as cms
 import os
 
-def makeTreeTreeFromMiniADO(process,
+def makeTreeTreeFromMiniAOD(process,
 outFileName,
 NJetsMin=2,
 HTMin=350.,
@@ -12,6 +12,7 @@ MHTMin=0.,
 reportEveryEvt=10,
 testFileName="",
 Global_Tag="",
+METFiltersProcess="",
 MC=False,
 debug = False,
 QCD=False,
@@ -22,6 +23,7 @@ doJECCorrection=False,
 doPuppi=False,
 leptonFilter=True,
 genJetsAK8Reclustering=True,
+customizeHBHENoiseForEarlyData=True,
 jsonFileName="",
 isCrab=False):
 
@@ -29,6 +31,7 @@ isCrab=False):
         process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
     else:
         process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+
     process.GlobalTag.globaltag = Global_Tag
 
     ## --- Log output ------------------------------------------------------
@@ -685,9 +688,38 @@ isCrab=False):
     process.out = cms.OutputModule("PoolOutputModule",
                                    fileName = cms.untracked.string("output.root"),
                                    )
+    ##### MET filters #####
 
+    #### -----> MET Filter Flags from MiniAOD/TWiki <----- ####
+    import HLTrigger.HLTfilters.triggerResultsFilter_cfi as hlt
+    process.metBits_miniAOD = hlt.triggerResultsFilter.clone()
+    # default is to use the latest process (but can set different process through Commandline Args)
+    process.metBits_miniAOD.hltResults = cms.InputTag('TriggerResults::%s'%METFiltersProcess) 
+    process.metBits_miniAOD.l1tResults = cms.InputTag('')
+    #currently configured for CSCTightHaloFilter + GoodVertices
+    met_bits = ['(Flag_CSCTightHaloFilter)','(Flag_goodVertices)']
+    bitsexpr = ' AND '.join(met_bits)
+    process.metBits_miniAOD.triggerConditions = cms.vstring(bitsexpr)
+
+    #### -----> HBHE noise filter <----- ####
+    process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
+    if customizeHBHENoiseForEarlyData:
+        process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
+    
+    process.ApplyBaselineHBHENoiseFilter = cms.EDFilter(
+        'BooleanFlagFilter',
+        inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
+        reverseDecision = cms.bool(False)
+        )
+        
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
+        ### MET Filter Bits
+        process.metBits_miniAOD*
+        ### HBHE noise filter
+        process.HBHENoiseFilterResultProducer*
+        process.ApplyBaselineHBHENoiseFilter*        
+        ### rest of ntupling starts after here
         process.filterSeq *
         process.Muons *
         process.egmGsfElectronIDSequence*
