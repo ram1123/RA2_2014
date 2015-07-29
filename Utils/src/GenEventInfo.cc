@@ -110,7 +110,9 @@ GenEventInfo::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	edm::Handle< GenEventInfoProduct > geneventInfo_;
 	iEvent.getByToken(geneventToken_, geneventInfo_); 
 
-	double eventWeight = geneventInfo_->weight();
+	double eventWeight =1.;
+	if (geneventInfo_.isValid())
+	  eventWeight = geneventInfo_->weight();
 
 	std::auto_ptr<double> htp(new double(eventWeight));
 	iEvent.put(htp,"genEventWeight");

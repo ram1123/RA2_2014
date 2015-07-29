@@ -94,12 +94,12 @@ isCrab=False):
 
 ####### some gen infos
 
-    process.genEventInfo = cms.Sequence()
+#    process.GenEventInfo = cms.Sequence()
 
     from AllHadronicSUSY.Utils.geneventinfo_cfi import geneventinfo
 
-    if MC:
-        process.GenEventInfo = geneventinfo.clone()
+#    if MC:
+    process.GenEventInfo = geneventinfo.clone()
     
 	    
     ## --- Selection sequences ---------------------------------------------
