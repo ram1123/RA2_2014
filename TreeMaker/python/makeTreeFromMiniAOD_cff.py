@@ -91,6 +91,16 @@ isCrab=False):
         else:
             print "ERROR!! running on data with no json file applied!"
             sys.exit()
+
+####### some gen infos
+
+    process.genEventInfo = cms.Sequence()
+
+    from AllHadronicSUSY.Utils.geneventinfo_cfi import geneventinfo
+
+    if MC:
+        process.GenEventInfo = geneventinfo.clone()
+    
 	    
     ## --- Selection sequences ---------------------------------------------
     # leptons
@@ -678,7 +688,7 @@ isCrab=False):
     	TreeName          = cms.string("PreSelection"),
     	VarsRecoCand = RecoCandVector,
     	#VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
-    	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MHT','MET:Pt(METPt)','MET:Phi(METPhi)','MET:PtRaw(METPtRaw)','MET:PhiRaw(METPhiRaw)','MET:CaloMetPt(CaloMetPt)','MET:CaloMetPhi(CaloMetPhi)','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)'),
+    	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MHT','MET:Pt(METPt)','MET:Phi(METPhi)','MET:PtRaw(METPtRaw)','MET:PhiRaw(METPhiRaw)','MET:CaloMetPt(CaloMetPt)','MET:CaloMetPhi(CaloMetPhi)','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)','GenEventInfo:genEventWeight(genEventWeight)'),
     	VarsInt = cms.vstring('NJets','BTags','NVtx'),#,'Leptons'),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
     debug = debug,
@@ -721,6 +731,7 @@ isCrab=False):
         process.ApplyBaselineHBHENoiseFilter*        
         ### rest of ntupling starts after here
         process.filterSeq *
+        process.GenEventInfo *
         process.Muons *
         process.egmGsfElectronIDSequence*
         process.Electrons *
