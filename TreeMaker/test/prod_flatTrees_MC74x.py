@@ -249,7 +249,124 @@ if __name__ == '__main__':
     p = Process(target=submit, args=(config,))
     p.start()
     p.join()
+    
 
+    config.General.requestName = 'WprimeToWZ600'
+    config.Data.inputDataset = '/WprimeToWZToWlepZhad_narrow_M-600_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WprimeToWZ600/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'WprimeToWZ800'
+    config.Data.inputDataset = '/WprimeToWZToWlepZhad_narrow_M-800_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WprimeToWZ800/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'WprimeToWZ1000'
+    config.Data.inputDataset = '/WprimeToWZToWlepZhad_narrow_M-1000_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WprimeToWZ1000/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'WprimeToWZ1200'
+    config.Data.inputDataset = '/WprimeToWZToWlepZhad_narrow_M-1200_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WprimeToWZ1200/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'WprimeToWZ1400'
+    config.Data.inputDataset = '/WprimeToWZToWlepZhad_narrow_M-1400_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WprimeToWZ1400/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'WprimeToWZ1600'
+    config.Data.inputDataset = '/WprimeToWZToWlepZhad_narrow_M-1600_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WprimeToWZ1600/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'WprimeToWZ1800'
+    config.Data.inputDataset = '/WprimeToWZToWlepZhad_narrow_M-1800_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WprimeToWZ1800/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'WprimeToWZ2000'
+    config.Data.inputDataset = '/WprimeToWZToWlepZhad_narrow_M-2000_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WprimeToWZ2000/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'WprimeToWZ2500'
+    config.Data.inputDataset = '/WprimeToWZToWlepZhad_narrow_M-2500_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WprimeToWZ2500/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'WprimeToWZ3000'
+    config.Data.inputDataset = '/WprimeToWZToWlepZhad_narrow_M-3000_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WprimeToWZ3000/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'WprimeToWZ3500'
+    config.Data.inputDataset = '/WprimeToWZToWlepZhad_narrow_M-3500_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WprimeToWZ3500/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'WprimeToWZ4000'
+    config.Data.inputDataset = '/WprimeToWZToWlepZhad_narrow_M-4000_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WprimeToWZ4000/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+
+    config.General.requestName = 'WprimeToWZ4500'
+    config.Data.inputDataset = '/WprimeToWZToWlepZhad_narrow_M-4500_13TeV-madgraph/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WprimeToWZ4500/'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+    
    
     config.General.requestName = 'WJets'
     config.Data.inputDataset = '/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
@@ -420,6 +537,6 @@ if __name__ == '__main__':
     p = Process(target=submit, args=(config,))
     p.start()
     p.join()
-        
+    
     
     #...
