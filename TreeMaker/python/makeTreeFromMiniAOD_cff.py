@@ -84,7 +84,7 @@ isCrab=False):
     import FWCore.PythonUtilities.LumiList as LumiList
     import sys
 
-    if not MC and not isCrab:
+    if not MC:
         if(len(jsonFileName)>0):
             import FWCore.PythonUtilities.LumiList as LumiList
             process.source.lumisToProcess = LumiList.LumiList(filename = jsonFileName).getVLuminosityBlockRange()
