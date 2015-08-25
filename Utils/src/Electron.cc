@@ -67,9 +67,9 @@ private:
   edm::EDGetTokenT<reco::BeamSpot> BeamSpotTag_;
 
   // ID decisions objects
-  //  edm::EDGetTokenT<edm::ValueMap<bool> > eleVetoIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > eleVetoIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIdMapToken_;
-  //  edm::EDGetTokenT<edm::ValueMap<bool> > eleMediumIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > eleMediumIdMapToken_;
   //  edm::EDGetTokenT<edm::ValueMap<bool> > eleTightIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > eleHEEPIdMapToken_;
 	// ----------member data ---------------------------
@@ -90,9 +90,9 @@ private:
 Electron::Electron(const edm::ParameterSet& iConfig):
   ConversionTag_(consumes<reco::ConversionCollection>(iConfig.getParameter<edm::InputTag>("ConversionTag"))),
   BeamSpotTag_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("BeamSpotTag"))),
-  //  eleVetoIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"))),
+  eleVetoIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"))),
   eleLooseIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"))),
-  //  eleMediumIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"))),
+  eleMediumIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"))),
   //  eleTightIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"))),
   eleHEEPIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleHEEPIdMap")))
 {
@@ -152,6 +152,10 @@ Electron::Electron(const edm::ParameterSet& iConfig):
 	produces<std::vector<double> > (string16).setBranchAlias(string16);
         const std::string string17("isLoose");
 	produces<std::vector<bool> > (string17).setBranchAlias(string17);
+        const std::string string23("isMedium");
+	produces<std::vector<bool> > (string23).setBranchAlias(string23);
+        const std::string string24("isVeto");
+	produces<std::vector<bool> > (string24).setBranchAlias(string24);
 
         const std::string string18("SCEnergy");
 	produces<std::vector<double> > (string18).setBranchAlias(string18);
@@ -209,6 +213,8 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<double> > chargedHadIso(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > trackIso(new std::vector<double>);
 	std::auto_ptr< std::vector<bool> > isLoose(new std::vector<bool>);
+	std::auto_ptr< std::vector<bool> > isMedium(new std::vector<bool>);
+	std::auto_ptr< std::vector<bool> > isVeto(new std::vector<bool>);
 
 	std::auto_ptr< std::vector<double> > SCEnergy(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > deltaEtaSCTracker(new std::vector<double>);
@@ -235,14 +241,14 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	// Get the electron ID data from the event stream.
 	// Note: this implies that the VID ID modules have been run upstream.
 	// If you need more info, check with the EGM group.
-	//	edm::Handle<edm::ValueMap<bool> > veto_id_decisions;
+	edm::Handle<edm::ValueMap<bool> > veto_id_decisions;
 	edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
-	//	edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
+	edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
 	//	edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
 	edm::Handle<edm::ValueMap<bool> > heep_id_decisions;
-	//iEvent.getByToken(eleVetoIdMapToken_ ,veto_id_decisions);
+	iEvent.getByToken(eleVetoIdMapToken_ ,veto_id_decisions);
 	iEvent.getByToken(eleLooseIdMapToken_ ,loose_id_decisions);
-	//iEvent.getByToken(eleMediumIdMapToken_,medium_id_decisions);
+	iEvent.getByToken(eleMediumIdMapToken_,medium_id_decisions);
 	//iEvent.getByToken(eleTightIdMapToken_,tight_id_decisions);
 	iEvent.getByToken(eleHEEPIdMapToken_ ,heep_id_decisions);
 
@@ -254,9 +260,9 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		  const auto el = Electrons->ptrAt(i);
 		  double rho = *(rho_.product());
-		  //		  bool isPassVeto = (*veto_id_decisions)[el];
+		  bool isPassVeto = (*veto_id_decisions)[el];
 		  bool isPassLoose = (*loose_id_decisions)[el];
-		  //		  bool isPassMedium = (*medium_id_decisions)[el];
+		  bool isPassMedium = (*medium_id_decisions)[el];
 		  //		  bool isPassTight = (*tight_id_decisions)[el];
 		  bool isPassHEEP = (*heep_id_decisions)[el];
 
@@ -264,6 +270,8 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  isHEEP->push_back( isPassHEEP );
 		  //		  isHEEPv50->push_back( isPassLooseOLD );
 		  isLoose->push_back( isPassLoose );
+		  isMedium->push_back( isPassMedium );
+		  isVeto->push_back( isPassVeto );
 		  type->push_back(Electrons->at(i).pdgId());
 		  charge->push_back(Electrons->at(i).charge());
 		  e->push_back(Electrons->at(i).energy());
@@ -351,6 +359,10 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(trackIso,string16);
 	const std::string string17("isLoose");
 	iEvent.put(isLoose,string17);
+	const std::string string23("isMedium");
+	iEvent.put(isMedium,string23);
+	const std::string string24("isVeto");
+	iEvent.put(isVeto,string24);
 
 	const std::string string18("SCEnergy");
 	iEvent.put(SCEnergy,string18);
