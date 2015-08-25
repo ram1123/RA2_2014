@@ -58,8 +58,34 @@ isCrab=False):
  #		'file:/nfs/dust/cms/user/csander/LHE/workdir/simulation_test/T1qqqqHV/output_66.root'
 #		)
         )
-        
-    hltPath=['HLT_PFHT350_PFMET100_v*','HLT_PFNoPUHT350_PFMET100_v*']
+
+ ## ----------------------------------------------------------------------------------------------
+## Triggers
+## ----------------------------------------------------------------------------------------------
+# The trigger results are saved to the tree as a vector
+# Three vectors are saved:
+# 1) names of the triggers
+# 2) trigger results
+# 3) trigger prescales
+# the indexing of these vectors must match
+# If the version number of the input trigger name is omitted,
+# any matching trigger will be included (default behavior)
+    from AllHadronicSUSY.Utils.triggerproducer_cfi import triggerProducer
+    process.TriggerProducer = triggerProducer.clone( 
+        trigTagArg1 = cms.string('TriggerResults'),
+        trigTagArg2 = cms.string(''),
+        trigTagArg3 = cms.string('HLT'),
+        prescaleTagArg1 = cms.string('patTrigger'),
+        prescaleTagArg2 = cms.string(''),
+        prescaleTagArg3 = cms.string(''),
+        triggerNameList = cms.vstring( # list of trigger names
+            'HLT_Ele105_CaloIdVT_GsfTrkIdT_v',
+            'HLT_Mu45_eta2p1_v',
+            )
+        )
+
+## this is here if you want to apply the trigger selection in this step, instead of saving the trigger result        
+    hltPath=['HLT_Mu45_eta2p1_v*','HLT_Ele105_CaloIdVT_GsfTrkIdT_v*']
     process.load('HLTrigger.HLTfilters.hltHighLevel_cfi')
     process.hltHighLevel.HLTPaths = cms.vstring(hltPath)
     process.hltHighLevel.andOr = cms.bool(True)
@@ -74,6 +100,7 @@ isCrab=False):
     elif not hltPath:
         print "Empty list of HLT paths: removing HLT selection"
         process.HLTSelection.remove(process.hltHighLevel)
+
     ## --- Output file -----------------------------------------------------
     process.TFileService = cms.Service(
         "TFileService",
@@ -691,8 +718,12 @@ isCrab=False):
     	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MHT','MET:Pt(METPt)','MET:Phi(METPhi)','MET:PtRaw(METPtRaw)','MET:PhiRaw(METPhiRaw)','MET:CaloMetPt(CaloMetPt)','MET:CaloMetPhi(CaloMetPhi)','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)','GenEventInfo:genEventWeight(genEventWeight)'),
     	VarsInt = cms.vstring('NJets','BTags','NVtx'),#,'Leptons'),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
-    debug = debug,
+        debug = debug,
     	)
+
+    process.TreeMaker2.VectorBool.extend(['TriggerProducer:TriggerPass'])
+    process.TreeMaker2.VectorInt.extend(['TriggerProducer:TriggerPrescales'])
+    process.TreeMaker2.VectorString.extend(['TriggerProducer:TriggerNames'])
 
     ## --- Final paths ----------------------------------------------------
     process.out = cms.OutputModule("PoolOutputModule",
@@ -724,6 +755,8 @@ isCrab=False):
         
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
+#        process.HLTSelection*
+        process.TriggerProducer*
         ### MET Filter Bits
         process.metBits_miniAOD*
         ### HBHE noise filter
