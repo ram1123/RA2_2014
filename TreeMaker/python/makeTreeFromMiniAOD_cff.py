@@ -79,13 +79,16 @@ isCrab=False):
         prescaleTagArg2 = cms.string(''),
         prescaleTagArg3 = cms.string(''),
         triggerNameList = cms.vstring( # list of trigger names
-            'HLT_Ele105_CaloIdVT_GsfTrkIdT_v',
-            'HLT_Mu45_eta2p1_v',
+            #'HLT_Ele105_CaloIdVT_GsfTrkIdT_v',
+            #'HLT_Mu45_eta2p1_v',
+	    'HLT_Ele23_WPLoose_Gsf_v',
+	    'HLT_IsoMu20_v'
             )
         )
 
 ## this is here if you want to apply the trigger selection in this step, instead of saving the trigger result        
-    hltPath=['HLT_Mu45_eta2p1_v*','HLT_Ele105_CaloIdVT_GsfTrkIdT_v*']
+    hltPath=['HLT_IsoMu20_v*','HLT_Ele23_WPLoose_Gsf_v*']
+    #hltPath=['HLT_Mu45_eta2p1_v*','HLT_Ele105_CaloIdVT_GsfTrkIdT_v*']
     process.load('HLTrigger.HLTfilters.hltHighLevel_cfi')
     process.hltHighLevel.HLTPaths = cms.vstring(hltPath)
     process.hltHighLevel.andOr = cms.bool(True)
