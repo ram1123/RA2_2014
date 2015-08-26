@@ -1,5 +1,6 @@
 rm -r RSGraviton*/RS*
 rm -r BulkGraviton*/Bulk*
+rm -r WprimeToWZ*/Wprime*
 rm -r W*/W*
 rm -r Z*/Z*
 rm -r TTbar*/T*
