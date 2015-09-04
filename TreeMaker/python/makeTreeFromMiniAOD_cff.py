@@ -761,7 +761,7 @@ isCrab=False):
 #        process.HLTSelection*
         process.TriggerProducer*
         ### MET Filter Bits
-        process.metBits_miniAOD*
+        #process.metBits_miniAOD*
         ### HBHE noise filter
         process.HBHENoiseFilterResultProducer*
         process.ApplyBaselineHBHENoiseFilter*        
