@@ -164,8 +164,8 @@ isCrab=False):
 
     process.leptonFilter.electronsInputTag = cms.InputTag("slimmedElectrons")
     process.leptonFilter.muonsInputTag = cms.InputTag("slimmedMuons")
-    process.leptonFilter.eleFilterPtCut = cms.double(20.0)
-    process.leptonFilter.muFilterPtCut = cms.double(20.0)
+    process.leptonFilter.eleFilterPtCut = cms.double(0.0)
+    process.leptonFilter.muFilterPtCut = cms.double(0.0)
     
     if (leptonFilter):
         process.filterSeq = cms.Sequence (process.leptonFilter)
