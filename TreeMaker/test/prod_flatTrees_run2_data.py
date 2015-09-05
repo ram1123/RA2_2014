@@ -16,16 +16,16 @@ config.Data.unitsPerJob = 50
 config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
 config.Data.inputDBS = 'global' #'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet'
 config.Data.splitting = 'LumiBased'
-config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple_data_mu/'
+config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15_data_mu/'
 config.section_('User')
 config.section_('Site')
-config.Site.storageSite = 'T2_CH_CERN'
+config.Site.storageSite = 'T3_US_FNALLPC'
 
 if __name__ == '__main__':
     from CRABAPI.RawCommand import crabCommand
 
     #Make sure you set this parameter (here or above in the config it does not matter)
-    config.General.workArea = 'ntuple'
+    config.General.workArea = 'ntuple_Data_4Sep'
 
     def submit(config):
         res = crabCommand('submit', config = config)
@@ -34,38 +34,38 @@ if __name__ == '__main__':
         
     config.General.requestName = 'data_mu_prompt'
     config.Data.inputDataset = '/SingleMuon/Run2015B-PromptReco-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/data_mu_prompt/'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/data_mu_prompt/'
 #    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
     p.join()
 
-    config.General.requestName = 'data_mu_17jul' #needed for runs<251585
-    config.Data.inputDataset = '/SingleMuon/Run2015B-17Jul2015-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/data_mu_17jul/'
-#    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
-    from multiprocessing import Process
-    p = Process(target=submit, args=(config,))
-    p.start()
-    p.join()
+#    config.General.requestName = 'data_mu_17jul' #needed for runs<251585
+#    config.Data.inputDataset = '/SingleMuon/Run2015B-17Jul2015-v1/MINIAOD'
+#    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/data_mu_17jul/'
+##    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
+#    from multiprocessing import Process
+#    p = Process(target=submit, args=(config,))
+#    p.start()
+#    p.join()
     
     config.General.requestName = 'data_el_prompt'
     config.Data.inputDataset = '/SingleElectron/Run2015B-PromptReco-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/data_el_prompt/'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/data_el_prompt/'
 #    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
     p.join()
 
-    config.General.requestName = 'data_el_17jul' #needed for runs<251585
-    config.Data.inputDataset = '/SingleElectron/Run2015B-17Jul2015-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/data_el_17jul/'
-#    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
-    from multiprocessing import Process
-    p = Process(target=submit, args=(config,))
-    p.start()
-    p.join()
-
-    #...
+#    config.General.requestName = 'data_el_17jul' #needed for runs<251585
+#    config.Data.inputDataset = '/SingleElectron/Run2015B-17Jul2015-v1/MINIAOD'
+#    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/data_el_17jul/'
+##    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
+#    from multiprocessing import Process
+#    p = Process(target=submit, args=(config,))
+#    p.start()
+#    p.join()
+#
+#    #...

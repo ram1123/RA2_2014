@@ -12,19 +12,19 @@ config.JobType.inputFiles = ['PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt','PHYS14_2
 config.JobType.allowUndistributedCMSSW = True
 config.section_('Data')
 config.Data.inputDataset = '/RSGravToWWToLNQQ_kMpl01_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
-config.Data.unitsPerJob = 1
+config.Data.unitsPerJob = 30
 config.Data.inputDBS = 'global' #'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet'
 config.Data.splitting = 'FileBased'
-config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple50ns/RSGraviton1000/'
+config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15'
 config.section_('User')
 config.section_('Site')
-config.Site.storageSite = 'T2_CH_CERN'
+config.Site.storageSite = 'T3_US_FNALLPC'
 
 if __name__ == '__main__':
     from CRABAPI.RawCommand import crabCommand
 
     #Make sure you set this parameter (here or above in the config it does not matter)
-    config.General.workArea = 'ntuple'
+    config.General.workArea = 'ntuple_MC_4Sep'
 
     def submit(config):
         res = crabCommand('submit', config = config)
@@ -33,7 +33,7 @@ if __name__ == '__main__':
         
     config.General.requestName = 'WJets_50ns'
     config.Data.inputDataset = '/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WJets_50ns/'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/WJets_50ns/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'WW_50ns'
     config.Data.inputDataset = '/WW_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WW_50ns/'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/WW_50ns/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'WZ_50ns'
     config.Data.inputDataset = '/WZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2/MINIAODSIM'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/WZ_50ns/'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/WZ_50ns/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'ZZ_50ns'
     config.Data.inputDataset = '/ZZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2/MINIAODSIM'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/ZZ_50ns/'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/ZZ_50ns/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'TTbar_amcatnlo_50ns'
     config.Data.inputDataset = '/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/TTbar_amcatnlo_50ns/'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/TTbar_amcatnlo_50ns/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'TTbar_powheg_50ns'
     config.Data.inputDataset = '/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v4/MINIAODSIM'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/TTbar_powheg_50ns/'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/TTbar_powheg_50ns/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -86,7 +86,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'TTbar_madgraph_50ns'
     config.Data.inputDataset = '/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/TTbar_madgraph_50ns/'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/TTbar_madgraph_50ns/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -95,7 +95,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'tch_50ns'
     config.Data.inputDataset = '/ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/tch_50ns/'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/tch_50ns/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -104,7 +104,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'tch_bar_50ns'
     config.Data.inputDataset = '/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/tch_bar_50ns/'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/tch_bar_50ns/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -113,7 +113,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'tW_bar_50ns'
     config.Data.inputDataset = '/ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2/MINIAODSIM'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/tWch_bar_50ns/'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/tWch_bar_50ns/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -122,7 +122,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'tWch_50ns'
     config.Data.inputDataset = '/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/tWch_50ns/'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/4Sep15/tWch_50ns/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
