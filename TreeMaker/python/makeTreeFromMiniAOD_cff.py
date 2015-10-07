@@ -23,12 +23,14 @@ doJECCorrection=False,
 doPuppi=False,
 leptonFilter=True,
 genJetsAK8Reclustering=True,
-customizeHBHENoiseForEarlyData=True,
+customizeHBHENoiseForEarlyData=False,
+customizeHBHENoiseForRun2015D=True,
 jsonFileName="",
 isCrab=False):
 
     if (MC):
         process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+        customizeHBHENoiseForRun2015D=False
     else:
         process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 
@@ -773,21 +775,39 @@ isCrab=False):
     process.metBits_miniAOD.hltResults = cms.InputTag('TriggerResults::%s'%METFiltersProcess) 
     process.metBits_miniAOD.l1tResults = cms.InputTag('')
     #currently configured for CSCTightHaloFilter + GoodVertices
-    met_bits = ['(Flag_CSCTightHaloFilter)','(Flag_goodVertices)']
+    met_bits = ['(Flag_CSCTightHaloFilter)','(Flag_goodVertices)','(Flag_eeBadScFilter)']
     bitsexpr = ' AND '.join(met_bits)
     process.metBits_miniAOD.triggerConditions = cms.vstring(bitsexpr)
 
     #### -----> HBHE noise filter <----- ####
+##___________________________HCAL_Noise_Filter________________________________||
     process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
-    if customizeHBHENoiseForEarlyData:
+    if customizeHBHENoiseForRun2015D:
         process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
+        process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
+        process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
+
+    process.ApplyBaselineHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
+                                                        inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
+                                                        reverseDecision = cms.bool(False)
+                                                        )
     
-    process.ApplyBaselineHBHENoiseFilter = cms.EDFilter(
-        'BooleanFlagFilter',
-        inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResultRun2Loose'), #for 25ns data-taking
+    process.ApplyBaselineHBHEIsoNoiseFilter = cms.EDFilter('BooleanFlagFilter',
+                                                           inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
+                                                           reverseDecision = cms.bool(False)
+                                                           )
+
+#### obsolete - for early run 2 data (runB)
+#    if customizeHBHENoiseForEarlyData:
+#        process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
+    
+#    process.ApplyBaselineHBHENoiseFilter = cms.EDFilter(
+#        'BooleanFlagFilter',
+#        inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResultRun2Loose'), #for 25ns data-taking
 #        inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'), #for 50ns data-taking
-        reverseDecision = cms.bool(False)
-        )
+#        reverseDecision = cms.bool(False)
+#        )
+
         
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
@@ -796,8 +816,9 @@ isCrab=False):
         ### MET Filter Bits
         process.metBits_miniAOD*
         ### HBHE noise filter
-        process.HBHENoiseFilterResultProducer*
-        process.ApplyBaselineHBHENoiseFilter*        
+        process.HBHENoiseFilterResultProducer* #produces HBHE baseline bools
+        process.ApplyBaselineHBHENoiseFilter*  #reject events based 
+        #process.ApplyBaselineHBHEIsoNoiseFilter*   #reject events based - disable the module, performance is being investigated further
         ### rest of ntupling starts after here
         process.filterSeq *
         process.GenEventInfo *

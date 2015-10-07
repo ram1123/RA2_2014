@@ -27,7 +27,8 @@ DoJECCorrection=parameters.value("DoJECCorrection",False)
 DoPuppi=parameters.value("DoPuppi",False)
 LeptonFilter=parameters.value("leptonFilter",True)
 GenJetsAK8Reclustering=parameters.value("genJetsAK8Reclustering",True)
-isHBHEEarlyData = parameters.value("isHBHEEarlyData",True)
+isHBHEEarlyData = parameters.value("isHBHEEarlyData",False)
+isHBHERun2015D=parameters.value("isHBHERun2015D",True)
 JsonFileName=parameters.value("jsonFileName","json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt")
 IsCrab=parameters.value("isCrab",False)
 
@@ -51,6 +52,7 @@ print "       doPuppi : "+str(DoPuppi)
 print "       leptonFilter : "+str(LeptonFilter)
 print "       genJetsAK8Reclustering : "+str(GenJetsAK8Reclustering)
 print "       isHBHEEarlyData : "+str(isHBHEEarlyData)
+print "       isHBHERun2015D : "+str(isHBHERun2015D)
 print "       jsonFileName : "+str(JsonFileName)
 print "       isCrab : "+str(False)
 print "************************************************"
@@ -82,6 +84,7 @@ makeTreeTreeFromMiniAOD(process,
                 leptonFilter=LeptonFilter,
                 genJetsAK8Reclustering=GenJetsAK8Reclustering,
                 customizeHBHENoiseForEarlyData=isHBHEEarlyData,
+                customizeHBHENoiseForRun2015D=isHBHERun2015D,
                 jsonFileName=JsonFileName,
                 isCrab=IsCrab)
 
