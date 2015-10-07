@@ -63,8 +63,10 @@ private:
   std::string l1file;
   std::string l2file;
   std::string l3file;
+  std::string l2l3file;
   bool doJEC;
   double MinPt_;
+  JetCorrectorParameters *L2L3JetPar;        
   //	std::string   btagname_;
 
 	
@@ -92,6 +94,7 @@ JetProperties::JetProperties(const edm::ParameterSet& iConfig)
 	l1file = iConfig.getParameter<std::string> ("L1File");
 	l2file = iConfig.getParameter<std::string> ("L2File");
 	l3file = iConfig.getParameter<std::string> ("L3File");
+	l2l3file = iConfig.getParameter<std::string> ("L2L3File");
 	doJEC = iConfig.getParameter<bool> ("doJEC");
 	MinPt_ = iConfig.getParameter <double> ("MinPt");
 	//	btagname_ = iConfig.getParameter<std::string>  ("BTagInputTag");
@@ -212,6 +215,9 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  }*/
 	//	std::cout << " l1file " << l1file << " - PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt" << std::endl;
 
+	
+	if (l2l3file!="NONE")
+	  L2L3JetPar  = new JetCorrectorParameters(l2l3file);        
         JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters(l3file);        
         JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters(l2file);            
         JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters(l1file);             
@@ -220,6 +226,8 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
         vPar.push_back(*L1JetPar);                                                                        
         vPar.push_back(*L2JetPar);                                                                                                   
         vPar.push_back(*L3JetPar); 
+	if (l2l3file!="NONE")
+	  vPar.push_back(*L2L3JetPar); 
 
 	FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
 
@@ -317,7 +325,7 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	delete L1JetPar;
 	delete L2JetPar;
 	delete L3JetPar;
-
+	
 	const std::string string00("");
 	iEvent.put(prodJets );
 	

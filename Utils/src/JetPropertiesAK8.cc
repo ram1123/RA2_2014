@@ -63,9 +63,11 @@ private:
   std::string l1file;
   std::string l2file;
   std::string l3file;
+  std::string l2l3file;
   bool doJEC;
   //	edm::InputTag puppiJetTag_;
   double MinPt_;
+  JetCorrectorParameters *L2L3JetPar;
   //  std::vector<std::string> jecPayloadNames_;
 	
 	// ----------member data ---------------------------
@@ -92,6 +94,7 @@ JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
 	l1file = iConfig.getParameter<std::string>  ("L1File");
 	l2file = iConfig.getParameter<std::string>  ("L2File");
 	l3file = iConfig.getParameter<std::string>  ("L3File");
+	l2l3file = iConfig.getParameter<std::string>  ("L2L3File");
 	doJEC = iConfig.getParameter<bool>  ("doJEC");
 	//puppiJetTag_ = iConfig.getParameter<edm::InputTag>("puppiJetTag");
         MinPt_ = iConfig.getParameter <double> ("MinPt");
@@ -232,12 +235,15 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	//  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
 	std::vector<JetCorrectorParameters> vPar;
+	std::vector<JetCorrectorParameters> vParMass;
 	/*	for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNames_.begin(),
 		payloadEnd = jecPayloadNames_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
 	  JetCorrectorParameters pars(*ipayload);
 	  vPar.push_back(pars);
 	  }*/
 		
+        if (l2l3file!="NONE")
+          L2L3JetPar  = new JetCorrectorParameters(l2l3file);
 	JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters(l3file);
 	JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters(l2file);
 	JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters(l1file);
@@ -245,8 +251,16 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	vPar.push_back(*L1JetPar);
 	vPar.push_back(*L2JetPar);
 	vPar.push_back(*L3JetPar);
+        if (l2l3file!="NONE")
+	  vPar.push_back(*L2L3JetPar);
+
+	vParMass.push_back(*L2JetPar);
+	vParMass.push_back(*L3JetPar);
+        if (l2l3file!="NONE")
+	  vParMass.push_back(*L2L3JetPar);
 	
 	FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
+	FactorizedJetCorrector *JetMassCorrector = new FactorizedJetCorrector(vParMass);
 
 	if( Jets.isValid() ) {
 	  edm::View<pat::Jet>::const_iterator ijet = Jets->begin();
@@ -278,6 +292,15 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  JetCorrector->setRho(*(rho_.product())); 
 
 		  double correction = JetCorrector->getCorrection();
+
+		  JetMassCorrector->setJetEta(uncorrJet.eta());
+		  JetMassCorrector->setJetPt(uncorrJet.pt());
+		  JetMassCorrector->setJetA(ijet->jetArea());
+		  JetMassCorrector->setRho(*(rho_.product())); 
+
+		  double massCorrection = 1.;
+		  massCorrection = JetMassCorrector->getCorrection();
+
 		  ijet++;
 	//	(Jets->at(i)).scaleEnergy(correction);
 	//	reco::Candidate::LorentzVector jet4V = correction*(Jets->at(i).p4());		  
@@ -310,10 +333,10 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		   AK8muonEnergyFraction->push_back( Jets->at(i).muonEnergyFraction() );
 		   AK8muonMultiplicity->push_back( Jets->at(i).muonMultiplicity() );
 		   
-		   AK8prunedMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSPrunedMass"));
-		   AK8softDropMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSSoftDropMass"));
-		   AK8trimmedMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSTrimmedMass"));
-		   AK8filteredMass->push_back( Jets->at(i).userFloat("ak8PFJetsCHSFilteredMass"));
+		   AK8prunedMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsCHSPrunedMass"));
+		   AK8softDropMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsCHSSoftDropMass"));
+		   AK8trimmedMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsCHSTrimmedMass"));
+		   AK8filteredMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsCHSFilteredMass"));
 
 		   /*double dR=1000.;
 		   double tempMass=0.;
@@ -362,6 +385,7 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 	}
 	delete JetCorrector;
+	delete JetMassCorrector;
 	delete L1JetPar;
 	delete L2JetPar;
 	delete L3JetPar;

@@ -620,9 +620,10 @@ isCrab=False):
     process.MHTJetsProperties = jetproperties.clone(
     JetTag  = cms.InputTag('MHTJets'),
     doJEC  = cms.bool(doJECCorrection),
-    L1File = cms.string("Summer15_25nsV2_DATA_L1FastJet_AK4PFchs.txt"),
-    L2File = cms.string("Summer15_25nsV2_DATA_L2Relative_AK4PFchs.txt"),
-    L3File = cms.string("Summer15_25nsV2_DATA_L3Absolute_AK4PFchs.txt"),
+    L1File = cms.string("Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt"),
+    L2File = cms.string("Summer15_25nsV5_DATA_L2Relative_AK4PFchs.txt"),
+    L3File = cms.string("Summer15_25nsV5_DATA_L3Absolute_AK4PFchs.txt"),
+    L2L3File = cms.string("Summer15_25nsV5_DATA_L2L3Residual_AK4PFchs.txt"),
 #    jecPayloadNames      = cms.vstring(jecLevelsAK4),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
@@ -631,9 +632,10 @@ isCrab=False):
     JetTag  = cms.InputTag('MHTJetsAK8'),
     puppiJetTag = cms.InputTag('selectedPuppiJetsAK8'),
     doJEC  = cms.bool(doJECCorrection),
-    L1File = cms.string("Summer15_25nsV2_DATA_L1FastJet_AK8PFchs.txt"),
-    L2File = cms.string("Summer15_25nsV2_DATA_L2Relative_AK8PFchs.txt"),
-    L3File = cms.string("Summer15_25nsV2_DATA_L3Absolute_AK8PFchs.txt"),
+    L1File = cms.string("Summer15_25nsV5_DATA_L1FastJet_AK8PFchs.txt"),
+    L2File = cms.string("Summer15_25nsV5_DATA_L2Relative_AK8PFchs.txt"),
+    L3File = cms.string("Summer15_25nsV5_DATA_L3Absolute_AK8PFchs.txt"),
+    L2L3File = cms.string("Summer15_25nsV5_DATA_L2L3Residual_AK8PFchs.txt"),
 #    jecPayloadNames      = cms.vstring(jecLevelsAK8),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
@@ -641,18 +643,21 @@ isCrab=False):
         process.MHTJetsProperties.L1File = cms.string("Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt")
         process.MHTJetsProperties.L2File = cms.string("Summer15_25nsV2_MC_L2Relative_AK4PFchs.txt")
         process.MHTJetsProperties.L3File = cms.string("Summer15_25nsV2_MC_L3Absolute_AK4PFchs.txt")
+        process.MHTJetsProperties.L2L3File = cms.string("NONE")
         process.MHTJetsPropertiesAK8.L1File = cms.string("Summer15_25nsV2_MC_L1FastJet_AK8PFchs.txt")
         process.MHTJetsPropertiesAK8.L2File = cms.string("Summer15_25nsV2_MC_L2Relative_AK8PFchs.txt")
         process.MHTJetsPropertiesAK8.L3File = cms.string("Summer15_25nsV2_MC_L3Absolute_AK8PFchs.txt")
+        process.MHTJetsPropertiesAK8.L2L3File = cms.string("NONE")
 
     from AllHadronicSUSY.Utils.jetproperties_cfi import jetproperties
     process.JetsProperties = jetproperties.clone(
     JetTag  = cms.InputTag('slimmedJets'),
     MinPt = cms.double(-1),
     doJEC  = cms.bool(doJECCorrection),
-    L1File = cms.string("Summer15_25nsV2_DATA_L1FastJet_AK4PFchs.txt"),
-    L2File = cms.string("Summer15_25nsV2_DATA_L2Relative_AK4PFchs.txt"),
-    L3File = cms.string("Summer15_25nsV2_DATA_L3Absolute_AK4PFchs.txt"),
+    L1File = cms.string("Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt"),
+    L2File = cms.string("Summer15_25nsV5_DATA_L2Relative_AK4PFchs.txt"),
+    L3File = cms.string("Summer15_25nsV5_DATA_L3Absolute_AK4PFchs.txt"),
+    L2L3File = cms.string("Summer15_25nsV5_DATA_L2L3Residual_AK4PFchs.txt"),
 #    jecPayloadNames      = cms.vstring(jecLevelsAK4),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
@@ -662,9 +667,10 @@ isCrab=False):
 #    puppiJetTag = cms.InputTag('selectedPuppiJetsAK8'),
     MinPt = cms.double(-1),
     doJEC  = cms.bool(doJECCorrection),
-    L1File = cms.string("Summer15_25nsV2_DATA_L1FastJet_AK8PFchs.txt"),
-    L2File = cms.string("Summer15_25nsV2_DATA_L2Relative_AK8PFchs.txt"),
-    L3File = cms.string("Summer15_25nsV2_DATA_L3Absolute_AK8PFchs.txt"),
+    L1File = cms.string("Summer15_25nsV5_DATA_L1FastJet_AK8PFchs.txt"),
+    L2File = cms.string("Summer15_25nsV5_DATA_L2Relative_AK8PFchs.txt"),
+    L3File = cms.string("Summer15_25nsV5_DATA_L3Absolute_AK8PFchs.txt"),
+    L2L3File = cms.string("Summer15_25nsV5_DATA_L2L3Residual_AK8PFchs.txt"),
 #    jecPayloadNames      = cms.vstring(jecLevelsAK8),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
@@ -673,9 +679,11 @@ isCrab=False):
         process.JetsProperties.L1File = cms.string("Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt")
         process.JetsProperties.L2File = cms.string("Summer15_25nsV2_MC_L2Relative_AK4PFchs.txt")
         process.JetsProperties.L3File = cms.string("Summer15_25nsV2_MC_L3Absolute_AK4PFchs.txt")
+        process.JetsProperties.L2L3File = cms.string("NONE")
         process.JetsPropertiesAK8.L1File = cms.string("Summer15_25nsV2_MC_L1FastJet_AK8PFchs.txt")
         process.JetsPropertiesAK8.L2File = cms.string("Summer15_25nsV2_MC_L2Relative_AK8PFchs.txt")
         process.JetsPropertiesAK8.L3File = cms.string("Summer15_25nsV2_MC_L3Absolute_AK8PFchs.txt")
+        process.JetsPropertiesAK8.L2L3File = cms.string("NONE")
 
     if doAK8Reclustering:
         process.JetsPropertiesAK8.JetTag = cms.InputTag('selectedPatJetsAK8')
@@ -695,9 +703,10 @@ isCrab=False):
     METTag  = cms.InputTag("slimmedMETs"),
     JetTag  = cms.InputTag('slimmedJets'),
     doJEC  = cms.bool(doJECCorrection),
-    L1File = cms.string("Summer15_25nsV2_DATA_L1FastJet_AK4PFchs.txt"),
-    L2File = cms.string("Summer15_25nsV2_DATA_L2Relative_AK4PFchs.txt"),
-    L3File = cms.string("Summer15_25nsV2_DATA_L3Absolute_AK4PFchs.txt"),
+    L1File = cms.string("Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt"),
+    L2File = cms.string("Summer15_25nsV5_DATA_L2Relative_AK4PFchs.txt"),
+    L3File = cms.string("Summer15_25nsV5_DATA_L3Absolute_AK4PFchs.txt"),
+    L2L3File = cms.string("Summer15_25nsV5_DATA_L2L3Residual_AK4PFchs.txt"),
 #    jecPayloadNames      = cms.vstring(jecLevelsAK4),
     MuTag = cms.InputTag("slimmedMuons"),
     RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
@@ -708,6 +717,7 @@ isCrab=False):
         process.MET.L1File = cms.string("Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt")
         process.MET.L2File = cms.string("Summer15_25nsV2_MC_L2Relative_AK4PFchs.txt")
         process.MET.L3File = cms.string("Summer15_25nsV2_MC_L3Absolute_AK4PFchs.txt")
+        process.MET.L2L3File = cms.string("NONE")
 
     from AllHadronicSUSY.Utils.leptonint_cfi import leptonint
     process.Leptons = leptonint.clone(

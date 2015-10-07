@@ -70,7 +70,9 @@ private:
   std::string l1file;
   std::string l2file;
   std::string l3file;
+  std::string l2l3file;
   bool doJEC;
+  JetCorrectorParameters *L2L3JetPar;
 
 	// ----------member data ---------------------------
 };
@@ -100,6 +102,7 @@ METDouble::METDouble(const edm::ParameterSet& iConfig)
 	l1file = iConfig.getParameter<std::string> ("L1File");
 	l2file = iConfig.getParameter<std::string> ("L2File");
 	l3file = iConfig.getParameter<std::string> ("L3File");
+	l2l3file = iConfig.getParameter<std::string> ("L2L3File");
 	
 	produces<double>("Pt");
 	produces<double>("Phi");
@@ -162,6 +165,8 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::vector<JetCorrectorParameters> vParL1;
 	//	vParL1.push_back(JetCorrectorParameters(jecPayloadNames_[0]));
 	
+        if (l2l3file!="NONE")
+          L2L3JetPar  = new JetCorrectorParameters(l2l3file);
 	JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters(l3file);
 	JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters(l2file);
 	JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters(l1file);
@@ -169,6 +174,8 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	vPar.push_back(*L1JetPar);
 	vPar.push_back(*L2JetPar);
 	vPar.push_back(*L3JetPar);
+        if (l2l3file!="NONE")
+	  vPar.push_back(*L2L3JetPar);
 	vParL1.push_back(*L1JetPar);
 
 	FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
