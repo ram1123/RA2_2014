@@ -10,6 +10,8 @@ config.JobType.pluginName = 'Analysis'
 config.JobType.pyCfgParams = ['global_tag=MCRUN2_74_V9::All', 'MC=True', 'doJECCorrection=True']
 config.JobType.inputFiles = ['Summer15_25nsV2_MC_L1FastJet_AK8PFchs.txt','Summer15_25nsV2_MC_L2Relative_AK8PFchs.txt','Summer15_25nsV2_MC_L3Absolute_AK8PFchs.txt','Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt','Summer15_25nsV2_MC_L2Relative_AK4PFchs.txt','Summer15_25nsV2_MC_L3Absolute_AK4PFchs.txt' ]
 config.JobType.allowUndistributedCMSSW = True
+config.JobType.maxMemoryMB = 2500    # 2.5 GB                  
+config.JobType.maxJobRuntimeMin = 1200 #20 h
 config.section_('Data')
 config.Data.inputDataset = '/RSGravToWWToLNQQ_kMpl01_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
 config.Data.unitsPerJob = 1
