@@ -9,13 +9,13 @@ config.JobType.psetName = 'TreeMaker/test/runMakeTreeFromMiniAOD_cfg.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.pyCfgParams = ['global_tag=74X_dataRun2_Prompt_v2', 'MC=False', 'isCrab=True', 'doJECCorrection=True']
 config.JobType.allowUndistributedCMSSW = True
-config.JobType.maxMemoryMB = 2500    # 2.5 GB                      
+#config.JobType.maxMemoryMB = 2500    # 2.5 GB                      
 config.JobType.maxJobRuntimeMin = 1200 #20 h
 config.JobType.inputFiles = ['Summer15_25nsV5_DATA_L1FastJet_AK8PFchs.txt','Summer15_25nsV5_DATA_L2Relative_AK8PFchs.txt','Summer15_25nsV5_DATA_L3Absolute_AK8PFchs.txt','Summer15_25nsV5_DATA_L2L3Residual_AK8PFchs.txt','Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt','Summer15_25nsV5_DATA_L2Relative_AK4PFchs.txt','Summer15_25nsV5_DATA_L3Absolute_AK4PFchs.txt','Summer15_25nsV5_DATA_L2L3Residual_AK4PFchs.txt' ]
 config.section_('Data')
 config.Data.inputDataset = '/SingleMuon/Run2015B-PromptReco-v1/MINIAOD'
 config.Data.unitsPerJob = 50
-config.Data.lumiMask = 'json/Cert_246908-257599_13TeV_PromptReco_Collisions15_25ns_JSON.txt'
+config.Data.lumiMask = 'json/Cert_246908-257599_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt'
 config.Data.inputDBS = 'global' #'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet'
 config.Data.splitting = 'LumiBased'
 config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple_data_mu/'
