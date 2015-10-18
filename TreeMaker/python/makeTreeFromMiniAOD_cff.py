@@ -18,8 +18,8 @@ debug = False,
 QCD=False,
 LostLepton=False,
 numProcessedEvt=1000,
-doAK8Reclustering=False,
-doJECCorrection=False,
+doAK8Reclustering=True,
+doJECCorrection=True,
 doPuppi=False,
 leptonFilter=True,
 genJetsAK8Reclustering=True,
@@ -29,7 +29,8 @@ jsonFileName="",
 isCrab=False):
 
     if (MC):
-        process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+#        process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+        process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
         customizeHBHENoiseForRun2015D=False
     else:
         process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
@@ -818,16 +819,24 @@ isCrab=False):
 #        reverseDecision = cms.bool(False)
 #        )
 
+    process.metFilters = cms.Sequence()
+    if customizeHBHENoiseForRun2015D and not MC:
+        process.metFilters = cms.Sequence(process.metBits_miniAOD
+                                          *process.HBHENoiseFilterResultProducer
+                                          *process.ApplyBaselineHBHENoiseFilter
+                                          #*process.ApplyBaselineHBHEIsoNoiseFilter
+                                          )
         
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
 #        process.HLTSelection*
         process.TriggerProducer*
         ### MET Filter Bits
-        process.metBits_miniAOD*
+        process.metFilters* #this now contains all the met filters
+#        process.metBits_miniAOD*
         ### HBHE noise filter
-        process.HBHENoiseFilterResultProducer* #produces HBHE baseline bools
-        process.ApplyBaselineHBHENoiseFilter*  #reject events based 
+#        process.HBHENoiseFilterResultProducer* #produces HBHE baseline bools
+#        process.ApplyBaselineHBHENoiseFilter*  #reject events based 
         #process.ApplyBaselineHBHEIsoNoiseFilter*   #reject events based - disable the module, performance is being investigated further
         ### rest of ntupling starts after here
         process.filterSeq *
