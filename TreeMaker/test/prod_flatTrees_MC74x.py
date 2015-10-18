@@ -1,4 +1,4 @@
-from WMCore.Configuration import Configuration
+B1;2802;0cfrom WMCore.Configuration import Configuration
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
@@ -7,11 +7,11 @@ config.General.workArea = 'RSGraviton1000'
 config.section_('JobType')
 config.JobType.psetName = 'TreeMaker/test/runMakeTreeFromMiniAOD_cfg.py'
 config.JobType.pluginName = 'Analysis'
-config.JobType.pyCfgParams = ['global_tag=MCRUN2_74_V9::All', 'MC=True', 'doJECCorrection=True']
+config.JobType.pyCfgParams = ['global_tag=74X_mcRun2_asymptotic_v2', 'MC=True', 'isCrab=True', 'doJECCorrection=True', 'isHBHERun2015D=False']
 config.JobType.inputFiles = ['Summer15_25nsV2_MC_L1FastJet_AK8PFchs.txt','Summer15_25nsV2_MC_L2Relative_AK8PFchs.txt','Summer15_25nsV2_MC_L3Absolute_AK8PFchs.txt','Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt','Summer15_25nsV2_MC_L2Relative_AK4PFchs.txt','Summer15_25nsV2_MC_L3Absolute_AK4PFchs.txt' ]
 config.JobType.allowUndistributedCMSSW = True
-config.JobType.maxMemoryMB = 2500    # 2.5 GB                  
-config.JobType.maxJobRuntimeMin = 1200 #20 h
+#config.JobType.maxMemoryMB = 2500    # 2.5 GB     
+config.JobType.maxJobRuntimeMin = 900 #15 h
 config.section_('Data')
 config.Data.inputDataset = '/RSGravToWWToLNQQ_kMpl01_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
 config.Data.unitsPerJob = 1
@@ -21,6 +21,7 @@ config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbria
 config.section_('User')
 config.section_('Site')
 config.Site.storageSite = 'T2_CH_CERN'
+config.Site.blacklist= ['T2_US_Purdue']
 
 if __name__ == '__main__':
     from CRABAPI.RawCommand import crabCommand
@@ -34,7 +35,7 @@ if __name__ == '__main__':
     #########    From now on that's what users should modify: this is the a-la-CRAB2 configuration part.
         
     config.General.requestName = 'RSGraviton600'
-    config.JobType.pyCfgParams = ['global_tag=MCRUN2_74_V9::All', 'MC=True', 'name=RSGraviton600']
+#    config.JobType.pyCfgParams = ['global_tag=74X_mcRun2_asymptotic_v2', 'MC=True', 'name=RSGraviton600']
     config.Data.inputDataset = '/RSGravToWWToLNQQ_kMpl01_M-600_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/RSGraviton600/'
     from multiprocessing import Process
@@ -44,7 +45,7 @@ if __name__ == '__main__':
 
 
     config.General.requestName = 'RSGraviton800'
-    config.JobType.pyCfgParams = ['global_tag=MCRUN2_74_V9::All', 'MC=True', 'name=RSGraviton800']
+#    config.JobType.pyCfgParams = ['global_tag=74X_mcRun2_asymptotic_v2', 'MC=True', 'name=RSGraviton800']
     config.Data.inputDataset = '/RSGravToWWToLNQQ_kMpl01_M-800_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/RSGraviton800/'
     from multiprocessing import Process
@@ -55,7 +56,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'RSGraviton1000'
     config.Data.inputDataset = '/RSGravToWWToLNQQ_kMpl01_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
-    config.JobType.pyCfgParams = ['global_tag=MCRUN2_74_V9::All', 'MC=True', 'name=RSGraviton1000']
+#    config.JobType.pyCfgParams = ['global_tag=74X_mcRun2_asymptotic_v2', 'MC=True', 'name=RSGraviton1000']
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/RSGraviton1000/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
@@ -65,7 +66,7 @@ if __name__ == '__main__':
     
     config.General.requestName = 'RSGraviton1200'
     config.Data.inputDataset = '/RSGravToWWToLNQQ_kMpl01_M-1200_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'
-    config.JobType.pyCfgParams = ['global_tag=MCRUN2_74_V9::All', 'MC=True', 'name=RSGraviton1200']
+#    config.JobType.pyCfgParams = ['global_tag=74X_mcRun2_asymptotic_v2', 'MC=True', 'name=RSGraviton1200']
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple/RSGraviton1200/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
