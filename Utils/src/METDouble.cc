@@ -38,6 +38,7 @@
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrectorCalculator.h"
 
+#include "CommonTools/Utils/interface/StringCutObjectSelector.h"
 //
 // class declaration
 //
@@ -191,8 +192,10 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  bool skipEM_ = true;
 	  double skipEMfractionThreshold_ = 0.9;
 	  bool skipMuons_ = true;
-	  //double jetCorrEtaMax_ = 9.9;
-	  double type1JetPtThreshold_ = 10.0;
+	  //	  double jetCorrEtaMax_ = 9.9;
+	  double type1JetPtThreshold_ = 15.0;
+	  std::string skipMuonSelection_string = "isGlobalMuon | isStandAloneMuon";
+	  StringCutObjectSelector<reco::Candidate>* skipMuonSelection_ = new StringCutObjectSelector<reco::Candidate>(skipMuonSelection_string,true);
 
 	  edm::View<pat::Jet>::const_iterator ijet = Jets->begin()-1;
 	  for (const pat::Jet &jet : *Jets) {
@@ -224,7 +227,20 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	    if ( skipEM_ && emEnergyFraction > skipEMfractionThreshold_ ) continue;
 	    
 	    reco::Candidate::LorentzVector rawJetP4 = jet.correctedP4(0);
-	    
+
+	    if ( skipMuons_ && jet.muonMultiplicity() != 0 ) {
+	      const std::vector<reco::CandidatePtr> & cands = jet.daughterPtrVector();
+	      for ( std::vector<reco::CandidatePtr>::const_iterator cand = cands.begin();
+		    cand != cands.end(); ++cand ) {
+		const reco::PFCandidate *pfcand = dynamic_cast<const reco::PFCandidate *>(cand->get());
+		const reco::Candidate *mu = (pfcand != 0 ? ( pfcand->muonRef().isNonnull() ? pfcand->muonRef().get() : 0) : cand->get());
+		if ( mu != 0 &&  (*skipMuonSelection_)(*mu) ) {
+		  reco::Candidate::LorentzVector muonP4 = (*cand)->p4();
+		  rawJetP4 -= muonP4;
+		}
+	      }
+	    }
+	    /*	    
 	    if ( skipMuons_ && jet.muonMultiplicity() != 0 ) {
 	      for (const pat::Muon &muon : *Muons) {
 		if( !muon.isGlobalMuon() && !muon.isStandAloneMuon() ) continue;
@@ -235,11 +251,11 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  rawJetP4 -= muonP4;
 		}
 	      }
-	    }
+	      } */
 
 	    reco::Candidate::LorentzVector corrJetP4 = corr*rawJetP4;
 
-	    if ( corrJetP4.pt() > type1JetPtThreshold_ ) {
+	    if ( corrJetP4.pt() > type1JetPtThreshold_) {
 	      reco::Candidate::LorentzVector tmpP4 = jet.correctedP4(0);
 	      JetCorrectorL1->setJetEta(tmpP4.eta());
 	      JetCorrectorL1->setJetPt(tmpP4.pt());
@@ -256,9 +272,13 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  }
 	  //	  pat::MET pmet = pat::MET( &*(MET->at(0)) );
 
-	  const float rawPt = MET->at(0).shiftedPt(pat::MET::NoShift, pat::MET::Raw);
-	  const float rawPhi = MET->at(0).shiftedPhi(pat::MET::NoShift, pat::MET::Raw);
+	  //const float rawPt = MET->at(0).shiftedPt(pat::MET::NoShift, pat::MET::Raw);
+	  //const float rawPhi = MET->at(0).shiftedPhi(pat::MET::NoShift, pat::MET::Raw);
 	  //	  const float rawSumEt = MET->at(0).shiftedSumEt(pat::MET::NoShift, pat::MET::Raw);
+	  const float rawPt = MET->at(0).uncorPt();//met.shiftedPt(pat::MET::METUncertainty::NoShift, pat::MET::METUncertaintyLevel::Raw);
+	  const float rawPhi   = MET->at(0).uncorPhi();//met.shiftedPhi(pat::MET::METUncertainty::NoShift, pat::MET::METUncertaintyLevel::Raw);
+	  //	  const float rawSumEt = met.uncorSumEt();//met.shiftedSumEt(pat::MET::METUncertainty::NoShift, pat::MET::METUncertaintyLevel::Raw);
+
 	  TVector2 rawMET_;
 	  rawMET_.SetMagPhi (rawPt, rawPhi );
 	  Double_t rawPx = rawMET_.Px();
