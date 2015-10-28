@@ -18,7 +18,7 @@ debug = False,
 QCD=False,
 LostLepton=False,
 numProcessedEvt=1000,
-doAK8Reclustering=True,
+doAK8Reclustering=False,
 doJECCorrection=True,
 doPuppi=False,
 leptonFilter=True,
@@ -27,7 +27,7 @@ customizeHBHENoiseForEarlyData=False,
 customizeHBHENoiseForRun2015D=True,
 jsonFileName="",
 isCrab=False,
-reDoPruningAndSoftdrop=True
+reDoPruningAndSoftdrop=False
 ):
 
     if (MC):
@@ -836,20 +836,20 @@ reDoPruningAndSoftdrop=True
     #### -----> HBHE noise filter <----- ####
 ##___________________________HCAL_Noise_Filter________________________________||
     process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
-    if customizeHBHENoiseForRun2015D:
-        process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
-        process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
-        process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
+#    if customizeHBHENoiseForRun2015D:
+#        process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
+#        process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
+    process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
 
-    process.ApplyBaselineHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
-                                                        inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
-                                                        reverseDecision = cms.bool(False)
-                                                        )
+#    process.ApplyBaselineHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
+#                                                        inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
+#                                                        reverseDecision = cms.bool(False)
+#                                                        )
     
-    process.ApplyBaselineHBHEIsoNoiseFilter = cms.EDFilter('BooleanFlagFilter',
-                                                           inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
-                                                           reverseDecision = cms.bool(False)
-                                                           )
+#    process.ApplyBaselineHBHEIsoNoiseFilter = cms.EDFilter('BooleanFlagFilter',
+#                                                           inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
+#                                                           reverseDecision = cms.bool(False)
+#                                                           )
 
 #### obsolete - for early run 2 data (runB)
 #    if customizeHBHENoiseForEarlyData:
@@ -863,12 +863,12 @@ reDoPruningAndSoftdrop=True
 #        )
 
     process.metFilters = cms.Sequence()
-    if customizeHBHENoiseForRun2015D and not MC:
-        process.metFilters = cms.Sequence(process.metBits_miniAOD
+#    if customizeHBHENoiseForRun2015D and not MC:
+    process.metFilters = cms.Sequence(process.metBits_miniAOD
                                           *process.HBHENoiseFilterResultProducer
-                                          *process.ApplyBaselineHBHENoiseFilter
+#                                          *process.ApplyBaselineHBHENoiseFilter
                                           #*process.ApplyBaselineHBHEIsoNoiseFilter
-                                          )
+                                      )
         
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
