@@ -86,6 +86,7 @@ reDoPruningAndSoftdrop=False
         triggerNameList = cms.vstring( # list of trigger names
             'HLT_Ele105_CaloIdVT_GsfTrkIdT_v',
             'HLT_Mu45_eta2p1_v',
+            'HLT_Ele115_CaloIdVT_GsfTrkIdT_v',
             )
         )
 
@@ -849,7 +850,8 @@ reDoPruningAndSoftdrop=False
     from AllHadronicSUSY.Utils.filterproducer_cfi import filterProducer
     process.FilterProducer = filterProducer.clone(
                                  #triggerNameList = cms.vstring(),
-                                 noiseFilterTag = cms.InputTag('TriggerResults','', 'PAT'),
+                                 noiseFilterTag = cms.InputTag("TriggerResults"),
+#                                 noiseFilterTag = cms.InputTag('TriggerResults','', 'PAT'),
                                  HBHENoiseFilter_Selector_ = cms.string("Flag_HBHENoiseFilter"),
                                  HBHENoiseIsoFilter_Selector_ = cms.string("Flag_HBHENoiseIsoFilter"),
                                  CSCHaloNoiseFilter_Selector_ = cms.string("Flag_CSCTightHaloFilter"),
