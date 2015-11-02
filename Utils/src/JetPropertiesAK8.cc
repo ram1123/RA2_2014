@@ -326,13 +326,16 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  double correction = 1.;
 		  double massCorrection = 1.;
 
+		  massCorrection = JetMassCorrector->getCorrection(); //do anyway the mass correction
+		  mass->push_back( massCorrection*uncorrJet.mass());
+		  
 		  if (doJEC) {
 		    correction = JetCorrector->getCorrection();
-		    massCorrection = JetMassCorrector->getCorrection();
-		    mass->push_back( massCorrection*uncorrJet.mass());
+		    //		    massCorrection = JetMassCorrector->getCorrection();
+		    //mass->push_back( massCorrection*uncorrJet.mass());
 		  }
-		  else
-		    mass->push_back( Jets->at(i).mass());
+		  //		  else
+		  // mass->push_back( Jets->at(i).mass());
 		  
 		  //		  std::cout<<"DEBUG - AK8- raw pt: "<<uncorrJet.pt()<<" corr: "<<correction<<" corr pt: "<<correction*uncorrJet.pt()
 		  //			   <<" raw mass: "<<uncorrJet.mass()<<" massCorr: "<<massCorrection<<" corr mass: "<<massCorrection*uncorrJet.mass()<<std::endl;

@@ -755,7 +755,8 @@ reDoPruningAndSoftdrop=False
 #    jecPayloadNames      = cms.vstring(jecLevelsAK4),
     MuTag = cms.InputTag("slimmedMuons"),
     RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
-    corrMet = cms.bool(True),
+    corrMet = cms.bool(doJECCorrection),
+#    corrMet = cms.bool(True),
     )
 
     if (MC):
