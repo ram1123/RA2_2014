@@ -37,6 +37,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrectorCalculator.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 //
 // class declaration
 //
@@ -64,6 +65,7 @@ private:
   std::string l2file;
   std::string l3file;
   std::string l2l3file;
+  std::string uncfile;
   bool doJEC;
   double MinPt_;
   JetCorrectorParameters *L2L3JetPar;        
@@ -95,6 +97,7 @@ JetProperties::JetProperties(const edm::ParameterSet& iConfig)
 	l2file = iConfig.getParameter<std::string> ("L2File");
 	l3file = iConfig.getParameter<std::string> ("L3File");
 	l2l3file = iConfig.getParameter<std::string> ("L2L3File");
+	uncfile = iConfig.getParameter<std::string>  ("uncFile");
 	doJEC = iConfig.getParameter<bool> ("doJEC");
 	MinPt_ = iConfig.getParameter <double> ("MinPt");
 	//	btagname_ = iConfig.getParameter<std::string>  ("BTagInputTag");
@@ -153,6 +156,12 @@ JetProperties::JetProperties(const edm::ParameterSet& iConfig)
         produces<std::vector<double> > (string27).setBranchAlias(string27);	
 	const std::string string28("isTightJetId");
 	produces<std::vector<bool> > (string28).setBranchAlias(string28);
+	const std::string string30("AK4correction");
+	produces<std::vector<double> > (string30).setBranchAlias(string30);
+	const std::string string31("AK4correctionUp");
+	produces<std::vector<double> > (string31).setBranchAlias(string31);
+	const std::string string32("AK4correctionDown");
+	produces<std::vector<double> > (string32).setBranchAlias(string32);
 }
 
 
@@ -198,6 +207,9 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<double> > EtaCorr(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > PhiCorr(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > ECorr(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > AK4correction(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > AK4correctionUp(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > AK4correctionDown(new std::vector<double>);
 	using namespace edm;
 	using namespace reco;
 	using namespace pat;
@@ -229,7 +241,12 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	if (l2l3file!="NONE")
 	  vPar.push_back(*L2L3JetPar); 
 
+	JetCorrectionUncertainty *JetUnc  = new JetCorrectionUncertainty(uncfile);
+
 	FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
+
+	double corrUp;
+	double corrDown;
 
 	if( Jets.isValid() ) {
 	  edm::View<pat::Jet>::const_iterator ijet = Jets->begin();
@@ -275,6 +292,14 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		    PhiCorr->push_back(Jets->at(i).phi());
 		    ECorr->push_back(Jets->at(i).energy());
 		  }
+
+		  JetUnc->setJetEta( uncorrJet.eta() );
+		  JetUnc->setJetPt( correction * uncorrJet.pt() );
+		  corrUp = correction * (1 + fabs(JetUnc->getUncertainty(1)));
+		  JetUnc->setJetEta( uncorrJet.eta() );
+		  JetUnc->setJetPt( correction * uncorrJet.pt() );
+		  corrDown = correction * ( 1 - fabs(JetUnc->getUncertainty(-1)) );
+
 		  jetArea->push_back( Jets->at(i).jetArea() );
 		  chargedHadronEnergyFraction->push_back( Jets->at(i).chargedHadronEnergyFraction() );
 		  chargedHadronMultiplicity->push_back( Jets->at(i).chargedHadronMultiplicity() );
@@ -291,6 +316,10 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  muonMultiplicity->push_back( Jets->at(i).muonMultiplicity() );
 		  bDiscriminatorCSV->push_back( Jets->at(i).bDiscriminator("combinedSecondaryVertexBJetTags") );
 		  bDiscriminatorICSV->push_back( Jets->at(i).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+
+		  AK4correction->push_back( correction );
+		  AK4correctionUp->push_back( corrUp );
+		  AK4correctionDown->push_back( corrDown );
 
 		  float NHF = Jets->at(i).neutralHadronEnergyFraction();
 		  float NEMF = Jets->at(i).neutralEmEnergyFraction();
@@ -371,7 +400,12 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(ECorr,string27);
 	const std::string string28("isTightJetId");
 	iEvent.put(isTightJetId,string28);
-		
+	const std::string string30("AK4correction");
+	iEvent.put(AK4correction,string30);
+	const std::string string31("AK4correctionUp");
+	iEvent.put(AK4correctionUp,string31);
+	const std::string string32("AK4correctionDown");
+	iEvent.put(AK4correctionDown,string32);
 }
 
 // ------------ method called once each job just before starting event loop  ------------

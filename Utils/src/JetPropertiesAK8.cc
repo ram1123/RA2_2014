@@ -37,7 +37,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrectorCalculator.h"
-
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 //
 // class declaration
 //
@@ -67,6 +67,7 @@ private:
   std::string l2file;
   std::string l3file;
   std::string l2l3file;
+  std::string uncfile;
   bool doJEC;
   bool doReclusteringForPrunedAndSoftdrop;
   //	edm::InputTag puppiJetTag_;
@@ -101,6 +102,7 @@ JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
 	l2file = iConfig.getParameter<std::string>  ("L2File");
 	l3file = iConfig.getParameter<std::string>  ("L3File");
 	l2l3file = iConfig.getParameter<std::string>  ("L2L3File");
+	uncfile = iConfig.getParameter<std::string>  ("uncFile");
 	doJEC = iConfig.getParameter<bool>  ("doJEC");
 	doReclusteringForPrunedAndSoftdrop = iConfig.getParameter<bool>  ("doReclusteringForPrunedAndSoftdrop");
 	//puppiJetTag_ = iConfig.getParameter<edm::InputTag>("puppiJetTag");
@@ -176,6 +178,12 @@ JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
 	produces<std::vector<bool> > (string28).setBranchAlias(string28);
 	const std::string string29("mass");
 	produces<std::vector<double> > (string29).setBranchAlias(string29);
+	const std::string string30("AK8correction");
+	produces<std::vector<double> > (string30).setBranchAlias(string30);
+	const std::string string31("AK8correctionUp");
+	produces<std::vector<double> > (string31).setBranchAlias(string31);
+	const std::string string32("AK8correctionDown");
+	produces<std::vector<double> > (string32).setBranchAlias(string32);
 	//        const std::string string28("AK8puppiMass");
         //produces<std::vector<double> > (string28).setBranchAlias(string28);
 
@@ -232,6 +240,9 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<double> > PhiCorr(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > ECorr(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > mass(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > AK8correction(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > AK8correctionUp(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > AK8correctionDown(new std::vector<double>);
 	//	std::auto_ptr< std::vector<double> > AK8puppiMass(new std::vector<double>);
 	using namespace edm;
 	using namespace reco;
@@ -250,6 +261,7 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	//  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
 	std::vector<JetCorrectorParameters> vPar;
 	std::vector<JetCorrectorParameters> vParMass;
+	//	std::vector<JetCorrectionUncertainty> vParUnc;
 	/*	for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNames_.begin(),
 		payloadEnd = jecPayloadNames_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
 	  JetCorrectorParameters pars(*ipayload);
@@ -273,6 +285,9 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	vParMass.push_back(*L3JetPar);
         if (l2l3file!="NONE")
 	  vParMass.push_back(*L2L3JetPar);
+
+	JetCorrectionUncertainty *JetUnc  = new JetCorrectionUncertainty(uncfile);
+	//	vParUnc.push_back(*JetUnc);
 	
 	FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
 	FactorizedJetCorrector *JetMassCorrector = new FactorizedJetCorrector(vParMass);
@@ -287,6 +302,11 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	reco::Candidate::LorentzVector uncorrJet;
 	reco::Candidate::LorentzVector uncorrPrunedJet;
 	reco::Candidate::LorentzVector uncorrSoftdropJet;
+
+	double correction;
+	double massCorrection;
+	double corrUp;
+	double corrDown;
 	
 	if( Jets.isValid() ) {
 	  edm::View<pat::Jet>::const_iterator ijet = Jets->begin();
@@ -323,8 +343,8 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  JetMassCorrector->setRho(*(rho_.product())); 
 		  
 
-		  double correction = 1.;
-		  double massCorrection = 1.;
+		  correction = 1.;
+		  massCorrection = 1.;
 
 		  massCorrection = JetMassCorrector->getCorrection(); //do anyway the mass correction
 		  mass->push_back( massCorrection*uncorrJet.mass());
@@ -339,6 +359,12 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  
 		  //		  std::cout<<"DEBUG - AK8- raw pt: "<<uncorrJet.pt()<<" corr: "<<correction<<" corr pt: "<<correction*uncorrJet.pt()
 		  //			   <<" raw mass: "<<uncorrJet.mass()<<" massCorr: "<<massCorrection<<" corr mass: "<<massCorrection*uncorrJet.mass()<<std::endl;
+		  JetUnc->setJetEta( uncorrJet.eta() );
+		  JetUnc->setJetPt( correction * uncorrJet.pt() );
+		  corrUp = correction * (1 + fabs(JetUnc->getUncertainty(1)));
+		  JetUnc->setJetEta( uncorrJet.eta() );
+		  JetUnc->setJetPt( correction * uncorrJet.pt() );
+		  corrDown = correction * ( 1 - fabs(JetUnc->getUncertainty(-1)) );
 
 		  ijet++;
 	//	(Jets->at(i)).scaleEnergy(correction);
@@ -376,6 +402,10 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		  AK8trimmedMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsCHSTrimmedMass"));
 		  AK8filteredMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsCHSFilteredMass"));
+
+		  AK8correction->push_back( correction );
+		  AK8correctionUp->push_back( corrUp );
+		  AK8correctionDown->push_back( corrDown );
 
 		   /*double dR=1000.;
 		   double tempMass=0.;
@@ -585,6 +615,12 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(AK8isTightJetId,string28);
 	const std::string string29("mass");
 	iEvent.put(mass,string29);
+	const std::string string30("AK8correction");
+	iEvent.put(AK8correction,string30);
+	const std::string string31("AK8correctionUp");
+	iEvent.put(AK8correctionUp,string31);
+	const std::string string32("AK8correctionDown");
+	iEvent.put(AK8correctionDown,string32);
 	//	const std::string string28("AK8puppiMass");
 	//iEvent.put(AK8puppiMass,string28);
 	
