@@ -184,6 +184,8 @@ JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
 	produces<std::vector<double> > (string31).setBranchAlias(string31);
 	const std::string string32("AK8correctionDown");
 	produces<std::vector<double> > (string32).setBranchAlias(string32);
+	const std::string string33("AK8softDropPt");
+	produces<std::vector<double> > (string33).setBranchAlias(string33);
 	//        const std::string string28("AK8puppiMass");
         //produces<std::vector<double> > (string28).setBranchAlias(string28);
 
@@ -226,6 +228,7 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<int> > AK8muonMultiplicity(new std::vector<int>);
 	std::auto_ptr< std::vector<double> > AK8prunedMass(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > AK8softDropMass(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > AK8softDropPt(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > AK8trimmedMass(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > AK8filteredMass(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > AK8tau1(new std::vector<double>);
@@ -481,20 +484,28 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		       
 			 softdropCorrection = JetSoftdropCorrector->getCorrection();
 
-			 if (doJEC) 
+			 if (doJEC) {
 			   AK8softDropMass->push_back( softdropCorrection*uncorrSoftdropJet.mass());		       
-			 else 
+			   AK8softDropPt->push_back( softdropCorrection*uncorrSoftdropJet.pt());		       
+			 }
+			 else {
 			   AK8softDropMass->push_back( 1.*uncorrSoftdropJet.mass());		       		     
+			   AK8softDropPt->push_back( 1.*uncorrSoftdropJet.pt());		       		     
+			 }
 
 			 //			 std::cout<<"DEBUG - SD- raw pt: "<<uncorrSoftdropJet.pt()
 			 // <<" raw mass: "<<uncorrSoftdropJet.mass()<<" massCorr: "<<softdropCorrection<<" corr mass: "
 			 //	  <<softdropCorrection*uncorrSoftdropJet.mass()<<std::endl;
 		       }
-		       else
-			 AK8softDropMass->push_back( -1.);		       		     
+		       else {
+			 AK8softDropMass->push_back( -1.);
+			 AK8softDropPt->push_back(-1.0);
+		       }
 		     }
-		     else
+		     else {
 			 AK8softDropMass->push_back( -1.);		       		     
+			 AK8softDropPt->push_back(-1.0);
+		     }
 
 		     //		     FatJet.SetPtEtaPhiE( Jets->at(i).pt(), Jets->at(i).eta(), Jets->at(i).phi(), Jets->at(i).energy() ); 
 
@@ -542,6 +553,13 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		   else {
 		     AK8prunedMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsCHSPrunedMass"));
 		     AK8softDropMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsCHSSoftDropMass"));
+		     auto sdSubjets = Jets->at(i).subjets("SoftDrop");
+		     if ( sdSubjets.size() > 1 ) {
+		       auto sdp4 = sdSubjets[0]->p4() + sdSubjets[1]->p4();
+		       AK8softDropPt->push_back( sdp4.pt() );
+		     } else {
+		       AK8softDropPt->push_back( -1.0 );
+		     }
 		   }
 
 		}
@@ -622,6 +640,8 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(AK8correctionUp,string31);
 	const std::string string32("AK8correctionDown");
 	iEvent.put(AK8correctionDown,string32);
+	const std::string string33("AK8softDropPt");
+	iEvent.put(AK8softDropPt,string33);
 	//	const std::string string28("AK8puppiMass");
 	//iEvent.put(AK8puppiMass,string28);
 	
