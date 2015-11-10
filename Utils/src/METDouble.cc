@@ -37,6 +37,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrectorCalculator.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 
 #include "CommonTools/Utils/interface/StringCutObjectSelector.h"
 //
@@ -65,13 +66,20 @@ private:
 	edm::InputTag JetTag_;
   //  std::vector<std::string> jecPayloadNames_;
   bool corrMet;
-	  double corrEx;
-	  double corrEy;
-	  double corrSumEt;
+  double corrEx;
+  double corrEy;
+  bool corrMet_up;
+  double corrEx_up;
+  double corrEy_up;
+  bool corrMet_down;
+  double corrEx_down;
+  double corrEy_down;
+  double corrSumEt;
   std::string l1file;
   std::string l2file;
   std::string l3file;
   std::string l2l3file;
+  std::string uncfile;
   bool doJEC;
   JetCorrectorParameters *L2L3JetPar;
 
@@ -104,6 +112,7 @@ METDouble::METDouble(const edm::ParameterSet& iConfig)
 	l2file = iConfig.getParameter<std::string> ("L2File");
 	l3file = iConfig.getParameter<std::string> ("L3File");
 	l2l3file = iConfig.getParameter<std::string> ("L2L3File");
+	uncfile = iConfig.getParameter<std::string>  ("uncFile");
 	
 	produces<double>("Pt");
 	produces<double>("Phi");
@@ -111,6 +120,10 @@ METDouble::METDouble(const edm::ParameterSet& iConfig)
 	produces<double>("PhiRaw");
 	produces<double>("CaloMetPt");
 	produces<double>("CaloMetPhi");
+	produces<double>("PtUp");
+	produces<double>("PhiUp");
+	produces<double>("PtDown");
+	produces<double>("PhiDown");
 	/* Examples
 	 *   produces<ExampleData2>();
 	 * 
@@ -144,6 +157,8 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
 	double metpt_=0, metphi_=0;
+	double metpt_up_=0, metphi_up_=0;
+	double metpt_down_=0, metphi_down_=0;
 	double rawmetpt_=0, rawmetphi_=0;
 	double calometpt_=0, calometphi_=0;
 	edm::Handle< edm::View<pat::MET> > MET;
@@ -181,6 +196,11 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
 	FactorizedJetCorrector *JetCorrectorL1 = new FactorizedJetCorrector(vParL1);
+
+	JetCorrectionUncertainty *JetUnc  = new JetCorrectionUncertainty(uncfile);
+
+	double corrUp;
+	double corrDown;
 	
 	if (!doJEC)  corrMet=false; //it does not have any sense to correct met if no JEC applied
 
@@ -188,6 +208,10 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  corrEx = 0;
 	  corrEy = 0;
 	  corrSumEt = 0;
+	  corrEx_up = 0;
+	  corrEy_up = 0;
+	  corrEx_down = 0;
+	  corrEy_down = 0;
 
 	  bool skipEM_ = true;
 	  double skipEMfractionThreshold_ = 0.9;
@@ -226,6 +250,13 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	    double corr = JetCorrector->getCorrection();
 	    
+	    JetUnc->setJetEta( uncorrJet.eta() );
+	    JetUnc->setJetPt( corr * uncorrJet.pt() );
+	    corrUp = corr * (1 + fabs(JetUnc->getUncertainty(1)));
+	    JetUnc->setJetEta( uncorrJet.eta() );
+	    JetUnc->setJetPt( corr * uncorrJet.pt() );
+	    corrDown = corr * ( 1 - fabs(JetUnc->getUncertainty(-1)) );
+
 	    double emEnergyFraction = jet.chargedEmEnergyFraction() + jet.neutralEmEnergyFraction();
 	    if ( skipEM_ && emEnergyFraction > skipEMfractionThreshold_ ) continue;
 	    
@@ -258,6 +289,8 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	      } */
 
 	    reco::Candidate::LorentzVector corrJetP4 = corr*rawJetP4;
+	    reco::Candidate::LorentzVector corrJetP4_up = corrUp*rawJetP4;
+	    reco::Candidate::LorentzVector corrJetP4_down = corrDown*rawJetP4;
 
 	    if ( corrJetP4.pt() > type1JetPtThreshold_) {
 	      reco::Candidate::LorentzVector tmpP4 = jet.correctedP4(0);
@@ -270,10 +303,33 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	      JetCorrectorL1->setRho(*(rho_.product())); 
 	    
 	      corr = JetCorrectorL1->getCorrection();
+
+              if (fabs(tmpP4.eta()) < jetCorrEtaMax_)
+		JetUnc->setJetEta( tmpP4.eta() );
+              else
+                JetUnc->setJetEta(TMath::Sign(1.,tmpP4.eta())*jetCorrEtaMax_);
+	      JetUnc->setJetPt( corr * tmpP4.pt() );
+	      corrUp = corr * (1 + fabs(JetUnc->getUncertainty(1)));
+
+              if (fabs(tmpP4.eta()) < jetCorrEtaMax_)
+		JetUnc->setJetEta( tmpP4.eta() );
+              else
+                JetUnc->setJetEta(TMath::Sign(1.,tmpP4.eta())*jetCorrEtaMax_);
+	      JetUnc->setJetPt( corr * tmpP4.pt() );
+	      corrDown = corr * (1 - fabs(JetUnc->getUncertainty(-1)));
+
 	      reco::Candidate::LorentzVector rawJetP4offsetCorr = corr*rawJetP4;
 	      corrEx -= (corrJetP4.px() - rawJetP4offsetCorr.px());
 	      corrEy -= (corrJetP4.py() - rawJetP4offsetCorr.py());
 	      corrSumEt += (corrJetP4.Et() - rawJetP4offsetCorr.Et());
+
+	      reco::Candidate::LorentzVector rawJetP4offsetCorr_up = corrUp*rawJetP4;
+	      corrEx_up -= (corrJetP4_up.px() - rawJetP4offsetCorr_up.px());
+	      corrEy_up -= (corrJetP4_up.py() - rawJetP4offsetCorr_up.py());
+
+	      reco::Candidate::LorentzVector rawJetP4offsetCorr_down = corrDown*rawJetP4;
+	      corrEx_down -= (corrJetP4_down.px() - rawJetP4offsetCorr_down.px());
+	      corrEy_down -= (corrJetP4_down.py() - rawJetP4offsetCorr_down.py());
 	    }
 	    
 	  }
@@ -303,6 +359,26 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  rawmetpt_ = rawPt;
 	  rawmetphi_ = rawPhi;
 
+
+	  double pxcorr_up = rawPx+corrEx_up;
+	  double pycorr_up = rawPy+corrEy_up;
+	  double et_up = std::hypot(pxcorr_up,pycorr_up);
+	  //	  double sumEtcorr = rawSumEt+corrSumEt;
+	  TLorentzVector corrmet_up; corrmet_up.SetPxPyPzE(pxcorr_up,pycorr_up,0.,et_up);
+
+	  metpt_up_= et_up;
+	  metphi_up_ = corrmet_up.Phi();
+
+
+	  double pxcorr_down = rawPx+corrEx_down;
+	  double pycorr_down = rawPy+corrEy_down;
+	  double et_down = std::hypot(pxcorr_down,pycorr_down);
+	  //	  double sumEtcorr = rawSumEt+corrSumEt;
+	  TLorentzVector corrmet_down; corrmet_down.SetPxPyPzE(pxcorr_down,pycorr_down,0.,et_down);
+
+	  metpt_down_= et_down;
+	  metphi_down_ = corrmet_down.Phi();
+
 	  //	  std::cout<<"corrEx: "<<corrEx<<" rawPx: "<<rawPx<<" raw met: "<<rawPt<<" new met: "<<et<<std::endl;
 	  //metcorrPx_ = corrEx;
 	  //metCorrPy_ = corrEy;
@@ -323,6 +399,7 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	delete JetCorrector;
 	delete JetCorrectorL1;
+	delete JetUnc;
 	delete L1JetPar;
 	delete L2JetPar;
 	delete L3JetPar;
@@ -339,6 +416,14 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(htp5,"CaloMetPt");
 	std::auto_ptr<double> htp6(new double(calometphi_));
 	iEvent.put(htp6,"CaloMetPhi");
+	std::auto_ptr<double> htp7(new double(metpt_up_));
+	iEvent.put(htp7,"PtUp");
+	std::auto_ptr<double> htp8(new double(metphi_up_));
+	iEvent.put(htp8,"PhiUp");
+	std::auto_ptr<double> htp9(new double(metpt_down_));
+	iEvent.put(htp9,"PtDown");
+	std::auto_ptr<double> htp10(new double(metphi_down_));
+	iEvent.put(htp10,"PhiDown");
 	
 }
 

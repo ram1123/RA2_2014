@@ -351,6 +351,7 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 	}
 	delete JetCorrector;
+	delete JetUnc;
 	delete L1JetPar;
 	delete L2JetPar;
 	delete L3JetPar;
