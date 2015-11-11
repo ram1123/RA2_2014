@@ -57,6 +57,7 @@ private:
 	
 	const reco::GenParticle* BosonFound(const reco::GenParticle * particle);
 	const reco::GenParticle* TauFound(const reco::GenParticle * particle);
+	const reco::GenParticle* TopFound(const reco::GenParticle * particle);
 	
 	
 	// ----------member data ---------------------------
@@ -87,6 +88,8 @@ GenLeptonRecoCand::GenLeptonRecoCand(const edm::ParameterSet& iConfig)
 	const std::string string4("Tau");
 	const std::string string4t("TauHadronic");
 	const std::string string5("Neutrino");
+	const std::string string6t("TopPDGId");
+	const std::string string6("Top");
 	produces<std::vector<reco::GenParticle> > (string1).setBranchAlias(string1);
 	produces<std::vector<int> > (string1t).setBranchAlias(string1t);
 	produces<std::vector<reco::GenParticle> > (string2).setBranchAlias(string2);
@@ -96,6 +99,8 @@ GenLeptonRecoCand::GenLeptonRecoCand(const edm::ParameterSet& iConfig)
 	produces<std::vector<reco::GenParticle> > (string4).setBranchAlias(string4);
 	produces<std::vector<int> > (string4t).setBranchAlias(string4t);
 	produces<std::vector<reco::GenParticle> > (string5).setBranchAlias(string5);
+	produces<std::vector<reco::GenParticle> > (string6).setBranchAlias(string6);
+	produces<std::vector<int> > (string6t).setBranchAlias(string6t);
 	/* Examples
 	 *   produces<ExampleData2>();
 	 * 
@@ -137,10 +142,18 @@ GenLeptonRecoCand::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<reco::GenParticle> > selectedTau(new std::vector<reco::GenParticle>);
 	std::auto_ptr< std::vector<int> > selectedTauHadTronic(new std::vector<int>);
 	std::auto_ptr< std::vector<reco::GenParticle> > selectedNeutrino(new std::vector<reco::GenParticle>);
+	std::auto_ptr< std::vector<reco::GenParticle> > selectedTop(new std::vector<reco::GenParticle>);
+	std::auto_ptr< std::vector<int> > selectedTopPDGId(new std::vector<int>);
 	Handle<edm::View<reco::GenParticle> > pruned;
 	iEvent.getByLabel(PrunedGenParticleTag_,pruned);
 	for(size_t i=0; i<pruned->size();i++)
 	{
+	  if (abs((*pruned)[i].pdgId() ) == 6) { //save top
+	    const reco::GenParticle * Top = TopFound(&(*pruned)[i]);
+	    selectedTop->push_back(*Top);
+	    selectedTopPDGId->push_back(Top->pdgId());
+	  }
+
 		if( (abs((*pruned)[i].pdgId() ) == 24 || abs((*pruned)[i].pdgId() ) == 23 ) && (*pruned)[i].status()==22) // needs to be checked if this workes for Z 23 as well
 		{
 			const reco::GenParticle * FinalBoson = BosonFound(&(*pruned)[i]);
@@ -201,6 +214,8 @@ GenLeptonRecoCand::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	const std::string string4("Tau");
 	const std::string string4t("TauHadronic");
 	const std::string string5("Neutrino");
+	const std::string string6("Top");
+	const std::string string6t("TopPDGId");
 	iEvent.put(selectedBoson,string1);
 	iEvent.put(selectedBosonPDGId,string1t);
 	iEvent.put(selectedMuon,string2);
@@ -210,6 +225,8 @@ GenLeptonRecoCand::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(selectedTau,string4);
 	iEvent.put(selectedTauHadTronic,string4t);
 	iEvent.put(selectedNeutrino,string5);
+	iEvent.put(selectedTop,string6);
+	iEvent.put(selectedTopPDGId,string6t);
 	
 }
 
@@ -257,6 +274,13 @@ GenLeptonRecoCand::fillDescriptions(edm::ConfigurationDescriptions& descriptions
 	desc.setUnknown();
 	descriptions.addDefault(desc);
 }
+const reco::GenParticle* GenLeptonRecoCand::TopFound(const reco::GenParticle * particle)
+{
+	return particle;
+	
+}
+
+
 const reco::GenParticle* GenLeptonRecoCand::BosonFound(const reco::GenParticle * particle)
 {
 	for(size_t i=0;i< particle->numberOfDaughters();i++)
