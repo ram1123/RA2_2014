@@ -279,6 +279,8 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  double correction = JetCorrector->getCorrection();
 		  ijet++;
 
+		  //		  std::cout<<correction*uncorrJet.pt()<<" "<<Jets->at(i).pt()<<std::endl;
+
 		  prodJets->push_back(pat::Jet(Jets->at(i)));
 		  if (doJEC) {   
 		    PtCorr->push_back(correction*uncorrJet.pt());
