@@ -87,6 +87,7 @@ reDoPruningAndSoftdrop=False
             'HLT_Ele105_CaloIdVT_GsfTrkIdT_v',
             'HLT_Mu45_eta2p1_v',
             'HLT_Ele115_CaloIdVT_GsfTrkIdT_v',
+            'HLT_Mu50_v',
             )
         )
 
@@ -760,6 +761,7 @@ reDoPruningAndSoftdrop=False
     L2File = cms.string("Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt"),
     L3File = cms.string("Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt"),
     L2L3File = cms.string("Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"),
+    uncFile = cms.string("Summer15_25nsV6_DATA_Uncertainty_AK4PFchs.txt"),
 #    jecPayloadNames      = cms.vstring(jecLevelsAK4),
     MuTag = cms.InputTag("slimmedMuons"),
     RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
@@ -772,6 +774,7 @@ reDoPruningAndSoftdrop=False
         process.MET.L2File = cms.string("Summer15_25nsV6_MC_L2Relative_AK4PFchs.txt")
         process.MET.L3File = cms.string("Summer15_25nsV6_MC_L3Absolute_AK4PFchs.txt")
         process.MET.L2L3File = cms.string("NONE")
+        process.MET.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK4PFchs.txt")
 
     from AllHadronicSUSY.Utils.leptonint_cfi import leptonint
     process.Leptons = leptonint.clone(
