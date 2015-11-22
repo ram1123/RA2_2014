@@ -267,7 +267,7 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  type->push_back(Electrons->at(i).pdgId());
 		  charge->push_back(Electrons->at(i).charge());
 		  e->push_back(Electrons->at(i).energy());
-		  eta->push_back(Electrons->at(i).superCluster()->eta());
+		  eta->push_back(Electrons->at(i).eta());
 		  mass->push_back(Electrons->at(i).mass());
 		  pt->push_back(Electrons->at(i).pt());
 		  phi->push_back(Electrons->at(i).phi());
