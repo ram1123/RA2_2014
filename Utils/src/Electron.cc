@@ -69,8 +69,8 @@ private:
   // ID decisions objects
   //  edm::EDGetTokenT<edm::ValueMap<bool> > eleVetoIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIdMapToken_;
-  //  edm::EDGetTokenT<edm::ValueMap<bool> > eleMediumIdMapToken_;
-  //  edm::EDGetTokenT<edm::ValueMap<bool> > eleTightIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > eleMediumIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > eleTightIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > eleHEEPIdMapToken_;
 	// ----------member data ---------------------------
 };
@@ -92,8 +92,8 @@ Electron::Electron(const edm::ParameterSet& iConfig):
   BeamSpotTag_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("BeamSpotTag"))),
   //  eleVetoIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"))),
   eleLooseIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"))),
-  //  eleMediumIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"))),
-  //  eleTightIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"))),
+  eleMediumIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"))),
+  eleTightIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"))),
   eleHEEPIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleHEEPIdMap")))
 {
 	EleTag_ = iConfig.getParameter<edm::InputTag>("EleTag");
@@ -152,6 +152,10 @@ Electron::Electron(const edm::ParameterSet& iConfig):
 	produces<std::vector<double> > (string16).setBranchAlias(string16);
         const std::string string17("isLoose");
 	produces<std::vector<bool> > (string17).setBranchAlias(string17);
+        const std::string string17b("isMedium");
+	produces<std::vector<bool> > (string17b).setBranchAlias(string17b);
+        const std::string string17c("isTight");
+	produces<std::vector<bool> > (string17c).setBranchAlias(string17c);
 
         const std::string string18("SCEnergy");
 	produces<std::vector<double> > (string18).setBranchAlias(string18);
@@ -209,6 +213,8 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<double> > chargedHadIso(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > trackIso(new std::vector<double>);
 	std::auto_ptr< std::vector<bool> > isLoose(new std::vector<bool>);
+	std::auto_ptr< std::vector<bool> > isMedium(new std::vector<bool>);
+	std::auto_ptr< std::vector<bool> > isTight(new std::vector<bool>);
 
 	std::auto_ptr< std::vector<double> > SCEnergy(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > deltaEtaSCTracker(new std::vector<double>);
@@ -237,13 +243,13 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	// If you need more info, check with the EGM group.
 	//	edm::Handle<edm::ValueMap<bool> > veto_id_decisions;
 	edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
-	//	edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
-	//	edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
+	edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
+	edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
 	edm::Handle<edm::ValueMap<bool> > heep_id_decisions;
 	//iEvent.getByToken(eleVetoIdMapToken_ ,veto_id_decisions);
 	iEvent.getByToken(eleLooseIdMapToken_ ,loose_id_decisions);
-	//iEvent.getByToken(eleMediumIdMapToken_,medium_id_decisions);
-	//iEvent.getByToken(eleTightIdMapToken_,tight_id_decisions);
+	iEvent.getByToken(eleMediumIdMapToken_,medium_id_decisions);
+	iEvent.getByToken(eleTightIdMapToken_,tight_id_decisions);
 	iEvent.getByToken(eleHEEPIdMapToken_ ,heep_id_decisions);
 
 	if( Electrons.isValid() ) {
@@ -256,14 +262,16 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  double rho = *(rho_.product());
 		  //		  bool isPassVeto = (*veto_id_decisions)[el];
 		  bool isPassLoose = (*loose_id_decisions)[el];
-		  //		  bool isPassMedium = (*medium_id_decisions)[el];
-		  //		  bool isPassTight = (*tight_id_decisions)[el];
+		  bool isPassMedium = (*medium_id_decisions)[el];
+		  bool isPassTight = (*tight_id_decisions)[el];
 		  bool isPassHEEP = (*heep_id_decisions)[el];
 
 		  prodEle->push_back(pat::Electron(Electrons->at(i)));
 		  isHEEP->push_back( isPassHEEP );
 		  //		  isHEEPv50->push_back( isPassLooseOLD );
 		  isLoose->push_back( isPassLoose );
+		  isMedium->push_back( isPassMedium );
+		  isTight->push_back( isPassTight );
 		  type->push_back(Electrons->at(i).pdgId());
 		  charge->push_back(Electrons->at(i).charge());
 		  e->push_back(Electrons->at(i).energy());
@@ -351,6 +359,10 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(trackIso,string16);
 	const std::string string17("isLoose");
 	iEvent.put(isLoose,string17);
+	const std::string string17b("isMedium");
+	iEvent.put(isMedium,string17b);
+	const std::string string17c("isTight");
+	iEvent.put(isTight,string17c);
 
 	const std::string string18("SCEnergy");
 	iEvent.put(SCEnergy,string18);
