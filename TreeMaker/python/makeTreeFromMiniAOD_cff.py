@@ -88,6 +88,17 @@ reDoPruningAndSoftdrop=False
             'HLT_Mu45_eta2p1_v',
             'HLT_Ele115_CaloIdVT_GsfTrkIdT_v',
             'HLT_Mu50_v',
+            'HLT_Ele27_WPLoose_Gsf_v',
+            'HLT_Mu24_eta2p1_v',
+            'HLT_Mu24_v',
+            'HLT_PFJet450_v',
+            'HLT_PFJet500_v',
+            'HLT_AK8PFJet360_TrimMass30_v',
+            'HLT_Ele27_eta2p1_WPTight_Gsf_v',
+            'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v',
+            'HLT_IsoMu27_v',
+            'HLT_IsoMu24_v',
+            'HLT_IsoMu22_v'
             )
         )
 

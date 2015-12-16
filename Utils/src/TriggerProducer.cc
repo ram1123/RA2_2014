@@ -109,6 +109,7 @@ TriggerProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::string testTriggerName;
   for(unsigned int trigIndex = 0; trigIndex < trigNames.size(); trigIndex++){
     testTriggerName = trigNames.triggerName(trigIndex);
+    //    std::cout<<testTriggerName<<std::endl;
     for(unsigned int parsedIndex = 0; parsedIndex < parsedTrigNamesVec.size(); parsedIndex++){
       if(testTriggerName.find(parsedTrigNamesVec.at(parsedIndex)) != std::string::npos){
 	trigNamesVec->push_back(testTriggerName.c_str());
