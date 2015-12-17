@@ -187,7 +187,7 @@ reDoPruningAndSoftdrop=False
     process.leptonFilter.muonsInputTag = cms.InputTag("slimmedMuons")
     process.leptonFilter.eleFilterPtCut = cms.double(20.0)
     process.leptonFilter.muFilterPtCut = cms.double(20.0)
-    
+
     if (leptonFilter):
         process.filterSeq = cms.Sequence (process.leptonFilter)
     
@@ -582,7 +582,6 @@ reDoPruningAndSoftdrop=False
             process.redoPatJets+=process.patJetsAK12Softdrop
             process.redoPatJets+=process.selectedPatJetsAK12Softdrop
 
-
     if (doPuppi):
 
         from CommonTools.PileupAlgos.Puppi_cff import puppi
@@ -780,8 +779,6 @@ reDoPruningAndSoftdrop=False
 #        process.redoGenJets+=process.genJetCorrFactorsAK8
         process.redoGenJets+=process.genJetsAK8
         process.redoGenJets+=process.selectedGenJetsAK8
-
-
 
 
     if (genJetsAK10Reclustering and MC):    
@@ -1172,24 +1169,25 @@ reDoPruningAndSoftdrop=False
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
 
+
     from AllHadronicSUSY.Utils.jetpropertiesPuppi_cfi import jetpropertiesPuppi
-    process.JetsPropertiesPuppi = cms.Sequence()
-    if doPuppi:
-        process.JetsPropertiesPuppi = jetpropertiesPuppi.clone(
-            JetTag  = cms.InputTag('selectedPuppiJetsAK8'),
-            #    puppiJetTag = cms.InputTag('selectedPuppiJetsAK8'),
-            MinPt = cms.double(-1),
-            doJEC  = cms.bool(doJECCorrection),
-            doReclusteringForPrunedAndSoftdrop = cms.bool(reDoPruningAndSoftdrop),
-            L1File = cms.string("Summer15_25nsV6_DATA_L1FastJet_AK8PFPuppi.txt"),
-            L2File = cms.string("Summer15_25nsV6_DATA_L2Relative_AK8PFPuppi.txt"),
-            L3File = cms.string("Summer15_25nsV6_DATA_L3Absolute_AK8PFPuppi.txt"),
-            L2L3File = cms.string("Summer15_25nsV6_DATA_L2L3Residual_AK8PFPuppi.txt"),
-            uncFile = cms.string("Summer15_25nsV6_DATA_Uncertainty_AK8PFPuppi.txt"),
-            #    jecPayloadNames      = cms.vstring(jecLevelsAK8),
-            #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
-            )
-#        process.JetsPropertiesAK8.JetTag = cms.InputTag('selectedPuppiJetsAK8')
+#    process.JetsPropertiesPuppi = cms.Sequence()
+#    if doPuppi:
+    process.JetsPropertiesPuppi = jetpropertiesPuppi.clone(
+        JetTag  = cms.InputTag('selectedPuppiJetsAK8'),
+        #    puppiJetTag = cms.InputTag('selectedPuppiJetsAK8'),
+        MinPt = cms.double(-1),
+        doJEC  = cms.bool(doJECCorrection),
+        doReclusteringForPrunedAndSoftdrop = cms.bool(reDoPruningAndSoftdrop),
+        L1File = cms.string("Summer15_25nsV6_DATA_L1FastJet_AK8PFPuppi.txt"),
+        L2File = cms.string("Summer15_25nsV6_DATA_L2Relative_AK8PFPuppi.txt"),
+        L3File = cms.string("Summer15_25nsV6_DATA_L3Absolute_AK8PFPuppi.txt"),
+        L2L3File = cms.string("Summer15_25nsV6_DATA_L2L3Residual_AK8PFPuppi.txt"),
+        uncFile = cms.string("Summer15_25nsV6_DATA_Uncertainty_AK8PFPuppi.txt"),
+        #    jecPayloadNames      = cms.vstring(jecLevelsAK8),
+        #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
+        )
+    #        process.JetsPropertiesAK8.JetTag = cms.InputTag('selectedPuppiJetsAK8')
 
     if (reDoPruningAndSoftdrop):
         process.JetsPropertiesAK8.prunedJetTag  = cms.InputTag('selectedPatJetsAK8Pruned')
@@ -1223,7 +1221,7 @@ reDoPruningAndSoftdrop=False
         process.JetsPropertiesAK12.L2File = cms.string("Summer15_25nsV6_MC_L2Relative_AK8PFchs.txt")
         process.JetsPropertiesAK12.L3File = cms.string("Summer15_25nsV6_MC_L3Absolute_AK8PFchs.txt")
         process.JetsPropertiesAK12.L2L3File = cms.string("NONE")
-        process.JetsPropertiesAK12.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK8PFPuppi.txt")
+        process.JetsPropertiesAK12.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK8PFchs.txt")
         process.JetsPropertiesPuppi.L1File = cms.string("Summer15_25nsV6_MC_L1FastJet_AK8PFPuppi.txt")
         process.JetsPropertiesPuppi.L2File = cms.string("Summer15_25nsV6_MC_L2Relative_AK8PFPuppi.txt")
         process.JetsPropertiesPuppi.L3File = cms.string("Summer15_25nsV6_MC_L3Absolute_AK8PFPuppi.txt")
@@ -1265,6 +1263,7 @@ reDoPruningAndSoftdrop=False
         process.MET.L3File = cms.string("Summer15_25nsV6_MC_L3Absolute_AK4PFchs.txt")
         process.MET.L2L3File = cms.string("NONE")
         process.MET.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK4PFchs.txt")
+
 
     from AllHadronicSUSY.Utils.leptonint_cfi import leptonint
     process.Leptons = leptonint.clone(
@@ -1360,7 +1359,6 @@ reDoPruningAndSoftdrop=False
 #                                          *process.ApplyBaselineHBHENoiseFilter
 #                                          *process.ApplyBaselineHBHEIsoNoiseFilter
 #                                      )
-
 
 ########## save flags for filters
     from AllHadronicSUSY.Utils.filterproducer_cfi import filterProducer
