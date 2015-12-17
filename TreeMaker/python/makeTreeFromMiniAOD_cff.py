@@ -1201,6 +1201,12 @@ reDoPruningAndSoftdrop=False
     else:
         process.JetsPropertiesAK8.prunedJetTag  = cms.InputTag('slimmedJetsAK8')
         process.JetsPropertiesAK8.softdropJetTag  = cms.InputTag('slimmedJetsAK8')
+        process.JetsPropertiesAK10.prunedJetTag  = cms.InputTag('slimmedJetsAK8')
+        process.JetsPropertiesAK10.softdropJetTag  = cms.InputTag('slimmedJetsAK8')
+        process.JetsPropertiesAK12.prunedJetTag  = cms.InputTag('slimmedJetsAK8')
+        process.JetsPropertiesAK12.softdropJetTag  = cms.InputTag('slimmedJetsAK8')
+        process.JetsPropertiesPuppi.prunedJetTag  = cms.InputTag('slimmedJetsPuppi')
+        process.JetsPropertiesPuppi.softdropJetTag  = cms.InputTag('slimmedJetsPuppi')
     if (MC):
         process.JetsProperties.L1File = cms.string("Summer15_25nsV6_MC_L1FastJet_AK4PFchs.txt")
         process.JetsProperties.L2File = cms.string("Summer15_25nsV6_MC_L2Relative_AK4PFchs.txt")
