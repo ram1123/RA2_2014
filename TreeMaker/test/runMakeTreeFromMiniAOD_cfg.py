@@ -23,10 +23,12 @@ mhtMin      = parameters.value("mht_min",0)
 NumProcessedEvt=parameters.value("NumProcessedEvt",-1)
 METFiltersProcess=parameters.value("METFiltersProcess","")
 DoAK8Reclustering=parameters.value("DoAK8Reclustering",False)
+DoAK10Reclustering=parameters.value("DoAK10Reclustering",False)
 DoJECCorrection=parameters.value("DoJECCorrection",False)
 DoPuppi=parameters.value("DoPuppi",False)
 LeptonFilter=parameters.value("leptonFilter",True)
 GenJetsAK8Reclustering=parameters.value("genJetsAK8Reclustering",True)
+GenJetsAK10Reclustering=parameters.value("genJetsAK10Reclustering",False)
 isHBHEEarlyData = parameters.value("isHBHEEarlyData",False)
 isHBHERun2015D=parameters.value("isHBHERun2015D",True)
 JsonFileName=parameters.value("jsonFileName","json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt")
@@ -48,11 +50,13 @@ print "       mhtMin : "+str(mhtMin)
 print "       debug : "+str(debug)
 print "       num of events : "+str(NumProcessedEvt)
 print "       doAK8Reclustering : "+str(DoAK8Reclustering)
+print "       doAK10Reclustering : "+str(DoAK10Reclustering)
 print "       doJECCorrection : "+str(DoJECCorrection)
 print "       ReDoPruningAndSoftdrop :"+str(ReDoPruningAndSoftdrop)
 print "       doPuppi : "+str(DoPuppi)
 print "       leptonFilter : "+str(LeptonFilter)
 print "       genJetsAK8Reclustering : "+str(GenJetsAK8Reclustering)
+print "       genJetsAK10Reclustering : "+str(GenJetsAK10Reclustering)
 print "       isHBHEEarlyData : "+str(isHBHEEarlyData)
 print "       isHBHERun2015D : "+str(isHBHERun2015D)
 print "       jsonFileName : "+str(JsonFileName)
@@ -81,10 +85,12 @@ makeTreeTreeFromMiniAOD(process,
 		debug = debug,
                 numProcessedEvt=NumProcessedEvt,
                 doAK8Reclustering=DoAK8Reclustering,
+                doAK10Reclustering=DoAK10Reclustering,
                 doJECCorrection=DoJECCorrection,
                 doPuppi=DoPuppi,
                 leptonFilter=LeptonFilter,
                 genJetsAK8Reclustering=GenJetsAK8Reclustering,
+                genJetsAK10Reclustering=GenJetsAK10Reclustering,
                 customizeHBHENoiseForEarlyData=isHBHEEarlyData,
                 customizeHBHENoiseForRun2015D=isHBHERun2015D,
                 jsonFileName=JsonFileName,

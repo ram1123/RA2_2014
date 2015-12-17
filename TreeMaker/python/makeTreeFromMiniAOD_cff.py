@@ -18,11 +18,13 @@ debug = False,
 QCD=False,
 LostLepton=False,
 numProcessedEvt=1000,
-doAK8Reclustering=False,
 doJECCorrection=False,
 doPuppi=False,
 leptonFilter=True,
+doAK8Reclustering=False,
+doAK10Reclustering=False,
 genJetsAK8Reclustering=True,
+genJetsAK10Reclustering=True,
 customizeHBHENoiseForEarlyData=False,
 customizeHBHENoiseForRun2015D=True,
 jsonFileName="",
@@ -347,8 +349,8 @@ reDoPruningAndSoftdrop=False
                             akAxesR0 = cms.double(-999.0)        # not used by default
                             )
 
-        process.ak4PFJetsCHS = ak4PFJetsCHS.clone(src = 'chs')
-        process.ak8PFJetsCHS = ak8PFJetsCHS.clone( src = 'chs', jetPtMin = 100.0 )
+        process.ak4PFJetsCHS = ak4PFJetsCHS.clone(src = 'chs', rParam = cms.double(0.4))
+        process.ak8PFJetsCHS = ak8PFJetsCHS.clone( src = 'chs', jetPtMin = 100.0,     rParam = cms.double(0.8) )
 
         process.ak8PFJetsCHSPruned = ak8PFJetsCHSPruned.clone( src = 'chs', jetPtMin = 100.0 )
         process.ak8PFJetsCHSPrunedMass = ak8PFJetsCHSPrunedMass.clone()
@@ -403,6 +405,93 @@ reDoPruningAndSoftdrop=False
             process.redoPatJets+=process.patJetCorrFactorsAK8Softdrop
             process.redoPatJets+=process.patJetsAK8Softdrop
             process.redoPatJets+=process.selectedPatJetsAK8Softdrop
+
+    if (doAK10Reclustering):
+        from RecoJets.Configuration.RecoPFJets_cff import ak4PFJetsCHS, ak8PFJetsCHS, ak8PFJetsCHSPruned, ak8PFJetsCHSSoftDrop, ak8PFJetsCHSPrunedMass, ak8PFJetsCHSSoftDropMass
+
+        process.chs = cms.EDFilter("CandPtrSelector",
+                               src = cms.InputTag('packedPFCandidates'),
+                               cut = cms.string('fromPV')
+                               )
+
+        process.NjettinessAK10 = cms.EDProducer("NjettinessAdder",
+                            src=cms.InputTag("ak10PFJetsCHS"),
+                            Njets=cms.vuint32(1,2,3,4),          # compute 1-, 2-, 3-, 4- subjettiness
+                            # variables for measure definition : 
+                            measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
+                            beta = cms.double(1.0),              # CMS default is 1
+                            R0 = cms.double( 1.0 ),              # CMS default is jet cone size
+                            Rcutoff = cms.double( -999.0),       # not used by default
+                            # variables for axes definition :
+                            axesDefinition = cms.uint32( 6 ),    # CMS default is 1-pass KT axes
+                            nPass = cms.int32(-999),             # not used by default
+                            akAxesR0 = cms.double(-999.0)        # not used by default
+                            )
+
+        process.ak10PFJetsCHS = ak8PFJetsCHS.clone( src = 'chs', jetPtMin = 100.0,     rParam = cms.double(1.0) )
+
+        process.ak10PFJetsCHSPruned = ak8PFJetsCHSPruned.clone( src = 'chs', jetPtMin = 100.0,     rParam = cms.double(1.0) )
+        process.ak10PFJetsCHSPrunedMass = ak8PFJetsCHSPrunedMass.clone(    
+            distMax = cms.double(1.0),
+            matched = cms.InputTag("ak10PFJetsCHSPruned"),
+            src = cms.InputTag("ak10PFJetsCHS")
+            )
+        process.ak10PFJetsCHSSoftDrop = ak8PFJetsCHSSoftDrop.clone( src = 'chs', jetPtMin = 100.0,     rParam = cms.double(1.0) )
+        process.ak10PFJetsCHSSoftDropMass = ak8PFJetsCHSSoftDropMass.clone(
+            distMax = cms.double(1.0),
+            matched = cms.InputTag("ak10PFJetsCHSSoftDrop"),
+            src = cms.InputTag("ak10PFJetsCHS")
+            )
+
+        process.substructureSequence+=process.chs
+        process.substructureSequence+=process.ak10PFJetsCHS
+        process.substructureSequence+=process.NjettinessAK10
+
+        process.softdrop_onMiniAOD += process.ak10PFJetsCHSSoftDrop + process.ak10PFJetsCHSSoftDropMass
+        process.pruning_onMiniAOD += process.ak10PFJetsCHSPruned + process.ak10PFJetsCHSPrunedMass
+
+        ####### Redo pat jets sequence ##########
+        from ExoDiBosonResonances.EDBRJets.redoPatJets_cff import patJetCorrFactorsAK8, patJetsAK8, selectedPatJetsAK8
+
+        # Redo pat jets from ak8PFJetsCHS
+
+        process.patJetCorrFactorsAK10 = patJetCorrFactorsAK8.clone( src = 'ak10PFJetsCHS' )
+        process.patJetsAK10 = patJetsAK8.clone( jetSource = 'ak10PFJetsCHS' )
+        process.patJetsAK10.userData.userFloats.src = [ cms.InputTag("ak10PFJetsCHSPrunedMass"), cms.InputTag("ak10PFJetsCHSSoftDropMass"), cms.InputTag("NjettinessAK10:tau1"), cms.InputTag("NjettinessAK10:tau2"), cms.InputTag("NjettinessAK10:tau3")]
+        process.patJetsAK10.jetCorrFactorsSource = cms.VInputTag( cms.InputTag("patJetCorrFactorsAK10") )
+        process.selectedPatJetsAK10 = selectedPatJetsAK8.clone( cut = cms.string('pt > 20'), src = cms.InputTag("patJetsAK10") ) #LUCA
+
+        process.redoPatJets+=process.patJetCorrFactorsAK10
+        process.redoPatJets+=process.patJetsAK10
+        process.redoPatJets+=process.selectedPatJetsAK10
+
+        if (reDoPruningAndSoftdrop):
+            process.patJetCorrFactorsAK10Pruned = patJetCorrFactorsAK8.clone( src = 'ak10PFJetsCHSPruned' )
+            process.patJetsAK10Pruned = patJetsAK8.clone( jetSource = 'ak10PFJetsCHSPruned' )
+            process.patJetsAK10Pruned.userData.userFloats.src = [ "" ]
+            process.patJetsAK10Pruned.jetCorrFactorsSource = cms.VInputTag( cms.InputTag("patJetCorrFactorsAK10Pruned") )
+            process.selectedPatJetsAK10Pruned = selectedPatJetsAK8.clone( 
+                src = cms.InputTag('patJetsAK10Pruned'),
+                cut = cms.string('pt > 20') 
+                )
+
+            process.redoPatJets+=process.patJetCorrFactorsAK10Pruned
+            process.redoPatJets+=process.patJetsAK10Pruned
+            process.redoPatJets+=process.selectedPatJetsAK10Pruned
+
+            process.patJetCorrFactorsAK10Softdrop = patJetCorrFactorsAK8.clone( src = 'ak10PFJetsCHSSoftDrop' )
+            process.patJetsAK10Softdrop = patJetsAK8.clone( jetSource = 'ak10PFJetsCHSSoftDrop' )
+            process.patJetsAK10Softdrop.userData.userFloats.src = [ "" ]
+            process.patJetsAK10Softdrop.jetCorrFactorsSource = cms.VInputTag( cms.InputTag("patJetCorrFactorsAK10Softdrop") )
+            process.selectedPatJetsAK10Softdrop = selectedPatJetsAK8.clone(
+                src = cms.InputTag('patJetsAK10Softdrop'),
+                cut = cms.string('pt > 20') 
+                )
+
+            process.redoPatJets+=process.patJetCorrFactorsAK10Softdrop
+            process.redoPatJets+=process.patJetsAK10Softdrop
+            process.redoPatJets+=process.selectedPatJetsAK10Softdrop
+
 
     if (doPuppi):
 
@@ -576,6 +665,106 @@ reDoPruningAndSoftdrop=False
         process.redoGenJets+=process.selectedGenJetsAK8
 
 
+
+
+    if (genJetsAK10Reclustering and MC):    
+        from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
+        
+        process.ak10GenJets = ak4GenJets.clone(src = cms.InputTag('packedGenParticles'),
+                                          rParam = cms.double(1.0)
+                                          )
+
+        from RecoJets.Configuration.RecoPFJets_cff import ak4PFJetsCHS, ak8PFJetsCHS, ak8PFJetsCHSPruned, ak8PFJetsCHSSoftDrop, ak8PFJetsCHSPrunedMass, ak8PFJetsCHSSoftDropMass
+
+        process.NjettinessGenAK10 = cms.EDProducer("NjettinessAdder",
+                            src=cms.InputTag("ak10GenJets"),
+                            Njets=cms.vuint32(1,2,3,4),          # compute 1-, 2-, 3-, 4- subjettiness
+                            # variables for measure definition : 
+                            measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
+                            beta = cms.double(1.0),              # CMS default is 1
+                            R0 = cms.double( 1.0 ),              # CMS default is jet cone size
+                            Rcutoff = cms.double( -999.0),       # not used by default
+                            # variables for axes definition :
+                            axesDefinition = cms.uint32( 6 ),    # CMS default is 1-pass KT axes
+                            nPass = cms.int32(-999),             # not used by default
+                            akAxesR0 = cms.double(-999.0)        # not used by default
+                            )
+
+        process.genParticlesForJets = cms.EDProducer("InputGenJetsParticleSelector",
+                                             src = cms.InputTag("packedGenParticles"),
+                                             ignoreParticleIDs = cms.vuint32(
+                1000022,
+                1000012, 1000014, 1000016,
+                2000012, 2000014, 2000016,
+                1000039, 5100039,
+                4000012, 4000014, 4000016,
+                9900012, 9900014, 9900016,
+                39),
+                                             partonicFinalState = cms.bool(False),
+                                             excludeResonances = cms.bool(False),
+                                             excludeFromResonancePids = cms.vuint32(12, 13, 14, 16),
+                                             tausAsJets = cms.bool(False)
+                                             )
+
+        from RecoJets.JetProducers.SubJetParameters_cfi import SubJetParameters
+
+        process.ak10GenJetsPruned = ak4GenJets.clone(
+            SubJetParameters,
+            rParam = cms.double(1.0),
+            src = cms.InputTag("genParticlesForJets"),
+            usePruning = cms.bool(True),
+            writeCompound = cms.bool(True),
+            jetCollInstanceName=cms.string("SubJets")
+            )
+
+#        process.ak10GenJetsPruned = ak8PFJetsCHSPruned.clone( src = 'packedGenParticles', jetPtMin = 100.0 )
+        process.ak10GenJetsPrunedMass = ak8PFJetsCHSPrunedMass.clone(    
+            matched = cms.InputTag("ak10GenJetsPruned"),
+            src = cms.InputTag("ak10GenJets")
+            )
+
+        process.ak10GenJetsSoftDrop = ak4GenJets.clone(
+            SubJetParameters,
+            rParam = cms.double(1.0),
+            src = cms.InputTag("genParticlesForJets"),
+            useSoftDrop = cms.bool(True),
+            R0 = cms.double(1.0),
+            beta = cms.double(0.0),
+            writeCompound = cms.bool(True),
+            jetCollInstanceName=cms.string("SubJets")
+            )
+
+#        process.ak10GenJetsSoftDrop = ak8PFJetsCHSSoftDrop.clone( src = 'packedGenParticles', jetPtMin = 100.0 )
+        process.ak10GenJetsSoftDropMass = ak8PFJetsCHSSoftDropMass.clone(
+            matched = cms.InputTag("ak10GenJetsSoftDrop"),
+            src = cms.InputTag("ak10GenJets")
+            )
+
+#        process.substructureSequence+=process.puppi
+        process.substructureSequenceGen+=process.genParticlesForJets
+        process.substructureSequenceGen+=process.ak10GenJets
+        process.substructureSequenceGen+=process.NjettinessGenAK10
+
+        process.softdropGen_onMiniAOD += process.ak10GenJetsSoftDrop + process.ak10GenJetsSoftDropMass
+        process.pruningGen_onMiniAOD += process.ak10GenJetsPruned + process.ak10GenJetsPrunedMass
+
+        ####### Redo pat jets sequence ##########
+        from ExoDiBosonResonances.EDBRJets.redoPatJets_cff import patJetCorrFactorsAK8, patJetsAK8, selectedPatJetsAK8
+
+        # Redo pat jets from gen AK10
+
+#        process.GenJetCorrFactorsAK10 = patJetCorrFactorsAK8.clone( src = 'ak8PFJetsPuppi' )
+        process.genJetsAK10 = patJetsAK8.clone( jetSource = 'ak10GenJets' )
+        process.genJetsAK10.userData.userFloats.src = [ cms.InputTag("ak10GenJetsPrunedMass"), cms.InputTag("ak10GenJetsSoftDropMass"), cms.InputTag("NjettinessGenAK10:tau1"), cms.InputTag("NjettinessGenAK10:tau2"), cms.InputTag("NjettinessGenAK10:tau3")]
+        process.genJetsAK10.addJetCorrFactors = cms.bool(False)
+        process.genJetsAK10.jetCorrFactorsSource = cms.VInputTag( cms.InputTag("") )
+        process.selectedGenJetsAK10 = selectedPatJetsAK8.clone( src = 'genJetsAK10', cut = cms.string('pt > 20') )
+
+#        process.redoGenJets+=process.genJetCorrFactorsAK10
+        process.redoGenJets+=process.genJetsAK10
+        process.redoGenJets+=process.selectedGenJetsAK10
+
+
 ######### A4PF-nonCHS jets ###########
 
     from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
@@ -736,9 +925,26 @@ reDoPruningAndSoftdrop=False
 #    jecPayloadNames      = cms.vstring(jecLevelsAK8),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
+    from AllHadronicSUSY.Utils.jetpropertiesAK10_cfi import jetpropertiesAK10
+    process.JetsPropertiesAK10 = jetpropertiesAK10.clone(
+    JetTag  = cms.InputTag('selectedPatJetsAK10'),
+#    puppiJetTag = cms.InputTag('selectedPuppiJetsAK8'),
+    MinPt = cms.double(-1),
+    doJEC  = cms.bool(doJECCorrection),
+    doReclusteringForPrunedAndSoftdrop = cms.bool(reDoPruningAndSoftdrop),
+    L1File = cms.string("Summer15_25nsV6_DATA_L1FastJet_AK8PFchs.txt"),
+    L2File = cms.string("Summer15_25nsV6_DATA_L2Relative_AK8PFchs.txt"),
+    L3File = cms.string("Summer15_25nsV6_DATA_L3Absolute_AK8PFchs.txt"),
+    L2L3File = cms.string("Summer15_25nsV6_DATA_L2L3Residual_AK8PFchs.txt"),
+    uncFile = cms.string("Summer15_25nsV6_DATA_Uncertainty_AK8PFchs.txt"),
+#    jecPayloadNames      = cms.vstring(jecLevelsAK8),
+#    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
+    )
     if (reDoPruningAndSoftdrop):
         process.JetsPropertiesAK8.prunedJetTag  = cms.InputTag('selectedPatJetsAK8Pruned')
         process.JetsPropertiesAK8.softdropJetTag  = cms.InputTag('selectedPatJetsAK8Softdrop')
+        process.JetsPropertiesAK10.prunedJetTag  = cms.InputTag('selectedPatJetsAK10Pruned')
+        process.JetsPropertiesAK10.softdropJetTag  = cms.InputTag('selectedPatJetsAK10Softdrop')
     else:
         process.JetsPropertiesAK8.prunedJetTag  = cms.InputTag('slimmedJetsAK8')
         process.JetsPropertiesAK8.softdropJetTag  = cms.InputTag('slimmedJetsAK8')
@@ -753,6 +959,11 @@ reDoPruningAndSoftdrop=False
         process.JetsPropertiesAK8.L3File = cms.string("Summer15_25nsV6_MC_L3Absolute_AK8PFchs.txt")
         process.JetsPropertiesAK8.L2L3File = cms.string("NONE")
         process.JetsPropertiesAK8.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK8PFchs.txt")
+        process.JetsPropertiesAK10.L1File = cms.string("Summer15_25nsV6_MC_L1FastJet_AK8PFchs.txt")
+        process.JetsPropertiesAK10.L2File = cms.string("Summer15_25nsV6_MC_L2Relative_AK8PFchs.txt")
+        process.JetsPropertiesAK10.L3File = cms.string("Summer15_25nsV6_MC_L3Absolute_AK8PFchs.txt")
+        process.JetsPropertiesAK10.L2L3File = cms.string("NONE")
+        process.JetsPropertiesAK10.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK8PFchs.txt")
 
     if doAK8Reclustering:
         process.JetsPropertiesAK8.JetTag = cms.InputTag('selectedPatJetsAK8')
@@ -811,10 +1022,15 @@ reDoPruningAndSoftdrop=False
     process.GenJetsAK8 = genJetAK8.clone(
                             GenJetCollTag  = cms.InputTag("selectedGenJetsAK8"),
                             )
+    from AllHadronicSUSY.Utils.genJetAK10_cfi import genJetAK10
+    process.GenJetsAK10 = genJetAK10.clone(
+                            GenJetCollTag  = cms.InputTag("selectedGenJetsAK10"),
+                            )
     if not MC:
         process.GenLeptons = cms.Sequence()
         process.GenJets = cms.Sequence()
         process.GenJetsAK8 = cms.Sequence()
+        process.GenJetsAK10 = cms.Sequence()
 
 
 
@@ -897,8 +1113,11 @@ reDoPruningAndSoftdrop=False
     RecoCandVector.extend(['GenLeptons:Boson(GenBoson)|GenLeptons:BosonPDGId(I_GenBosonPDGId)','GenLeptons:Muon(GenMu)|GenLeptons:MuonTauDecay(I_GenMuFromTau)' ,'GenLeptons:Electron(GenElec)|GenLeptons:ElectronTauDecay(I_GenElecFromTau)','GenLeptons:Tau(GenTau)|GenLeptons:TauHadronic(I_GenTauHad)','GenLeptons:Neutrino(GenNu)','GenLeptons:Top(GenTop)|GenLeptons:TopPDGId(I_GenTopPDGId)',] ) # gen information on leptons
     RecoCandVector.extend(['GenJets:GenJet(GenJets)'] ) # gen information on jets
     RecoCandVector.extend(['GenJetsAK8:GenJetAK8(GenJetsAK8)|GenJetsAK8:GenAK8prunedMass(F_prunedMass)|GenJetsAK8:GenAK8softdropMass(F_softdropMass)|GenJetsAK8:GenAK8softdropPt(F_softdropPt)|GenJetsAK8:GenAK8tau1(F_tau1)|GenJetsAK8:GenAK8tau2(F_tau2)|GenJetsAK8:GenAK8tau3(F_tau3)'] ) # gen information on AK8 jets
+    RecoCandVector.extend(['GenJetsAK10:GenJetAK10(GenJetsAK10)|GenJetsAK10:GenAK10prunedMass(F_prunedMass)|GenJetsAK10:GenAK10softdropMass(F_softdropMass)|GenJetsAK10:GenAK10softdropPt(F_softdropPt)|GenJetsAK10:GenAK10tau1(F_tau1)|GenJetsAK10:GenAK10tau2(F_tau2)|GenJetsAK10:GenAK10tau3(F_tau3)'] ) # gen information on AK10 jets
     RecoCandVector.extend(['JetsProperties(Jets)|JetsProperties:bDiscriminatorCSV(F_bDiscriminatorCSV)|JetsProperties:bDiscriminatorICSV(F_bDiscriminatorICSV)|JetsProperties:chargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsProperties:chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsProperties:chargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsProperties:electronMultiplicity(I_electronMultiplicity)|JetsProperties:jetArea(F_jetArea)|JetsProperties:muonEnergyFraction(F_muonEnergyFraction)|JetsProperties:muonMultiplicity(I_muonMultiplicity)|JetsProperties:neutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsProperties:neutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsProperties:photonEnergyFraction(F_photonEnergyFraction)|JetsProperties:photonMultiplicity(I_photonMultiplicity)|JetsProperties:isLooseJetId(b_isLooseJetId)|JetsProperties:isTightJetId(b_isTightJetId)|JetsProperties:PtCorr(F_PtCorr)|JetsProperties:EtaCorr(F_EtaCorr)|JetsProperties:PhiCorr(F_PhiCorr)|JetsProperties:ECorr(F_ECorr)|JetsProperties:AK4correction(F_AK4correction)|JetsProperties:AK4correctionUp(F_AK4correctionUp)|JetsProperties:AK4correctionDown(F_AK4correctionDown)'] ) # jet information on various variables
     RecoCandVector.extend(['JetsPropertiesAK8(AK8Jets)|JetsPropertiesAK8:AK8bDiscriminatorCSV(F_bDiscriminatorCSV)|JetsPropertiesAK8:AK8bDiscriminatorICSV(F_bDiscriminatorICSV)|JetsPropertiesAK8:AK8chargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsPropertiesAK8:AK8chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsPropertiesAK8:AK8chargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsPropertiesAK8:AK8electronMultiplicity(I_electronMultiplicity)|JetsPropertiesAK8:AK8jetArea(F_jetArea)|JetsPropertiesAK8:AK8muonEnergyFraction(F_muonEnergyFraction)|JetsPropertiesAK8:AK8muonMultiplicity(I_muonMultiplicity)|JetsPropertiesAK8:AK8neutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsPropertiesAK8:AK8neutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsPropertiesAK8:AK8photonEnergyFraction(F_photonEnergyFraction)|JetsPropertiesAK8:AK8photonMultiplicity(I_photonMultiplicity)|JetsPropertiesAK8:AK8prunedMass(F_prunedMass)|JetsPropertiesAK8:AK8softDropMass(F_softDropMass)|JetsPropertiesAK8:AK8softDropPt(F_softDropPt)|JetsPropertiesAK8:AK8trimmedMass(F_trimmedMass)|JetsPropertiesAK8:AK8filteredMass(F_filteredMass)|JetsPropertiesAK8:AK8tau1(F_tau1)|JetsPropertiesAK8:AK8tau2(F_tau2)|JetsPropertiesAK8:AK8tau3(F_tau3)|JetsPropertiesAK8:AK8isLooseJetId(b_AK8isLooseJetId)|JetsPropertiesAK8:AK8isTightJetId(b_AK8isTightJetId)|JetsPropertiesAK8:PtCorr(F_PtCorr)|JetsPropertiesAK8:EtaCorr(F_EtaCorr)|JetsPropertiesAK8:PhiCorr(F_PhiCorr)|JetsPropertiesAK8:ECorr(F_ECorr)|JetsPropertiesAK8:mass(F_mass)|JetsPropertiesAK8:AK8correction(F_AK8correction)|JetsPropertiesAK8:AK8correctionUp(F_AK8correctionUp)|JetsPropertiesAK8:AK8correctionDown(F_AK8correctionDown)|JetsPropertiesAK8:AK8massCorrection(F_AK8massCorrection)|JetsPropertiesAK8:AK8massCorrectionUp(F_AK8massCorrectionUp)|JetsPropertiesAK8:AK8massCorrectionDown(F_AK8massCorrectionDown)'] ) # AK8 jet information on various variables
+# 
+    RecoCandVector.extend(['JetsPropertiesAK10(AK10Jets)|JetsPropertiesAK10:AK10bDiscriminatorCSV(F_bDiscriminatorCSV)|JetsPropertiesAK10:AK10bDiscriminatorICSV(F_bDiscriminatorICSV)|JetsPropertiesAK10:AK10chargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsPropertiesAK10:AK10chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsPropertiesAK10:AK10chargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsPropertiesAK10:AK10electronMultiplicity(I_electronMultiplicity)|JetsPropertiesAK10:AK10jetArea(F_jetArea)|JetsPropertiesAK10:AK10muonEnergyFraction(F_muonEnergyFraction)|JetsPropertiesAK10:AK10muonMultiplicity(I_muonMultiplicity)|JetsPropertiesAK10:AK10neutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsPropertiesAK10:AK10neutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsPropertiesAK10:AK10photonEnergyFraction(F_photonEnergyFraction)|JetsPropertiesAK10:AK10photonMultiplicity(I_photonMultiplicity)|JetsPropertiesAK10:AK10prunedMass(F_prunedMass)|JetsPropertiesAK10:AK10softDropMass(F_softDropMass)|JetsPropertiesAK10:AK10softDropPt(F_softDropPt)|JetsPropertiesAK10:AK10trimmedMass(F_trimmedMass)|JetsPropertiesAK10:AK10filteredMass(F_filteredMass)|JetsPropertiesAK10:AK10tau1(F_tau1)|JetsPropertiesAK10:AK10tau2(F_tau2)|JetsPropertiesAK10:AK10tau3(F_tau3)|JetsPropertiesAK10:AK10isLooseJetId(b_AK10isLooseJetId)|JetsPropertiesAK10:AK10isTightJetId(b_AK10isTightJetId)|JetsPropertiesAK10:PtCorr(F_PtCorr)|JetsPropertiesAK10:EtaCorr(F_EtaCorr)|JetsPropertiesAK10:PhiCorr(F_PhiCorr)|JetsPropertiesAK10:ECorr(F_ECorr)|JetsPropertiesAK10:mass(F_mass)|JetsPropertiesAK10:AK10correction(F_AK10correction)|JetsPropertiesAK10:AK10correctionUp(F_AK10correctionUp)|JetsPropertiesAK10:AK10correctionDown(F_AK10correctionDown)|JetsPropertiesAK10:AK10massCorrection(F_AK10massCorrection)|JetsPropertiesAK10:AK10massCorrectionUp(F_AK10massCorrectionUp)|JetsPropertiesAK10:AK10massCorrectionDown(F_AK10massCorrectionDown)'] ) # AK10 jet information on various variables
 # 
     RecoCandVector.extend(['Electrons(Electrons)|Electrons:charge(I_charge)|Electrons:isHEEP(b_isHEEP)|Electrons:type(I_type)|Electrons:mass(F_mass)|Electrons:pfDeltaCorrRelIso(F_pfDeltaCorrRelIso)|Electrons:pfRhoCorrRelIso04(F_pfRhoCorrRelIso04)|Electrons:pfRhoCorrRelIso03(F_pfRhoCorrRelIso03)|Electrons:pfRelIso(F_pfRelIso)|Electrons:photonIso(F_photonIso)|Electrons:neutralHadIso(F_neutralHadIso)|Electrons:chargedHadIso(F_chargedHadIso)|Electrons:trackIso(F_trackIso)|Electrons:isLoose(b_isLoose)|Electrons:isMedium(b_isMedium)|Electrons:isTight(b_isTight)|Electrons:SCEnergy(F_SCEnergy)|Electrons:deltaEtaSCTracker(F_deltaEtaSCTracker)|Electrons:deltaPhiSCTracker(F_deltaPhiSCTracker)|Electrons:sigmaIetaIeta(F_sigmaIetaIeta)|Electrons:sigmaIphiIphi(F_sigmaIphiIphi)'] ) # electron information on various variables
     RecoCandVector.extend(['Muons(Muons)|Muons:charge(I_charge)|Muons:isHighPt(b_isHighPt)|Muons:type(I_type)|Muons:mass(F_mass)|Muons:pfDeltaCorrRelIso(F_pfDeltaCorrRelIso)|Muons:pfRelIso(F_pfRelIso)|Muons:photonIso(F_photonIso)|Muons:neutralHadIso(F_neutralHadIso)|Muons:chargedHadIso(F_chargedHadIso)|Muons:trackIso(F_trackIso)|Muons:isLoose(b_isLoose)|Muons:isMedium(b_isMedium)|Muons:isTight(b_isTight)|Muons:isPFMuon(b_isPFMuon)|'] ) # muon information on various variables
@@ -919,10 +1138,16 @@ reDoPruningAndSoftdrop=False
     process.TreeMaker2.VectorInt.extend(['TriggerProducer:TriggerPrescales'])
     process.TreeMaker2.VectorString.extend(['TriggerProducer:TriggerNames'])
 
+
+
     ## --- Final paths ----------------------------------------------------
     process.out = cms.OutputModule("PoolOutputModule",
                                    fileName = cms.untracked.string("output.root"),
                                    )
+
+    process.additionalJets = cms.Sequence() 
+    if doAK10Reclustering:
+        process.additionalJets += process.JetsPropertiesAK10;
         
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
@@ -954,6 +1179,7 @@ reDoPruningAndSoftdrop=False
         process.pruningGen_onMiniAOD *
         process.redoGenJets*
         process.GenJetsAK8 *
+        process.GenJetsAK10 *
  #   	process.IsolatedTracksPT10 *
  #   	process.IsolatedTracksPT10IsoCut08 *
  #   	process.IsolatedTracksPT10IsoCut12 *
@@ -977,6 +1203,7 @@ reDoPruningAndSoftdrop=False
       process.MHTJetsAK8 *
       process.MHTJetsPropertiesAK8 *
       process.JetsPropertiesAK8 *
+      process.additionalJets *
       process.MHT *
 #      process.Leptons *
       process.MET *
