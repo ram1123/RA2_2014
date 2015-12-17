@@ -1181,11 +1181,11 @@ reDoPruningAndSoftdrop=False
             MinPt = cms.double(-1),
             doJEC  = cms.bool(doJECCorrection),
             doReclusteringForPrunedAndSoftdrop = cms.bool(reDoPruningAndSoftdrop),
-            L1File = cms.string("Summer15_25nsV6_DATA_L1FastJet_AK8PFchs.txt"),
-            L2File = cms.string("Summer15_25nsV6_DATA_L2Relative_AK8PFchs.txt"),
-            L3File = cms.string("Summer15_25nsV6_DATA_L3Absolute_AK8PFchs.txt"),
-            L2L3File = cms.string("Summer15_25nsV6_DATA_L2L3Residual_AK8PFchs.txt"),
-            uncFile = cms.string("Summer15_25nsV6_DATA_Uncertainty_AK8PFchs.txt"),
+            L1File = cms.string("Summer15_25nsV6_DATA_L1FastJet_AK8PFPuppi.txt"),
+            L2File = cms.string("Summer15_25nsV6_DATA_L2Relative_AK8PFPuppi.txt"),
+            L3File = cms.string("Summer15_25nsV6_DATA_L3Absolute_AK8PFPuppi.txt"),
+            L2L3File = cms.string("Summer15_25nsV6_DATA_L2L3Residual_AK8PFPuppi.txt"),
+            uncFile = cms.string("Summer15_25nsV6_DATA_Uncertainty_AK8PFPuppi.txt"),
             #    jecPayloadNames      = cms.vstring(jecLevelsAK8),
             #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
             )
@@ -1223,12 +1223,12 @@ reDoPruningAndSoftdrop=False
         process.JetsPropertiesAK12.L2File = cms.string("Summer15_25nsV6_MC_L2Relative_AK8PFchs.txt")
         process.JetsPropertiesAK12.L3File = cms.string("Summer15_25nsV6_MC_L3Absolute_AK8PFchs.txt")
         process.JetsPropertiesAK12.L2L3File = cms.string("NONE")
-        process.JetsPropertiesAK12.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK8PFchs.txt")
-        process.JetsPropertiesPuppi.L1File = cms.string("Summer15_25nsV6_MC_L1FastJet_AK8PFchs.txt")
-        process.JetsPropertiesPuppi.L2File = cms.string("Summer15_25nsV6_MC_L2Relative_AK8PFchs.txt")
-        process.JetsPropertiesPuppi.L3File = cms.string("Summer15_25nsV6_MC_L3Absolute_AK8PFchs.txt")
+        process.JetsPropertiesAK12.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK8PFPuppi.txt")
+        process.JetsPropertiesPuppi.L1File = cms.string("Summer15_25nsV6_MC_L1FastJet_AK8PFPuppi.txt")
+        process.JetsPropertiesPuppi.L2File = cms.string("Summer15_25nsV6_MC_L2Relative_AK8PFPuppi.txt")
+        process.JetsPropertiesPuppi.L3File = cms.string("Summer15_25nsV6_MC_L3Absolute_AK8PFPuppi.txt")
         process.JetsPropertiesPuppi.L2L3File = cms.string("NONE")
-        process.JetsPropertiesPuppi.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK8PFchs.txt")
+        process.JetsPropertiesPuppi.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK8PFPuppi.txt")
 
     if doAK8Reclustering:
         process.JetsPropertiesAK8.JetTag = cms.InputTag('selectedPatJetsAK8')
