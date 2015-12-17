@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    JetPropertiesAK12
-// Class:      JetPropertiesAK12
+// Package:    JetPropertiesPuppi
+// Class:      JetPropertiesPuppi
 // 
-/**\class JetPropertiesAK12 JetPropertiesAK12.cc RA2Classic/JetPropertiesAK12/src/JetPropertiesAK12.cc
+/**\class JetPropertiesPuppi JetPropertiesPuppi.cc RA2Classic/JetPropertiesPuppi/src/JetPropertiesPuppi.cc
  * 
  * Description: [one line class summary]
  * 
@@ -42,10 +42,10 @@
 // class declaration
 //
 
-class JetPropertiesAK12 : public edm::EDProducer {
+class JetPropertiesPuppi : public edm::EDProducer {
 public:
-	explicit JetPropertiesAK12(const edm::ParameterSet&);
-	~JetPropertiesAK12();
+	explicit JetPropertiesPuppi(const edm::ParameterSet&);
+	~JetPropertiesPuppi();
 	
 	static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 	
@@ -90,7 +90,7 @@ private:
 //
 // constructors and destructor
 //
-JetPropertiesAK12::JetPropertiesAK12(const edm::ParameterSet& iConfig)
+JetPropertiesPuppi::JetPropertiesPuppi(const edm::ParameterSet& iConfig)
   //  jecPayloadNames_( iConfig.getParameter<std::vector<std::string> >("jecPayloadNames") ) // JEC level payloads
 {
 	JetTag_ = iConfig.getParameter<edm::InputTag>("JetTag");
@@ -120,51 +120,51 @@ JetPropertiesAK12::JetPropertiesAK12(const edm::ParameterSet& iConfig)
 	//now do what ever other initialization is needed
 	//register your products
 	produces<std::vector<pat::Jet> >();
-	const std::string string0("AK12jetArea");
+	const std::string string0("PuppijetArea");
 	produces<std::vector<double> > (string0).setBranchAlias(string0);
-	const std::string string1("AK12chargedHadronEnergyFraction");
+	const std::string string1("PuppichargedHadronEnergyFraction");
 	produces<std::vector<double> > (string1).setBranchAlias(string1);
-	const std::string string2("AK12chargedHadronMultiplicity");
+	const std::string string2("PuppichargedHadronMultiplicity");
 	produces<std::vector<int> > (string2).setBranchAlias(string2);
-	const std::string string3("AK12neutralHadronEnergyFraction");
+	const std::string string3("PuppineutralHadronEnergyFraction");
 	produces<std::vector<double> > (string3).setBranchAlias(string3);
-	const std::string string4("AK12neutralHadronMultiplicity");
+	const std::string string4("PuppineutralHadronMultiplicity");
 	produces<std::vector<int> > (string4).setBranchAlias(string4);
-	const std::string string5("AK12chargedEmEnergyFraction");
+	const std::string string5("PuppichargedEmEnergyFraction");
 	produces<std::vector<double> > (string5).setBranchAlias(string5);
-	const std::string string6("AK12neutralEmEnergyFraction");
+	const std::string string6("PuppineutralEmEnergyFraction");
 	produces<std::vector<double> > (string6).setBranchAlias(string6);
-// 	const std::string string7("AK12patJetsNeutralEmFractionPBNR");
+// 	const std::string string7("PuppipatJetsNeutralEmFractionPBNR");
 // 	produces<std::vector<double> > (string7).setBranchAlias(string7);
-	const std::string string8("AK12electronMultiplicity");
+	const std::string string8("PuppielectronMultiplicity");
 	produces<std::vector<int> > (string8).setBranchAlias(string8);
-	const std::string string9("AK12photonEnergyFraction");
+	const std::string string9("PuppiphotonEnergyFraction");
 	produces<std::vector<double> > (string9).setBranchAlias(string9);
-	const std::string string10("AK12photonMultiplicity");
+	const std::string string10("PuppiphotonMultiplicity");
 	produces<std::vector<int> > (string10).setBranchAlias(string10);
-	const std::string string11("AK12muonEnergyFraction");
+	const std::string string11("PuppimuonEnergyFraction");
 	produces<std::vector<double> > (string11).setBranchAlias(string11);
-	const std::string string12("AK12muonMultiplicity");
+	const std::string string12("PuppimuonMultiplicity");
 	produces<std::vector<int> > (string12).setBranchAlias(string12);
-	const std::string string14("AK12prunedMass");
+	const std::string string14("PuppiprunedMass");
 	produces<std::vector<double> > (string14).setBranchAlias(string14);
-	const std::string string15("AK12trimmedMass");
+	const std::string string15("PuppitrimmedMass");
 	produces<std::vector<double> > (string15).setBranchAlias(string15);
-	const std::string string16("AK12filteredMass");
+	const std::string string16("PuppifilteredMass");
 	produces<std::vector<double> > (string16).setBranchAlias(string16);
-	const std::string string17("AK12tau1");
+	const std::string string17("Puppitau1");
 	produces<std::vector<double> > (string17).setBranchAlias(string17);
-	const std::string string18("AK12tau2");
+	const std::string string18("Puppitau2");
 	produces<std::vector<double> > (string18).setBranchAlias(string18);
-	const std::string string19("AK12tau3");
+	const std::string string19("Puppitau3");
 	produces<std::vector<double> > (string19).setBranchAlias(string19);
-	const std::string string20("AK12isLooseJetId");
+	const std::string string20("PuppiisLooseJetId");
 	produces<std::vector<bool> > (string20).setBranchAlias(string20);
-	const std::string string21("AK12softDropMass");
+	const std::string string21("PuppisoftDropMass");
 	produces<std::vector<double> > (string21).setBranchAlias(string21);
-        const std::string string22("AK12bDiscriminatorCSV");
+        const std::string string22("PuppibDiscriminatorCSV");
         produces<std::vector<double> > (string22).setBranchAlias(string22);
-        const std::string string23("AK12bDiscriminatorICSV");
+        const std::string string23("PuppibDiscriminatorICSV");
         produces<std::vector<double> > (string23).setBranchAlias(string23);
         const std::string string24("PtCorr");
         produces<std::vector<double> > (string24).setBranchAlias(string24);
@@ -174,31 +174,31 @@ JetPropertiesAK12::JetPropertiesAK12(const edm::ParameterSet& iConfig)
         produces<std::vector<double> > (string26).setBranchAlias(string26);
         const std::string string27("ECorr");
         produces<std::vector<double> > (string27).setBranchAlias(string27);
-	const std::string string28("AK12isTightJetId");
+	const std::string string28("PuppiisTightJetId");
 	produces<std::vector<bool> > (string28).setBranchAlias(string28);
 	const std::string string29("mass");
 	produces<std::vector<double> > (string29).setBranchAlias(string29);
-	const std::string string30("AK12correction");
+	const std::string string30("Puppicorrection");
 	produces<std::vector<double> > (string30).setBranchAlias(string30);
-	const std::string string31("AK12correctionUp");
+	const std::string string31("PuppicorrectionUp");
 	produces<std::vector<double> > (string31).setBranchAlias(string31);
-	const std::string string32("AK12correctionDown");
+	const std::string string32("PuppicorrectionDown");
 	produces<std::vector<double> > (string32).setBranchAlias(string32);
-	const std::string string33("AK12softDropPt");
+	const std::string string33("PuppisoftDropPt");
 	produces<std::vector<double> > (string33).setBranchAlias(string33);
-	const std::string string34("AK12massCorrection");
+	const std::string string34("PuppimassCorrection");
 	produces<std::vector<double> > (string34).setBranchAlias(string30);
-	const std::string string35("AK12massCorrectionUp");
+	const std::string string35("PuppimassCorrectionUp");
 	produces<std::vector<double> > (string35).setBranchAlias(string35);
-	const std::string string36("AK12massCorrectionDown");
+	const std::string string36("PuppimassCorrectionDown");
 	produces<std::vector<double> > (string36).setBranchAlias(string36);
-	//        const std::string string28("AK12puppiMass");
+	//        const std::string string28("PuppipuppiMass");
         //produces<std::vector<double> > (string28).setBranchAlias(string28);
 
 }
 
 
-JetPropertiesAK12::~JetPropertiesAK12()
+JetPropertiesPuppi::~JetPropertiesPuppi()
 {
 	
 	// do anything here that needs to be done at desctruction time
@@ -213,49 +213,49 @@ JetPropertiesAK12::~JetPropertiesAK12()
 
 // ------------ method called to produce the data  ------------
 void
-JetPropertiesAK12::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+JetPropertiesPuppi::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
-	std::auto_ptr<std::vector<pat::Jet> > AK12prodJets(new std::vector<pat::Jet>());
+	std::auto_ptr<std::vector<pat::Jet> > PuppiprodJets(new std::vector<pat::Jet>());
 	
-	std::auto_ptr< std::vector<double> > AK12jetArea(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12chargedHadronEnergyFraction(new std::vector<double>);
-	std::auto_ptr< std::vector<int> > AK12chargedHadronMultiplicity(new std::vector<int>);
-	std::auto_ptr< std::vector<double> > AK12neutralHadronEnergyFraction(new std::vector<double>);
-	std::auto_ptr< std::vector<int> > AK12neutralHadronMultiplicity(new std::vector<int>);
-	std::auto_ptr< std::vector<double> > AK12chargedEmEnergyFraction(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12neutralEmEnergyFraction(new std::vector<double>);
-// 	std::auto_ptr< std::vector<double> > AK12patJetsNeutralEmFractionPBNR(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12electronEnergyFraction(new std::vector<double>);
-	std::auto_ptr< std::vector<int> > AK12electronMultiplicity(new std::vector<int>);
-	std::auto_ptr< std::vector<double> > AK12photonEnergyFraction(new std::vector<double>);
-	std::auto_ptr< std::vector<int> > AK12photonMultiplicity(new std::vector<int>);
-	std::auto_ptr< std::vector<double> > AK12muonEnergyFraction(new std::vector<double>);
-	std::auto_ptr< std::vector<int> > AK12muonMultiplicity(new std::vector<int>);
-	std::auto_ptr< std::vector<double> > AK12prunedMass(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12softDropMass(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12softDropPt(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12trimmedMass(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12filteredMass(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12tau1(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12tau2(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12tau3(new std::vector<double>);
-	std::auto_ptr< std::vector<bool> > AK12isLooseJetId(new std::vector<bool>);
-	std::auto_ptr< std::vector<bool> > AK12isTightJetId(new std::vector<bool>);
-	std::auto_ptr< std::vector<double> > AK12bDiscriminatorCSV(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12bDiscriminatorICSV(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppijetArea(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppichargedHadronEnergyFraction(new std::vector<double>);
+	std::auto_ptr< std::vector<int> > PuppichargedHadronMultiplicity(new std::vector<int>);
+	std::auto_ptr< std::vector<double> > PuppineutralHadronEnergyFraction(new std::vector<double>);
+	std::auto_ptr< std::vector<int> > PuppineutralHadronMultiplicity(new std::vector<int>);
+	std::auto_ptr< std::vector<double> > PuppichargedEmEnergyFraction(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppineutralEmEnergyFraction(new std::vector<double>);
+// 	std::auto_ptr< std::vector<double> > PuppipatJetsNeutralEmFractionPBNR(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppielectronEnergyFraction(new std::vector<double>);
+	std::auto_ptr< std::vector<int> > PuppielectronMultiplicity(new std::vector<int>);
+	std::auto_ptr< std::vector<double> > PuppiphotonEnergyFraction(new std::vector<double>);
+	std::auto_ptr< std::vector<int> > PuppiphotonMultiplicity(new std::vector<int>);
+	std::auto_ptr< std::vector<double> > PuppimuonEnergyFraction(new std::vector<double>);
+	std::auto_ptr< std::vector<int> > PuppimuonMultiplicity(new std::vector<int>);
+	std::auto_ptr< std::vector<double> > PuppiprunedMass(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppisoftDropMass(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppisoftDropPt(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppitrimmedMass(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppifilteredMass(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > Puppitau1(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > Puppitau2(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > Puppitau3(new std::vector<double>);
+	std::auto_ptr< std::vector<bool> > PuppiisLooseJetId(new std::vector<bool>);
+	std::auto_ptr< std::vector<bool> > PuppiisTightJetId(new std::vector<bool>);
+	std::auto_ptr< std::vector<double> > PuppibDiscriminatorCSV(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppibDiscriminatorICSV(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > PtCorr(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > EtaCorr(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > PhiCorr(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > ECorr(new std::vector<double>);
 	std::auto_ptr< std::vector<double> > mass(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12correction(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12correctionUp(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12correctionDown(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12massCorrection(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12massCorrectionUp(new std::vector<double>);
-	std::auto_ptr< std::vector<double> > AK12massCorrectionDown(new std::vector<double>);
-	//	std::auto_ptr< std::vector<double> > AK12puppiMass(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > Puppicorrection(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppicorrectionUp(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppicorrectionDown(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppimassCorrection(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppimassCorrectionUp(new std::vector<double>);
+	std::auto_ptr< std::vector<double> > PuppimassCorrectionDown(new std::vector<double>);
+	//	std::auto_ptr< std::vector<double> > PuppipuppiMass(new std::vector<double>);
 	using namespace edm;
 	using namespace reco;
 	using namespace pat;
@@ -377,7 +377,7 @@ JetPropertiesAK12::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  //		  else
 		  // mass->push_back( Jets->at(i).mass());
 		  
-		  //		  std::cout<<"DEBUG - AK12- raw pt: "<<uncorrJet.pt()<<" corr: "<<correction<<" corr pt: "<<correction*uncorrJet.pt()
+		  //		  std::cout<<"DEBUG - Puppi- raw pt: "<<uncorrJet.pt()<<" corr: "<<correction<<" corr pt: "<<correction*uncorrJet.pt()
 		  //			   <<" raw mass: "<<uncorrJet.mass()<<" massCorr: "<<massCorrection<<" corr mass: "<<massCorrection*uncorrJet.mass()<<std::endl;
 		  JetUnc->setJetEta( uncorrJet.eta() );
 		  JetUnc->setJetPt( correction * uncorrJet.pt() );
@@ -389,9 +389,9 @@ JetPropertiesAK12::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  ijet++;
 	//	(Jets->at(i)).scaleEnergy(correction);
 	//	reco::Candidate::LorentzVector jet4V = correction*(Jets->at(i).p4());		  
-		  AK12prodJets->push_back(pat::Jet(Jets->at(i)));
+		  PuppiprodJets->push_back(pat::Jet(Jets->at(i)));
 
-		  //	  AK12prodJets->push_back(reco::Candidate::LorentzVector(jet4V));
+		  //	  PuppiprodJets->push_back(reco::Candidate::LorentzVector(jet4V));
 		  if (doJEC) {
 		    PtCorr->push_back(correction*uncorrJet.pt());
 		    EtaCorr->push_back(correction*uncorrJet.eta());
@@ -404,34 +404,34 @@ JetPropertiesAK12::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		    PhiCorr->push_back(Jets->at(i).phi());
 		    ECorr->push_back(Jets->at(i).energy());
 		  }
-		  AK12jetArea->push_back( Jets->at(i).jetArea() );
-		  AK12chargedHadronEnergyFraction->push_back( Jets->at(i).chargedHadronEnergyFraction() );
-		  AK12chargedHadronMultiplicity->push_back( Jets->at(i).chargedHadronMultiplicity() );
-		  AK12neutralHadronEnergyFraction->push_back( Jets->at(i).neutralHadronEnergyFraction() );
-		  AK12neutralHadronMultiplicity->push_back( Jets->at(i).neutralHadronMultiplicity() );
-		  AK12chargedEmEnergyFraction->push_back( Jets->at(i).chargedEmEnergyFraction() );
-		  AK12neutralEmEnergyFraction->push_back( Jets->at(i).neutralEmEnergyFraction() );
-		  // 			AK12patJetsNeutralEmFractionPBNR->push_back( Jets->at(i).patJetsNeutralEmFractionPBNR() / Jets->at(i).jecFactor(0) );
-		  AK12electronEnergyFraction->push_back( Jets->at(i).electronEnergyFraction() );
-		  AK12electronMultiplicity->push_back( Jets->at(i).electronMultiplicity() );
-		  AK12photonEnergyFraction->push_back( Jets->at(i).photonEnergyFraction() );
-		  AK12photonMultiplicity->push_back( Jets->at(i).photonMultiplicity() );
-		  AK12muonEnergyFraction->push_back( Jets->at(i).muonEnergyFraction() );
-		  AK12muonMultiplicity->push_back( Jets->at(i).muonMultiplicity() );
+		  PuppijetArea->push_back( Jets->at(i).jetArea() );
+		  PuppichargedHadronEnergyFraction->push_back( Jets->at(i).chargedHadronEnergyFraction() );
+		  PuppichargedHadronMultiplicity->push_back( Jets->at(i).chargedHadronMultiplicity() );
+		  PuppineutralHadronEnergyFraction->push_back( Jets->at(i).neutralHadronEnergyFraction() );
+		  PuppineutralHadronMultiplicity->push_back( Jets->at(i).neutralHadronMultiplicity() );
+		  PuppichargedEmEnergyFraction->push_back( Jets->at(i).chargedEmEnergyFraction() );
+		  PuppineutralEmEnergyFraction->push_back( Jets->at(i).neutralEmEnergyFraction() );
+		  // 			PuppipatJetsNeutralEmFractionPBNR->push_back( Jets->at(i).patJetsNeutralEmFractionPBNR() / Jets->at(i).jecFactor(0) );
+		  PuppielectronEnergyFraction->push_back( Jets->at(i).electronEnergyFraction() );
+		  PuppielectronMultiplicity->push_back( Jets->at(i).electronMultiplicity() );
+		  PuppiphotonEnergyFraction->push_back( Jets->at(i).photonEnergyFraction() );
+		  PuppiphotonMultiplicity->push_back( Jets->at(i).photonMultiplicity() );
+		  PuppimuonEnergyFraction->push_back( Jets->at(i).muonEnergyFraction() );
+		  PuppimuonMultiplicity->push_back( Jets->at(i).muonMultiplicity() );
 
-		  AK12trimmedMass->push_back( -1.);
-		  AK12filteredMass->push_back( -1.);
+		  PuppitrimmedMass->push_back( -1.);
+		  PuppifilteredMass->push_back( -1.);
 
-		  //		  AK12trimmedMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsCHSTrimmedMass"));
-		  //		  AK12filteredMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsCHSFilteredMass"));
+		  //		  PuppitrimmedMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsCHSTrimmedMass"));
+		  //		  PuppifilteredMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsCHSFilteredMass"));
 
-		  AK12correction->push_back( correction );
-		  AK12correctionUp->push_back( corrUp );
-		  AK12correctionDown->push_back( corrDown );
+		  Puppicorrection->push_back( correction );
+		  PuppicorrectionUp->push_back( corrUp );
+		  PuppicorrectionDown->push_back( corrDown );
 
-		  AK12massCorrection->push_back( massCorrection );
-		  AK12massCorrectionUp->push_back( massCorrUp );
-		  AK12massCorrectionDown->push_back( massCorrDown );
+		  PuppimassCorrection->push_back( massCorrection );
+		  PuppimassCorrectionUp->push_back( massCorrUp );
+		  PuppimassCorrectionDown->push_back( massCorrDown );
 
 		   /*double dR=1000.;
 		   double tempMass=0.;
@@ -443,16 +443,16 @@ JetPropertiesAK12::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			 tempMass = puppiJets->at(j).mass();			 
 		     }
 		   }		    
-		   AK12puppiMass->push_back(tempMass); 		  
+		   PuppipuppiMass->push_back(tempMass); 		  
 		   */	
 		   //						std::cout<<"DEBUG: "<<Jets->at(i).userFloat("ak8PFJetsCHSSoftDropLinks")<<std::endl;
 
-		   AK12tau1->push_back( Jets->at(i).userFloat("NjettinessAK12:tau1"));
-		   AK12tau2->push_back( Jets->at(i).userFloat("NjettinessAK12:tau2"));
-		   AK12tau3->push_back( Jets->at(i).userFloat("NjettinessAK12:tau3"));
+		   Puppitau1->push_back( Jets->at(i).userFloat("NjettinessAK8Puppi:tau1"));
+		   Puppitau2->push_back( Jets->at(i).userFloat("NjettinessAK8Puppi:tau2"));
+		   Puppitau3->push_back( Jets->at(i).userFloat("NjettinessAK8Puppi:tau3"));
 		   
-		   AK12bDiscriminatorCSV->push_back( Jets->at(i).bDiscriminator("combinedSecondaryVertexBJetTags") );
-		   AK12bDiscriminatorICSV->push_back( Jets->at(i).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+		   PuppibDiscriminatorCSV->push_back( Jets->at(i).bDiscriminator("combinedSecondaryVertexBJetTags") );
+		   PuppibDiscriminatorICSV->push_back( Jets->at(i).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
 		   
 		   float NHF = Jets->at(i).neutralHadronEnergyFraction();
 		   float NEMF = Jets->at(i).neutralEmEnergyFraction();
@@ -475,8 +475,8 @@ JetPropertiesAK12::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		       (Jets->at(i).chargedHadronEnergyFraction() > 0. || fabs(Jets->at(i).eta())>2.4 ) )
 		     looseJetId = true;
 		   */
-		   AK12isLooseJetId->push_back(looseJetId);
-		   AK12isTightJetId->push_back(tightJetId);
+		   PuppiisLooseJetId->push_back(looseJetId);
+		   PuppiisTightJetId->push_back(tightJetId);
 
 		   if (doReclusteringForPrunedAndSoftdrop) {
 
@@ -508,12 +508,12 @@ JetPropertiesAK12::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			 softdropCorrection = JetSoftdropCorrector->getCorrection();
 
 			 if (doJEC) {
-			   AK12softDropMass->push_back( softdropCorrection*uncorrSoftdropJet.mass());		       
-			   AK12softDropPt->push_back( softdropCorrection*uncorrSoftdropJet.pt());		       
+			   PuppisoftDropMass->push_back( softdropCorrection*uncorrSoftdropJet.mass());		       
+			   PuppisoftDropPt->push_back( softdropCorrection*uncorrSoftdropJet.pt());		       
 			 }
 			 else {
-			   AK12softDropMass->push_back( 1.*uncorrSoftdropJet.mass());		       		     
-			   AK12softDropPt->push_back( 1.*uncorrSoftdropJet.pt());		       		     
+			   PuppisoftDropMass->push_back( 1.*uncorrSoftdropJet.mass());		       		     
+			   PuppisoftDropPt->push_back( 1.*uncorrSoftdropJet.pt());		       		     
 			 }
 
 			 //			 std::cout<<"DEBUG - SD- raw pt: "<<uncorrSoftdropJet.pt()
@@ -521,13 +521,13 @@ JetPropertiesAK12::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			 //	  <<softdropCorrection*uncorrSoftdropJet.mass()<<std::endl;
 		       }
 		       else {
-			 AK12softDropMass->push_back( -1.);
-			 AK12softDropPt->push_back(-1.0);
+			 PuppisoftDropMass->push_back( -1.);
+			 PuppisoftDropPt->push_back(-1.0);
 		       }
 		     }
 		     else {
-			 AK12softDropMass->push_back( -1.);		       		     
-			 AK12softDropPt->push_back(-1.0);
+			 PuppisoftDropMass->push_back( -1.);		       		     
+			 PuppisoftDropPt->push_back(-1.0);
 		     }
 
 		     //		     FatJet.SetPtEtaPhiE( Jets->at(i).pt(), Jets->at(i).eta(), Jets->at(i).phi(), Jets->at(i).energy() ); 
@@ -554,12 +554,12 @@ JetPropertiesAK12::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 			 prunedCorrection = JetPrunedCorrector->getCorrection();
 
 			 if (doJEC) 
-			   AK12prunedMass->push_back( prunedCorrection*uncorrPrunedJet.mass());
+			   PuppiprunedMass->push_back( prunedCorrection*uncorrPrunedJet.mass());
 			 else 
-			   AK12prunedMass->push_back( 1.*uncorrPrunedJet.mass());
+			   PuppiprunedMass->push_back( 1.*uncorrPrunedJet.mass());
 		       }
 		       else
-			 AK12prunedMass->push_back( -1.);		       		     
+			 PuppiprunedMass->push_back( -1.);		       		     
 
 		       //			 std::cout<<"DEBUG - PR- raw pt: "<<uncorrPrunedJet.pt()
 		       //  <<" raw mass: "<<uncorrPrunedJet.mass()<<" massCorr: "<<prunedCorrection<<" corr mass: "
@@ -567,21 +567,21 @@ JetPropertiesAK12::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		     }
 		     else
-			 AK12prunedMass->push_back( -1.);		       		     
+			 PuppiprunedMass->push_back( -1.);		       		     
 
 		     //		     std::cout<<prunedCorrection<<" "<<Jets->at(i).pt()<<" "<<Jets->at(i).mass()<<" "<<prunedjet.pt()<<" "<<prunedjet.mass()<<" "<<uncorrPrunedJet.pt()<<" "<<uncorrPrunedJet.mass()<<std::endl; getchar();
 
 		   }
 
 		   else {
-		     AK12prunedMass->push_back( massCorrection*Jets->at(i).userFloat("ak12PFJetsCHSPrunedMass"));
-		     AK12softDropMass->push_back( massCorrection*Jets->at(i).userFloat("ak12PFJetsCHSSoftDropMass"));
+		     PuppiprunedMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsPuppiPrunedMass"));
+		     PuppisoftDropMass->push_back( massCorrection*Jets->at(i).userFloat("ak8PFJetsPuppiSoftDropMass"));
 		     auto sdSubjets = Jets->at(i).subjets("SoftDrop");
 		     if ( sdSubjets.size() > 1 ) {
 		       auto sdp4 = sdSubjets[0]->p4() + sdSubjets[1]->p4();
-		       AK12softDropPt->push_back( sdp4.pt() );
+		       PuppisoftDropPt->push_back( sdp4.pt() );
 		     } else {
-		       AK12softDropPt->push_back( -1.0 );
+		       PuppisoftDropPt->push_back( -1.0 );
 		     }
 		   }
 
@@ -597,54 +597,54 @@ JetPropertiesAK12::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	delete L3JetPar;
 
 	const std::string string00("");
-	iEvent.put(AK12prodJets );
+	iEvent.put(PuppiprodJets );
 	
-	const std::string string0("AK12jetArea");
-	iEvent.put(AK12jetArea,string0);
-	const std::string string1("AK12chargedHadronEnergyFraction");
-	iEvent.put(AK12chargedHadronEnergyFraction,string1);
-	const std::string string2("AK12chargedHadronMultiplicity");
-	iEvent.put(AK12chargedHadronMultiplicity,string2);
-	const std::string string3("AK12neutralHadronEnergyFraction");
-	iEvent.put(AK12neutralHadronEnergyFraction,string3);
-	const std::string string4("AK12neutralHadronMultiplicity");
-	iEvent.put(AK12neutralHadronMultiplicity,string4);
-	const std::string string5("AK12chargedEmEnergyFraction");
-	iEvent.put(AK12chargedEmEnergyFraction,string5);
-	const std::string string6("AK12neutralEmEnergyFraction");
-	iEvent.put(AK12neutralEmEnergyFraction,string6);
-// 	const std::string string7("AK12patJetsNeutralEmFractionPBNR");
-// 	iEvent.put(AK12patJetsNeutralEmFractionPBNR,string7);
-	const std::string string8("AK12electronMultiplicity");
-	iEvent.put(AK12electronMultiplicity,string8);
-	const std::string string9("AK12photonEnergyFraction");
-	iEvent.put(AK12photonEnergyFraction,string9);
-	const std::string string10("AK12photonMultiplicity");
-	iEvent.put(AK12photonMultiplicity,string10);
-	const std::string string11("AK12muonEnergyFraction");
-	iEvent.put(AK12muonEnergyFraction,string11);
-	const std::string string12("AK12muonMultiplicity");
-	iEvent.put(AK12muonMultiplicity,string12);
-	const std::string string14("AK12prunedMass");
-	iEvent.put(AK12prunedMass,string14);
-	const std::string string15("AK12trimmedMass");
-	iEvent.put(AK12trimmedMass,string15);
-	const std::string string16("AK12filteredMass");
-	iEvent.put(AK12filteredMass,string16);
-	const std::string string17("AK12tau1");
-	iEvent.put(AK12tau1,string17);
-	const std::string string18("AK12tau2");
-	iEvent.put(AK12tau2,string18);
-	const std::string string19("AK12tau3");
-	iEvent.put(AK12tau3,string19);
-	const std::string string20("AK12isLooseJetId");
-	iEvent.put(AK12isLooseJetId,string20);
-	const std::string string21("AK12softDropMass");
-	iEvent.put(AK12softDropMass,string21);
-	const std::string string22("AK12bDiscriminatorCSV");
-	iEvent.put(AK12bDiscriminatorCSV,string22);
-	const std::string string23("AK12bDiscriminatorICSV");
-	iEvent.put(AK12bDiscriminatorICSV,string23);
+	const std::string string0("PuppijetArea");
+	iEvent.put(PuppijetArea,string0);
+	const std::string string1("PuppichargedHadronEnergyFraction");
+	iEvent.put(PuppichargedHadronEnergyFraction,string1);
+	const std::string string2("PuppichargedHadronMultiplicity");
+	iEvent.put(PuppichargedHadronMultiplicity,string2);
+	const std::string string3("PuppineutralHadronEnergyFraction");
+	iEvent.put(PuppineutralHadronEnergyFraction,string3);
+	const std::string string4("PuppineutralHadronMultiplicity");
+	iEvent.put(PuppineutralHadronMultiplicity,string4);
+	const std::string string5("PuppichargedEmEnergyFraction");
+	iEvent.put(PuppichargedEmEnergyFraction,string5);
+	const std::string string6("PuppineutralEmEnergyFraction");
+	iEvent.put(PuppineutralEmEnergyFraction,string6);
+// 	const std::string string7("PuppipatJetsNeutralEmFractionPBNR");
+// 	iEvent.put(PuppipatJetsNeutralEmFractionPBNR,string7);
+	const std::string string8("PuppielectronMultiplicity");
+	iEvent.put(PuppielectronMultiplicity,string8);
+	const std::string string9("PuppiphotonEnergyFraction");
+	iEvent.put(PuppiphotonEnergyFraction,string9);
+	const std::string string10("PuppiphotonMultiplicity");
+	iEvent.put(PuppiphotonMultiplicity,string10);
+	const std::string string11("PuppimuonEnergyFraction");
+	iEvent.put(PuppimuonEnergyFraction,string11);
+	const std::string string12("PuppimuonMultiplicity");
+	iEvent.put(PuppimuonMultiplicity,string12);
+	const std::string string14("PuppiprunedMass");
+	iEvent.put(PuppiprunedMass,string14);
+	const std::string string15("PuppitrimmedMass");
+	iEvent.put(PuppitrimmedMass,string15);
+	const std::string string16("PuppifilteredMass");
+	iEvent.put(PuppifilteredMass,string16);
+	const std::string string17("Puppitau1");
+	iEvent.put(Puppitau1,string17);
+	const std::string string18("Puppitau2");
+	iEvent.put(Puppitau2,string18);
+	const std::string string19("Puppitau3");
+	iEvent.put(Puppitau3,string19);
+	const std::string string20("PuppiisLooseJetId");
+	iEvent.put(PuppiisLooseJetId,string20);
+	const std::string string21("PuppisoftDropMass");
+	iEvent.put(PuppisoftDropMass,string21);
+	const std::string string22("PuppibDiscriminatorCSV");
+	iEvent.put(PuppibDiscriminatorCSV,string22);
+	const std::string string23("PuppibDiscriminatorICSV");
+	iEvent.put(PuppibDiscriminatorICSV,string23);
 	const std::string string24("PtCorr");
 	iEvent.put(PtCorr,string24);
 	const std::string string25("EtaCorr");
@@ -653,67 +653,67 @@ JetPropertiesAK12::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(PhiCorr,string26);
 	const std::string string27("ECorr");
 	iEvent.put(ECorr,string27);
-	const std::string string28("AK12isTightJetId");
-	iEvent.put(AK12isTightJetId,string28);
+	const std::string string28("PuppiisTightJetId");
+	iEvent.put(PuppiisTightJetId,string28);
 	const std::string string29("mass");
 	iEvent.put(mass,string29);
-	const std::string string30("AK12correction");
-	iEvent.put(AK12correction,string30);
-	const std::string string31("AK12correctionUp");
-	iEvent.put(AK12correctionUp,string31);
-	const std::string string32("AK12correctionDown");
-	iEvent.put(AK12correctionDown,string32);
-	const std::string string33("AK12softDropPt");
-	iEvent.put(AK12softDropPt,string33);
-	const std::string string34("AK12massCorrection");
-	iEvent.put(AK12massCorrection,string34);
-	const std::string string35("AK12massCorrectionUp");
-	iEvent.put(AK12massCorrectionUp,string35);
-	const std::string string36("AK12massCorrectionDown");
-	iEvent.put(AK12massCorrectionDown,string36);
-	//	const std::string string28("AK12puppiMass");
-	//iEvent.put(AK12puppiMass,string28);
+	const std::string string30("Puppicorrection");
+	iEvent.put(Puppicorrection,string30);
+	const std::string string31("PuppicorrectionUp");
+	iEvent.put(PuppicorrectionUp,string31);
+	const std::string string32("PuppicorrectionDown");
+	iEvent.put(PuppicorrectionDown,string32);
+	const std::string string33("PuppisoftDropPt");
+	iEvent.put(PuppisoftDropPt,string33);
+	const std::string string34("PuppimassCorrection");
+	iEvent.put(PuppimassCorrection,string34);
+	const std::string string35("PuppimassCorrectionUp");
+	iEvent.put(PuppimassCorrectionUp,string35);
+	const std::string string36("PuppimassCorrectionDown");
+	iEvent.put(PuppimassCorrectionDown,string36);
+	//	const std::string string28("PuppipuppiMass");
+	//iEvent.put(PuppipuppiMass,string28);
 	
 }
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
-JetPropertiesAK12::beginJob()
+JetPropertiesPuppi::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
-JetPropertiesAK12::endJob() {
+JetPropertiesPuppi::endJob() {
 }
 
 // ------------ method called when starting to processes a run  ------------
 void 
-JetPropertiesAK12::beginRun(edm::Run&, edm::EventSetup const&)
+JetPropertiesPuppi::beginRun(edm::Run&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a run  ------------
 void 
-JetPropertiesAK12::endRun(edm::Run&, edm::EventSetup const&)
+JetPropertiesPuppi::endRun(edm::Run&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------
 void 
-JetPropertiesAK12::beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
+JetPropertiesPuppi::beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a luminosity block  ------------
 void 
-JetPropertiesAK12::endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
+JetPropertiesPuppi::endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
 {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
-JetPropertiesAK12::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+JetPropertiesPuppi::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 	//The following says we do not know what parameters are allowed so do no validation
 	// Please change this to state exactly what you do use, even if it is no parameters
 	edm::ParameterSetDescription desc;
@@ -722,4 +722,4 @@ JetPropertiesAK12::fillDescriptions(edm::ConfigurationDescriptions& descriptions
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(JetPropertiesAK12);
+DEFINE_FWK_MODULE(JetPropertiesPuppi);

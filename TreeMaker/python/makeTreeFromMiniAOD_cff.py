@@ -596,7 +596,7 @@ reDoPruningAndSoftdrop=False
 
         from RecoJets.Configuration.RecoPFJets_cff import ak4PFJetsCHS, ak8PFJetsCHS, ak8PFJetsCHSPruned, ak8PFJetsCHSSoftDrop, ak8PFJetsCHSPrunedMass, ak8PFJetsCHSSoftDropMass
 
-        process.NjettinessAK8 = cms.EDProducer("NjettinessAdder",
+        process.NjettinessAK8Puppi = cms.EDProducer("NjettinessAdder",
                             src=cms.InputTag("ak8PFJetsPuppi"),
                             Njets=cms.vuint32(1,2,3,4),          # compute 1-, 2-, 3-, 4- subjettiness
                             # variables for measure definition : 
@@ -613,23 +613,23 @@ reDoPruningAndSoftdrop=False
         process.ak4PFJetsPuppi = ak4PFJetsPuppi.clone(src = 'puppi')
         process.ak8PFJetsPuppi = process.ak8PFJetsPuppi.clone( src = 'puppi', jetPtMin = 100.0 )
 
-        process.ak8PFJetsCHSPruned = ak8PFJetsCHSPruned.clone( src = 'puppi', jetPtMin = 100.0 )
-        process.ak8PFJetsCHSPrunedMass = ak8PFJetsCHSPrunedMass.clone(    
-            matched = cms.InputTag("ak8PFJetsCHSPruned"),
+        process.ak8PFJetsPuppiPruned = ak8PFJetsCHSPruned.clone( src = 'puppi', jetPtMin = 100.0 )
+        process.ak8PFJetsPuppiPrunedMass = ak8PFJetsCHSPrunedMass.clone(    
+            matched = cms.InputTag("ak8PFJetsPuppiPruned"),
             src = cms.InputTag("ak8PFJetsPuppi")
             )
-        process.ak8PFJetsCHSSoftDrop = ak8PFJetsCHSSoftDrop.clone( src = 'puppi', jetPtMin = 100.0 )
-        process.ak8PFJetsCHSSoftDropMass = ak8PFJetsCHSSoftDropMass.clone(
-            matched = cms.InputTag("ak8PFJetsCHSSoftDrop"),
+        process.ak8PFJetsPuppiSoftDrop = ak8PFJetsCHSSoftDrop.clone( src = 'puppi', jetPtMin = 100.0 )
+        process.ak8PFJetsPuppiSoftDropMass = ak8PFJetsCHSSoftDropMass.clone(
+            matched = cms.InputTag("ak8PFJetsPuppiSoftDrop"),
             src = cms.InputTag("ak8PFJetsPuppi")
             )
 
         process.substructureSequence+=process.puppi
         process.substructureSequence+=process.ak8PFJetsPuppi
-        process.substructureSequence+=process.NjettinessAK8
+        process.substructureSequence+=process.NjettinessAK8Puppi
 
-        process.softdrop_onMiniAOD += process.ak8PFJetsCHSSoftDrop + process.ak8PFJetsCHSSoftDropMass
-        process.pruning_onMiniAOD += process.ak8PFJetsCHSPruned + process.ak8PFJetsCHSPrunedMass
+        process.softdrop_onMiniAOD += process.ak8PFJetsPuppiSoftDrop + process.ak8PFJetsPuppiSoftDropMass
+        process.pruning_onMiniAOD += process.ak8PFJetsPuppiPruned + process.ak8PFJetsPuppiPrunedMass
 
         ####### Redo pat jets sequence ##########
         from ExoDiBosonResonances.EDBRJets.redoPatJets_cff import patJetCorrFactorsAK8, patJetsAK8, selectedPatJetsAK8
@@ -641,13 +641,40 @@ reDoPruningAndSoftdrop=False
                                                                                           'L3Absolute')
                                                                      )
         process.puppiJetsAK8 = patJetsAK8.clone( jetSource = 'ak8PFJetsPuppi' )
-        process.puppiJetsAK8.userData.userFloats.src = [ cms.InputTag("ak8PFJetsCHSPrunedMass"), cms.InputTag("ak8PFJetsCHSSoftDropMass"), cms.InputTag("NjettinessAK8:tau1"), cms.InputTag("NjettinessAK8:tau2"), cms.InputTag("NjettinessAK8:tau3")]
+        process.puppiJetsAK8.userData.userFloats.src = [ cms.InputTag("ak8PFJetsPuppiPrunedMass"), cms.InputTag("ak8PFJetsPuppiSoftDropMass"), cms.InputTag("NjettinessAK8Puppi:tau1"), cms.InputTag("NjettinessAK8Puppi:tau2"), cms.InputTag("NjettinessAK8Puppi:tau3")]
         process.puppiJetsAK8.jetCorrFactorsSource = cms.VInputTag( cms.InputTag("puppiJetCorrFactorsAK8") )
         process.selectedPuppiJetsAK8 = selectedPatJetsAK8.clone( src = 'puppiJetsAK8', cut = cms.string('pt > 20') )
 
         process.redoPuppiJets+=process.puppiJetCorrFactorsAK8
         process.redoPuppiJets+=process.puppiJetsAK8
         process.redoPuppiJets+=process.selectedPuppiJetsAK8
+
+        if (reDoPruningAndSoftdrop):
+            process.patJetCorrFactorsPuppiPruned = patJetCorrFactorsAK8.clone( src = 'ak8PFJetsPuppiPruned' )
+            process.patJetsPuppiPruned = patJetsAK8.clone( jetSource = 'ak8PFJetsPuppiPruned' )
+            process.patJetsPuppiPruned.userData.userFloats.src = [ "" ]
+            process.patJetsPuppiPruned.jetCorrFactorsSource = cms.VInputTag( cms.InputTag("patJetCorrFactorsPuppiPruned") )
+            process.selectedPatJetsPuppiPruned = selectedPatJetsAK8.clone( 
+                src = cms.InputTag('patJetsPuppiPruned'),
+                cut = cms.string('pt > 20') 
+                )
+
+            process.redoPatJets+=process.patJetCorrFactorsPuppiPruned
+            process.redoPatJets+=process.patJetsPuppiPruned
+            process.redoPatJets+=process.selectedPatJetsPuppiPruned
+
+            process.patJetCorrFactorsPuppiSoftdrop = patJetCorrFactorsAK8.clone( src = 'ak8PFJetsPuppiSoftDrop' )
+            process.patJetsPuppiSoftdrop = patJetsAK8.clone( jetSource = 'ak8PFJetsPuppiSoftDrop' )
+            process.patJetsPuppiSoftdrop.userData.userFloats.src = [ "" ]
+            process.patJetsPuppiSoftdrop.jetCorrFactorsSource = cms.VInputTag( cms.InputTag("patJetCorrFactorsPuppiSoftdrop") )
+            process.selectedPatJetsPuppiSoftdrop = selectedPatJetsAK8.clone(
+                src = cms.InputTag('patJetsPuppiSoftdrop'),
+                cut = cms.string('pt > 20') 
+                )
+
+            process.redoPatJets+=process.patJetCorrFactorsPuppiSoftdrop
+            process.redoPatJets+=process.patJetsPuppiSoftdrop
+            process.redoPatJets+=process.selectedPatJetsPuppiSoftdrop
 
 #######AK8 GEN JETS################
 
@@ -1144,6 +1171,26 @@ reDoPruningAndSoftdrop=False
 #    jecPayloadNames      = cms.vstring(jecLevelsAK8),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
+
+    from AllHadronicSUSY.Utils.jetpropertiesPuppi_cfi import jetpropertiesPuppi
+    process.JetsPropertiesPuppi = cms.Sequence()
+    if doPuppi:
+        process.JetsPropertiesPuppi = jetpropertiesPuppi.clone(
+            JetTag  = cms.InputTag('selectedPuppiJetsAK8'),
+            #    puppiJetTag = cms.InputTag('selectedPuppiJetsAK8'),
+            MinPt = cms.double(-1),
+            doJEC  = cms.bool(doJECCorrection),
+            doReclusteringForPrunedAndSoftdrop = cms.bool(reDoPruningAndSoftdrop),
+            L1File = cms.string("Summer15_25nsV6_DATA_L1FastJet_AK8PFchs.txt"),
+            L2File = cms.string("Summer15_25nsV6_DATA_L2Relative_AK8PFchs.txt"),
+            L3File = cms.string("Summer15_25nsV6_DATA_L3Absolute_AK8PFchs.txt"),
+            L2L3File = cms.string("Summer15_25nsV6_DATA_L2L3Residual_AK8PFchs.txt"),
+            uncFile = cms.string("Summer15_25nsV6_DATA_Uncertainty_AK8PFchs.txt"),
+            #    jecPayloadNames      = cms.vstring(jecLevelsAK8),
+            #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
+            )
+#        process.JetsPropertiesAK8.JetTag = cms.InputTag('selectedPuppiJetsAK8')
+
     if (reDoPruningAndSoftdrop):
         process.JetsPropertiesAK8.prunedJetTag  = cms.InputTag('selectedPatJetsAK8Pruned')
         process.JetsPropertiesAK8.softdropJetTag  = cms.InputTag('selectedPatJetsAK8Softdrop')
@@ -1151,6 +1198,8 @@ reDoPruningAndSoftdrop=False
         process.JetsPropertiesAK10.softdropJetTag  = cms.InputTag('selectedPatJetsAK10Softdrop')
         process.JetsPropertiesAK12.prunedJetTag  = cms.InputTag('selectedPatJetsAK12Pruned')
         process.JetsPropertiesAK12.softdropJetTag  = cms.InputTag('selectedPatJetsAK12Softdrop')
+        process.JetsPropertiesPuppi.prunedJetTag  = cms.InputTag('selectedPatJetsPuppiPruned')
+        process.JetsPropertiesPuppi.softdropJetTag  = cms.InputTag('selectedPatJetsPuppiSoftdrop')
     else:
         process.JetsPropertiesAK8.prunedJetTag  = cms.InputTag('slimmedJetsAK8')
         process.JetsPropertiesAK8.softdropJetTag  = cms.InputTag('slimmedJetsAK8')
@@ -1175,11 +1224,15 @@ reDoPruningAndSoftdrop=False
         process.JetsPropertiesAK12.L3File = cms.string("Summer15_25nsV6_MC_L3Absolute_AK8PFchs.txt")
         process.JetsPropertiesAK12.L2L3File = cms.string("NONE")
         process.JetsPropertiesAK12.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK8PFchs.txt")
+        process.JetsPropertiesPuppi.L1File = cms.string("Summer15_25nsV6_MC_L1FastJet_AK8PFchs.txt")
+        process.JetsPropertiesPuppi.L2File = cms.string("Summer15_25nsV6_MC_L2Relative_AK8PFchs.txt")
+        process.JetsPropertiesPuppi.L3File = cms.string("Summer15_25nsV6_MC_L3Absolute_AK8PFchs.txt")
+        process.JetsPropertiesPuppi.L2L3File = cms.string("NONE")
+        process.JetsPropertiesPuppi.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK8PFchs.txt")
 
     if doAK8Reclustering:
         process.JetsPropertiesAK8.JetTag = cms.InputTag('selectedPatJetsAK8')
-    if doPuppi:
-        process.JetsPropertiesAK8.JetTag = cms.InputTag('selectedPuppiJetsAK8')
+
     from AllHadronicSUSY.Utils.mhtdouble_cfi import mhtdouble
     process.MHT = mhtdouble.clone(
     JetTag  = cms.InputTag('MHTJets'),
@@ -1342,6 +1395,8 @@ reDoPruningAndSoftdrop=False
 # 
     RecoCandVector.extend(['JetsPropertiesAK12(AK12Jets)|JetsPropertiesAK12:AK12bDiscriminatorCSV(F_bDiscriminatorCSV)|JetsPropertiesAK12:AK12bDiscriminatorICSV(F_bDiscriminatorICSV)|JetsPropertiesAK12:AK12chargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsPropertiesAK12:AK12chargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsPropertiesAK12:AK12chargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsPropertiesAK12:AK12electronMultiplicity(I_electronMultiplicity)|JetsPropertiesAK12:AK12jetArea(F_jetArea)|JetsPropertiesAK12:AK12muonEnergyFraction(F_muonEnergyFraction)|JetsPropertiesAK12:AK12muonMultiplicity(I_muonMultiplicity)|JetsPropertiesAK12:AK12neutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsPropertiesAK12:AK12neutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsPropertiesAK12:AK12photonEnergyFraction(F_photonEnergyFraction)|JetsPropertiesAK12:AK12photonMultiplicity(I_photonMultiplicity)|JetsPropertiesAK12:AK12prunedMass(F_prunedMass)|JetsPropertiesAK12:AK12softDropMass(F_softDropMass)|JetsPropertiesAK12:AK12softDropPt(F_softDropPt)|JetsPropertiesAK12:AK12trimmedMass(F_trimmedMass)|JetsPropertiesAK12:AK12filteredMass(F_filteredMass)|JetsPropertiesAK12:AK12tau1(F_tau1)|JetsPropertiesAK12:AK12tau2(F_tau2)|JetsPropertiesAK12:AK12tau3(F_tau3)|JetsPropertiesAK12:AK12isLooseJetId(b_AK12isLooseJetId)|JetsPropertiesAK12:AK12isTightJetId(b_AK12isTightJetId)|JetsPropertiesAK12:PtCorr(F_PtCorr)|JetsPropertiesAK12:EtaCorr(F_EtaCorr)|JetsPropertiesAK12:PhiCorr(F_PhiCorr)|JetsPropertiesAK12:ECorr(F_ECorr)|JetsPropertiesAK12:mass(F_mass)|JetsPropertiesAK12:AK12correction(F_AK12correction)|JetsPropertiesAK12:AK12correctionUp(F_AK12correctionUp)|JetsPropertiesAK12:AK12correctionDown(F_AK12correctionDown)|JetsPropertiesAK12:AK12massCorrection(F_AK12massCorrection)|JetsPropertiesAK12:AK12massCorrectionUp(F_AK12massCorrectionUp)|JetsPropertiesAK12:AK12massCorrectionDown(F_AK12massCorrectionDown)'] ) # AK12 jet information on various variables
 
+    RecoCandVector.extend(['JetsPropertiesPuppi(PuppiJets)|JetsPropertiesPuppi:PuppibDiscriminatorCSV(F_bDiscriminatorCSV)|JetsPropertiesPuppi:PuppibDiscriminatorICSV(F_bDiscriminatorICSV)|JetsPropertiesPuppi:PuppichargedEmEnergyFraction(F_chargedEmEnergyFraction)|JetsPropertiesPuppi:PuppichargedHadronEnergyFraction(F_chargedHadronEnergyFraction)|JetsPropertiesPuppi:PuppichargedHadronMultiplicity(I_chargedHadronMultiplicity)|JetsPropertiesPuppi:PuppielectronMultiplicity(I_electronMultiplicity)|JetsPropertiesPuppi:PuppijetArea(F_jetArea)|JetsPropertiesPuppi:PuppimuonEnergyFraction(F_muonEnergyFraction)|JetsPropertiesPuppi:PuppimuonMultiplicity(I_muonMultiplicity)|JetsPropertiesPuppi:PuppineutralEmEnergyFraction(F_neutralEmEnergyFraction)|JetsPropertiesPuppi:PuppineutralHadronMultiplicity(I_neutralHadronMultiplicity)|JetsPropertiesPuppi:PuppiphotonEnergyFraction(F_photonEnergyFraction)|JetsPropertiesPuppi:PuppiphotonMultiplicity(I_photonMultiplicity)|JetsPropertiesPuppi:PuppiprunedMass(F_prunedMass)|JetsPropertiesPuppi:PuppisoftDropMass(F_softDropMass)|JetsPropertiesPuppi:PuppisoftDropPt(F_softDropPt)|JetsPropertiesPuppi:PuppitrimmedMass(F_trimmedMass)|JetsPropertiesPuppi:PuppifilteredMass(F_filteredMass)|JetsPropertiesPuppi:Puppitau1(F_tau1)|JetsPropertiesPuppi:Puppitau2(F_tau2)|JetsPropertiesPuppi:Puppitau3(F_tau3)|JetsPropertiesPuppi:PuppiisLooseJetId(b_PuppiisLooseJetId)|JetsPropertiesPuppi:PuppiisTightJetId(b_PuppiisTightJetId)|JetsPropertiesPuppi:PtCorr(F_PtCorr)|JetsPropertiesPuppi:EtaCorr(F_EtaCorr)|JetsPropertiesPuppi:PhiCorr(F_PhiCorr)|JetsPropertiesPuppi:ECorr(F_ECorr)|JetsPropertiesPuppi:mass(F_mass)|JetsPropertiesPuppi:Puppicorrection(F_Puppicorrection)|JetsPropertiesPuppi:PuppicorrectionUp(F_PuppicorrectionUp)|JetsPropertiesPuppi:PuppicorrectionDown(F_PuppicorrectionDown)|JetsPropertiesPuppi:PuppimassCorrection(F_PuppimassCorrection)|JetsPropertiesPuppi:PuppimassCorrectionUp(F_PuppimassCorrectionUp)|JetsPropertiesPuppi:PuppimassCorrectionDown(F_PuppimassCorrectionDown)'] ) # Puppi jet information on various variables
+
     RecoCandVector.extend(['Electrons(Electrons)|Electrons:charge(I_charge)|Electrons:isHEEP(b_isHEEP)|Electrons:type(I_type)|Electrons:mass(F_mass)|Electrons:pfDeltaCorrRelIso(F_pfDeltaCorrRelIso)|Electrons:pfRhoCorrRelIso04(F_pfRhoCorrRelIso04)|Electrons:pfRhoCorrRelIso03(F_pfRhoCorrRelIso03)|Electrons:pfRelIso(F_pfRelIso)|Electrons:photonIso(F_photonIso)|Electrons:neutralHadIso(F_neutralHadIso)|Electrons:chargedHadIso(F_chargedHadIso)|Electrons:trackIso(F_trackIso)|Electrons:isLoose(b_isLoose)|Electrons:isMedium(b_isMedium)|Electrons:isTight(b_isTight)|Electrons:SCEnergy(F_SCEnergy)|Electrons:deltaEtaSCTracker(F_deltaEtaSCTracker)|Electrons:deltaPhiSCTracker(F_deltaPhiSCTracker)|Electrons:sigmaIetaIeta(F_sigmaIetaIeta)|Electrons:sigmaIphiIphi(F_sigmaIphiIphi)'] ) # electron information on various variables
     RecoCandVector.extend(['Muons(Muons)|Muons:charge(I_charge)|Muons:isHighPt(b_isHighPt)|Muons:type(I_type)|Muons:mass(F_mass)|Muons:pfDeltaCorrRelIso(F_pfDeltaCorrRelIso)|Muons:pfRelIso(F_pfRelIso)|Muons:photonIso(F_photonIso)|Muons:neutralHadIso(F_neutralHadIso)|Muons:chargedHadIso(F_chargedHadIso)|Muons:trackIso(F_trackIso)|Muons:isLoose(b_isLoose)|Muons:isMedium(b_isMedium)|Muons:isTight(b_isTight)|Muons:isPFMuon(b_isPFMuon)|'] ) # muon information on various variables
     
@@ -1373,6 +1428,8 @@ reDoPruningAndSoftdrop=False
         process.additionalJets += process.JetsPropertiesAK10;
     if doAK12Reclustering:
         process.additionalJets += process.JetsPropertiesAK12;
+    if doPuppi:
+        process.additionalJets += process.JetsPropertiesPuppi;
         
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
