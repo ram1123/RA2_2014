@@ -1263,12 +1263,34 @@ reDoPruningAndSoftdrop=False
 #    corrMet = cms.bool(True),
     )
 
+    from AllHadronicSUSY.Utils.metpuppidouble_cfi import metpuppidouble
+    process.METpuppi = metpuppidouble.clone(
+    METTag  = cms.InputTag("slimmedMETsPuppi"),
+    JetTag  = cms.InputTag('slimmedJetsPuppi'),
+    doJEC  = cms.bool(doJECCorrection),
+    L1File = cms.string("Summer15_25nsV6_DATA_L1FastJet_AK4PFPuppi.txt"),
+    L2File = cms.string("Summer15_25nsV6_DATA_L2Relative_AK4PFPuppi.txt"),
+    L3File = cms.string("Summer15_25nsV6_DATA_L3Absolute_AK4PFPuppi.txt"),
+    L2L3File = cms.string("Summer15_25nsV6_DATA_L2L3Residual_AK4PFPuppi.txt"),
+    uncFile = cms.string("Summer15_25nsV6_DATA_Uncertainty_AK4PFPuppi.txt"),
+#    jecPayloadNames      = cms.vstring(jecLevelsAK4),
+    MuTag = cms.InputTag("slimmedMuons"),
+    RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
+    corrMet = cms.bool(doJECCorrection),
+#    corrMet = cms.bool(True),
+    )
+
     if (MC):
         process.MET.L1File = cms.string("Summer15_25nsV6_MC_L1FastJet_AK4PFchs.txt")
         process.MET.L2File = cms.string("Summer15_25nsV6_MC_L2Relative_AK4PFchs.txt")
         process.MET.L3File = cms.string("Summer15_25nsV6_MC_L3Absolute_AK4PFchs.txt")
         process.MET.L2L3File = cms.string("NONE")
         process.MET.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK4PFchs.txt")
+        process.METpuppi.L1File = cms.string("Summer15_25nsV6_MC_L1FastJet_AK4PFPuppi.txt")
+        process.METpuppi.L2File = cms.string("Summer15_25nsV6_MC_L2Relative_AK4PFPuppi.txt")
+        process.METpuppi.L3File = cms.string("Summer15_25nsV6_MC_L3Absolute_AK4PFPuppi.txt")
+        process.METpuppi.L2L3File = cms.string("NONE")
+        process.METpuppi.uncFile = cms.string("Summer15_25nsV6_MC_Uncertainty_AK4PFPuppi.txt")
 
 
     from AllHadronicSUSY.Utils.leptonint_cfi import leptonint
@@ -1387,7 +1409,7 @@ reDoPruningAndSoftdrop=False
     RecoCandVector.extend(['IsolatedTracks']) # basic muons electrons and isoalted tracks
 #    RecoCandVector.extend(['selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks']) # basic muons electrons and isoalted tracks
 #    RecoCandVector.extend(['selectedIDMuons','selectedIDElectrons']) # mu and e no isolation cuts
-    RecoCandVector.extend(['GenLeptons:Boson(GenBoson)|GenLeptons:BosonPDGId(I_GenBosonPDGId)','GenLeptons:Muon(GenMu)|GenLeptons:MuonTauDecay(I_GenMuFromTau)' ,'GenLeptons:Electron(GenElec)|GenLeptons:ElectronTauDecay(I_GenElecFromTau)','GenLeptons:Tau(GenTau)|GenLeptons:TauHadronic(I_GenTauHad)','GenLeptons:Neutrino(GenNu)','GenLeptons:Top(GenTop)|GenLeptons:TopPDGId(I_GenTopPDGId)',] ) # gen information on leptons
+    RecoCandVector.extend(['GenLeptons:Boson(GenBoson)|GenLeptons:BosonPDGId(I_GenBosonPDGId)|GenLeptons:isBosonLeptonic(I_isBosonLeptonic)','GenLeptons:Muon(GenMu)|GenLeptons:MuonTauDecay(I_GenMuFromTau)' ,'GenLeptons:Electron(GenElec)|GenLeptons:ElectronTauDecay(I_GenElecFromTau)','GenLeptons:Tau(GenTau)|GenLeptons:TauHadronic(I_GenTauHad)','GenLeptons:Neutrino(GenNu)','GenLeptons:Top(GenTop)|GenLeptons:TopPDGId(I_GenTopPDGId)',] ) # gen information on leptons
     RecoCandVector.extend(['GenJets:GenJet(GenJets)'] ) # gen information on jets
     RecoCandVector.extend(['GenJetsAK8:GenJetAK8(GenJetsAK8)|GenJetsAK8:GenAK8prunedMass(F_prunedMass)|GenJetsAK8:GenAK8softdropMass(F_softdropMass)|GenJetsAK8:GenAK8softdropPt(F_softdropPt)|GenJetsAK8:GenAK8tau1(F_tau1)|GenJetsAK8:GenAK8tau2(F_tau2)|GenJetsAK8:GenAK8tau3(F_tau3)'] ) # gen information on AK8 jets
     RecoCandVector.extend(['GenJetsAK10:GenJetAK10(GenJetsAK10)|GenJetsAK10:GenAK10prunedMass(F_prunedMass)|GenJetsAK10:GenAK10softdropMass(F_softdropMass)|GenJetsAK10:GenAK10softdropPt(F_softdropPt)|GenJetsAK10:GenAK10tau1(F_tau1)|GenJetsAK10:GenAK10tau2(F_tau2)|GenJetsAK10:GenAK10tau3(F_tau3)'] ) # gen information on AK10 jets
@@ -1409,7 +1431,7 @@ reDoPruningAndSoftdrop=False
     	TreeName          = cms.string("PreSelection"),
     	VarsRecoCand = RecoCandVector,
     	#VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
-    	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MHT','MET:Pt(METPt)','MET:Phi(METPhi)','MET:PtUp(METPtUp)','MET:PhiUp(METPhiUp)','MET:PtDown(METPtDown)','MET:PhiDown(METPhiDown)','MET:PtRaw(METPtRaw)','MET:PhiRaw(METPhiRaw)','MET:CaloMetPt(CaloMetPt)','MET:CaloMetPhi(CaloMetPhi)','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)','GenEventInfo:genEventWeight(genEventWeight)','GenEventInfo:PUWeight(PUWeight)'),
+    	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MHT','MET:Pt(METPt)','MET:Phi(METPhi)','MET:PtUp(METPtUp)','MET:PhiUp(METPhiUp)','MET:PtDown(METPtDown)','MET:PhiDown(METPhiDown)','MET:PtRaw(METPtRaw)','MET:PhiRaw(METPhiRaw)','MET:CaloMetPt(CaloMetPt)','MET:CaloMetPhi(CaloMetPhi)','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)','GenEventInfo:genEventWeight(genEventWeight)','GenEventInfo:PUWeight(PUWeight)','METpuppi:Pt(METpuppiPt)','METpuppi:Phi(METpuppiPhi)','METpuppi:PtUp(METpuppiPtUp)','METpuppi:PhiUp(METpuppiPhiUp)','METpuppi:PtDown(METpuppiPtDown)','METpuppi:PhiDown(METpuppiPhiDown)','METpuppi:PtRaw(METpuppiPtRaw)','METpuppi:PhiRaw(METpuppiPhiRaw)','METpuppi:CaloMetPt(CaloMetPt)','METpuppi:CaloMetPhi(CaloMetPhi)'),
     	VarsInt = cms.vstring('NJets','BTags','NVtx','GenEventInfo:npT(npT)','FilterProducer:passFilterHBHE(passFilterHBHE)','FilterProducer:passFilterHBHEIso(passFilterHBHEIso)','FilterProducer:passFilterCSCHalo(passFilterCSCHalo)','FilterProducer:passFilterGoodVtx(passFilterGoodVtx)','FilterProducer:passFilterEEBadSC(passFilterEEBadSC)','FilterProducer:passFilterHBHELooseRerun(passFilterHBHELooseRerun)','FilterProducer:passFilterHBHETightRerun(passFilterHBHETightRerun)','FilterProducer:passFilterHBHEIsoRerun(passFilterHBHEIsoRerun)'),#,'Leptons'),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
 #        VarsBool = cms.vstring('FilterProducer:passFilterEEBadSC(passFilterEEBadSC)'),
@@ -1434,6 +1456,7 @@ reDoPruningAndSoftdrop=False
         process.additionalJets += process.JetsPropertiesAK12;
     if doPuppi:
         process.additionalJets += process.JetsPropertiesPuppi;
+        process.additionalJets += process.METpuppi;
         
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(

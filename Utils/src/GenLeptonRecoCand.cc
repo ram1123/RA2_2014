@@ -81,6 +81,7 @@ GenLeptonRecoCand::GenLeptonRecoCand(const edm::ParameterSet& iConfig)
 	PrunedGenParticleTag_ 				= 	iConfig.getParameter<edm::InputTag >("PrunedGenParticleTag");	
 	const std::string string1("Boson");
 	const std::string string1t("BosonPDGId");
+	const std::string string1b("isBosonLeptonic");
 	const std::string string2("Muon");
 	const std::string string2t("MuonTauDecay");
 	const std::string string3("Electron");
@@ -92,6 +93,7 @@ GenLeptonRecoCand::GenLeptonRecoCand(const edm::ParameterSet& iConfig)
 	const std::string string6("Top");
 	produces<std::vector<reco::GenParticle> > (string1).setBranchAlias(string1);
 	produces<std::vector<int> > (string1t).setBranchAlias(string1t);
+	produces<std::vector<int> > (string1b).setBranchAlias(string1b);
 	produces<std::vector<reco::GenParticle> > (string2).setBranchAlias(string2);
 	produces<std::vector<int> > (string2t).setBranchAlias(string2t);
 	produces<std::vector<reco::GenParticle> > (string3).setBranchAlias(string3);
@@ -135,6 +137,7 @@ GenLeptonRecoCand::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace edm;	
 	std::auto_ptr< std::vector<reco::GenParticle> > selectedBoson(new std::vector<reco::GenParticle>);
 	std::auto_ptr< std::vector<int> > selectedBosonPDGId(new std::vector<int>);
+	std::auto_ptr< std::vector<int> > isSelectedBosonLeptonic(new std::vector<int>);
 	std::auto_ptr< std::vector<reco::GenParticle> > selectedMuon(new std::vector<reco::GenParticle>);
 	std::auto_ptr< std::vector<int> > selectedMuonTauDecay(new std::vector<int>);
 	std::auto_ptr< std::vector<reco::GenParticle> > selectedElectron(new std::vector<reco::GenParticle>);
@@ -156,12 +159,16 @@ GenLeptonRecoCand::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		if( (abs((*pruned)[i].pdgId() ) == 24 || abs((*pruned)[i].pdgId() ) == 23 ) && (*pruned)[i].status()==22) // needs to be checked if this workes for Z 23 as well
 		{
+        		int isLeptonicW = 0;
 			const reco::GenParticle * FinalBoson = BosonFound(&(*pruned)[i]);
 			size_t bosonDaugthers = FinalBoson->numberOfDaughters();
 			selectedBoson->push_back(*FinalBoson);
 			selectedBosonPDGId->push_back(FinalBoson->pdgId());
 			for(size_t ii=0;ii< bosonDaugthers; ii++)
 			{
+			        if (abs(FinalBoson->daughter(ii)->pdgId())== 11 || abs(FinalBoson->daughter(ii)->pdgId())== 13)
+			           isLeptonicW = 1;
+
 				if(abs(FinalBoson->daughter(ii)->pdgId())== 11) 
 				{
 					selectedElectron->push_back(*((reco::GenParticle*) FinalBoson->daughter(ii) ));
@@ -201,12 +208,15 @@ GenLeptonRecoCand::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 				{
 					selectedNeutrino->push_back(*((reco::GenParticle*) FinalBoson->daughter(ii) ));
 				}
+			
 			}
-
+			isSelectedBosonLeptonic->push_back(isLeptonicW);
 		}
 	}
+
 	const std::string string1("Boson");
 	const std::string string1t("BosonPDGId");
+	const std::string string1b("isBosonLeptonic");
 	const std::string string2("Muon");
 	const std::string string2t("MuonTauDecay");
 	const std::string string3("Electron");
@@ -218,6 +228,7 @@ GenLeptonRecoCand::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	const std::string string6t("TopPDGId");
 	iEvent.put(selectedBoson,string1);
 	iEvent.put(selectedBosonPDGId,string1t);
+	iEvent.put(isSelectedBosonLeptonic,string1b);
 	iEvent.put(selectedMuon,string2);
 	iEvent.put(selectedMuonTauDecay,string2t);
 	iEvent.put(selectedElectron,string3);
