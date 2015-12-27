@@ -360,13 +360,6 @@ JetPropertiesPuppi::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  correction = 1.;
 		  massCorrection = 1.;
 
-		  JetUnc->setJetEta( uncorrJet.eta() );
-		  JetUnc->setJetPt( massCorrection * uncorrJet.pt() );
-		  massCorrUp = massCorrection * (1 + fabs(JetUnc->getUncertainty(1)));
-		  JetUnc->setJetEta( uncorrJet.eta() );
-		  JetUnc->setJetPt( massCorrection * uncorrJet.pt() );
-		  massCorrDown = massCorrection * ( 1 - fabs(JetUnc->getUncertainty(-1)) );
-		  
 		  if (doJEC) {
 		    correction = JetCorrector->getCorrection();
 		    massCorrection = JetMassCorrector->getCorrection();
@@ -374,6 +367,13 @@ JetPropertiesPuppi::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  }
 		  mass->push_back( massCorrection*uncorrJet.mass());
 
+		  JetUnc->setJetEta( uncorrJet.eta() );
+		  JetUnc->setJetPt( massCorrection * uncorrJet.pt() );
+		  massCorrUp = massCorrection * (1 + fabs(JetUnc->getUncertainty(1)));
+		  JetUnc->setJetEta( uncorrJet.eta() );
+		  JetUnc->setJetPt( massCorrection * uncorrJet.pt() );
+		  massCorrDown = massCorrection * ( 1 - fabs(JetUnc->getUncertainty(-1)) );
+		  
 		  //		  else
 		  // mass->push_back( Jets->at(i).mass());
 		  

@@ -360,6 +360,13 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  correction = 1.;
 		  massCorrection = 1.;
 
+		  if (doJEC) {
+		    correction = JetCorrector->getCorrection();
+		    massCorrection = JetMassCorrector->getCorrection();
+		    //mass->push_back( massCorrection*uncorrJet.mass());
+		  }
+		  mass->push_back( massCorrection*uncorrJet.mass());
+
 		  JetUnc->setJetEta( uncorrJet.eta() );
 		  JetUnc->setJetPt( massCorrection * uncorrJet.pt() );
 		  massCorrUp = massCorrection * (1 + fabs(JetUnc->getUncertainty(1)));
@@ -367,12 +374,6 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  JetUnc->setJetPt( massCorrection * uncorrJet.pt() );
 		  massCorrDown = massCorrection * ( 1 - fabs(JetUnc->getUncertainty(-1)) );
 		  
-		  if (doJEC) {
-		    correction = JetCorrector->getCorrection();
-		    massCorrection = JetMassCorrector->getCorrection();
-		    //mass->push_back( massCorrection*uncorrJet.mass());
-		  }
-		  mass->push_back( massCorrection*uncorrJet.mass());
 
 		  //		  else
 		  // mass->push_back( Jets->at(i).mass());
