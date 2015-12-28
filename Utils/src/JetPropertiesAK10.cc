@@ -72,7 +72,7 @@ private:
   bool doReclusteringForPrunedAndSoftdrop;
   //	edm::InputTag puppiJetTag_;
   double MinPt_;
-  JetCorrectorParameters *L2L3JetPar;
+  JetCorrectorParameters L2L3JetPar;
   //  std::vector<std::string> jecPayloadNames_;
 	
 	// ----------member data ---------------------------
@@ -281,7 +281,7 @@ JetPropertiesAK10::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  }*/
 
         if (l2l3file!="NONE")
-          L2L3JetPar  = new JetCorrectorParameters(l2l3file);
+          L2L3JetPar  = JetCorrectorParameters(l2l3file);
 	//	JetCorrectorParameters L3JetPar(*l3file);
 	JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters(l3file);
 	JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters(l2file);
@@ -291,12 +291,12 @@ JetPropertiesAK10::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	vPar.push_back(*L2JetPar);
 	vPar.push_back(*L3JetPar);
         if (l2l3file!="NONE")
-	  vPar.push_back(*L2L3JetPar);
+	  vPar.push_back(L2L3JetPar);
 
 	vParMass.push_back(*L2JetPar);
 	vParMass.push_back(*L3JetPar);
         if (l2l3file!="NONE")
-	  vParMass.push_back(*L2L3JetPar);
+	  vParMass.push_back(L2L3JetPar);
 
 	JetCorrectionUncertainty *JetUnc  = new JetCorrectionUncertainty(uncfile);
 	//	vParUnc.push_back(*JetUnc);
