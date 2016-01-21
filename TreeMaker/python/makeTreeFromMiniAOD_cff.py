@@ -98,13 +98,23 @@ reDoPruningAndSoftdrop=False
             'HLT_PFJet450_v',
             'HLT_PFJet500_v',
             'HLT_AK8PFJet360_TrimMass30_v',
+            'HLT_Ele22_eta2p1_WPLoose_Gsf_v',
+            'HLT_Ele22_eta2p1_WPTight_Gsf_v',
+            'HLT_Ele23_WPLoose_Gsf_v',
+            'HLT_Ele27_WPLoose_Gsf_v',
+            'HLT_Ele27_eta2p1_WPLoose_Gsf_v',
+            'HLT_Ele32_eta2p1_WPTight_Gsf_v',
             'HLT_Ele27_eta2p1_WPTight_Gsf_v',
             'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v',
             'HLT_IsoMu27_v',
             'HLT_IsoMu24_v',
             'HLT_IsoMu22_v',
             'HLT_IsoMu20_v',
-            'HLT_IsoTkMu20_v'
+            'HLT_IsoTkMu20_v',
+            'HLT_Ele22_eta2p1_WP75_Gsf_v1',
+            'HLT_Ele27_WP85_Gsf_v1',
+            'HLT_Ele27_eta2p1_WP75_Gsf_v1',
+            'HLT_Ele32_eta2p1_WP75_Gsf_v1'
             )
         )
 
