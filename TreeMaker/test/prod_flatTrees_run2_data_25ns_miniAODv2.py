@@ -7,7 +7,7 @@ config.General.workArea = 'data_mu'
 config.section_('JobType')
 config.JobType.psetName = 'TreeMaker/test/runMakeTreeFromMiniAOD_cfg.py'
 config.JobType.pluginName = 'Analysis'
-config.JobType.pyCfgParams = ['global_tag=74X_dataRun2_Prompt_v4', 'MC=False', 'isCrab=True', 'DoJECCorrection=True', 'isHBHERun2015D=True']
+config.JobType.pyCfgParams = ['global_tag=74X_dataRun2_Prompt_v4', 'MC=False', 'isCrab=True', 'DoJECCorrection=True', 'isHBHERun2015D=True', 'DoPuppi=True', 'DoAK10Reclustering=True', 'DoAK12Reclustering=True', 'DoAK8Reclustering=True', 'ReDoPruningAndSoftdrop=True']
 config.JobType.allowUndistributedCMSSW = True
 #config.JobType.maxMemoryMB = 2500    # 2.5 GB                      
 config.JobType.maxJobRuntimeMin = 900 #15 h
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     from CRABAPI.RawCommand import crabCommand
 
     #Make sure you set this parameter (here or above in the config it does not matter)
-    config.General.workArea = 'data_19dic_jecv6_v2'
+    config.General.workArea = 'data_21gen2016_jecV6_v2'
 
     def submit(config):
         res = crabCommand('submit', config = config)
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         
     config.General.requestName = 'data_mu_prompt_25ns_runC'
     config.Data.inputDataset = '/SingleMuon/Run2015C-PromptReco-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_19dic_jecv6_v2/data_mu_prompt_25ns_runC/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_21gen2016_jecV6_v2/data_mu_prompt_25ns_runC/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     
     config.General.requestName = 'data_el_prompt_25ns_runC'
     config.Data.inputDataset = '/SingleElectron/Run2015C-PromptReco-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_19dic_jecv6_v2/data_el_prompt_25ns_runC/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_21gen2016_jecV6_v2/data_el_prompt_25ns_runC/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'data_mu_05Oct_25ns_runD'
     config.Data.inputDataset = '/SingleMuon/Run2015D-05Oct2015-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_19dic_jecv6_v2/data_mu_05Oct_25ns_runD/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_21gen2016_jecV6_v2/data_mu_05Oct_25ns_runD/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     
     config.General.requestName = 'data_el_05Oct_25ns_runD'
     config.Data.inputDataset = '/SingleElectron/Run2015D-05Oct2015-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_19dic_jecv6_v2/data_el_05Oct_25ns_runD/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_21gen2016_jecV6_v2/data_el_05Oct_25ns_runD/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'data_mu_prompt_25ns_runD_v4'
     config.Data.inputDataset = '/SingleMuon/Run2015D-PromptReco-v4/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_19dic_jecv6_v2/data_mu_prompt_v4_25ns_runD/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_21gen2016_jecV6_v2/data_mu_prompt_v4_25ns_runD/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     
     config.General.requestName = 'data_el_prompt_25ns_runD_v4'
     config.Data.inputDataset = '/SingleElectron/Run2015D-PromptReco-v4/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_19dic_jecv6_v2/data_el_prompt_v4_25ns_runD/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_21gen2016_jecV6_v2/data_el_prompt_v4_25ns_runD/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
