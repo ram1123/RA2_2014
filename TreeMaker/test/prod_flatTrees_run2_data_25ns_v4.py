@@ -7,7 +7,7 @@ config.General.workArea = 'data_mu'
 config.section_('JobType')
 config.JobType.psetName = 'TreeMaker/test/runMakeTreeFromMiniAOD_cfg.py'
 config.JobType.pluginName = 'Analysis'
-config.JobType.pyCfgParams = ['global_tag=74X_dataRun2_Prompt_v2', 'MC=False', 'debug=False', 'isHBHERun2015D=False', 'DoJECCorrection=True', 'leptonFilter=True', 'DoAK8Reclustering=True','ReDoPruningAndSoftdrop=True', 'isHBHERun2015D=True' ]
+config.JobType.pyCfgParams = ['global_tag=74X_dataRun2_Prompt_v4', 'MC=False', 'debug=False', 'isHBHERun2015D=False', 'DoJECCorrection=True', 'leptonFilter=True', 'DoAK8Reclustering=True','ReDoPruningAndSoftdrop=True', 'isHBHERun2015D=True' ]
 #config.JobType.pyCfgParams = ['global_tag=74X_dataRun2_v2', 'MC=False', 'isCrab=True', 'doJECCorrection=True', 'isHBHERun2015D=True']
 config.JobType.allowUndistributedCMSSW = True
 #config.JobType.maxMemoryMB = 2500    # 2.5 GB                      
@@ -54,43 +54,40 @@ if __name__ == '__main__':
 #    p.start()
 #    p.join()
 #
-
-    config.General.requestName = 'data_mu_prompt_25ns_runD_v3_ReMiniAOD'
-    config.Data.inputDataset = '/SingleMuon/Run2015D-05Oct2015-v1/MINIAOD'
-    #config.Data.inputDataset = '/SingleMuon/Run2015D-PromptReco-v3/MINIAOD'
-    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/16Nov_CMSSW74_12_data_Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON/data_mu_prompt_v3_25ns_runD_ReMiniAOD/'
-#    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
-    from multiprocessing import Process
-    p = Process(target=submit, args=(config,))
-    p.start()
-    p.join()
-    
-    config.General.requestName = 'data_el_prompt_25ns_runD_v3_ReMiniAOD'
-    config.Data.inputDataset = '/SingleElectron/Run2015D-05Oct2015-v1/MINIAOD'
-    #config.Data.inputDataset = '/SingleElectron/Run2015D-PromptReco-v3/MINIAOD'
-    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/16Nov_CMSSW74_12_data_Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON/data_el_prompt_v3_25ns_runD_ReMiniAOD/'
-#    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
-    from multiprocessing import Process
-    p = Process(target=submit, args=(config,))
-    p.start()
-    p.join()
-
-#    config.General.requestName = 'data_mu_prompt_25ns_runD_v4'
-#    config.Data.inputDataset = '/SingleMuon/Run2015D-PromptReco-v4/MINIAOD'
-#    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/16Nov_CMSSW74_12_data_Cert_246908-259891_13TeV_PromptReco_Collisions15_25ns_JSON_v3/data_mu_prompt_v4_25ns_runD/'
+#    config.General.requestName = 'data_mu_prompt_25ns_runD_v3'
+#    config.Data.inputDataset = '/SingleMuon/Run2015D-PromptReco-v3/MINIAOD'
+#    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/16Nov_CMSSW74_12_data_Cert_246908-259891_13TeV_PromptReco_Collisions15_25ns_JSON_v3/data_mu_prompt_v3_25ns_runD/'
 ##    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
 #    from multiprocessing import Process
 #    p = Process(target=submit, args=(config,))
 #    p.start()
 #    p.join()
 #    
-#    config.General.requestName = 'data_el_prompt_25ns_runD_v4'
-#    config.Data.inputDataset = '/SingleElectron/Run2015D-PromptReco-v4/MINIAOD'
-#    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/16Nov_CMSSW74_12_data_Cert_246908-259891_13TeV_PromptReco_Collisions15_25ns_JSON_v3/data_el_prompt_v4_25ns_runD/'
+#    config.General.requestName = 'data_el_prompt_25ns_runD_v3'
+#    config.Data.inputDataset = '/SingleElectron/Run2015D-PromptReco-v3/MINIAOD'
+#    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/16Nov_CMSSW74_12_data_Cert_246908-259891_13TeV_PromptReco_Collisions15_25ns_JSON_v3/data_el_prompt_v3_25ns_runD/'
 ##    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
 #    from multiprocessing import Process
 #    p = Process(target=submit, args=(config,))
 #    p.start()
 #    p.join()
-#
-    #...
+
+    config.General.requestName = 'data_mu_prompt_25ns_runD_v4'
+    config.Data.inputDataset = '/SingleMuon/Run2015D-PromptReco-v4/MINIAOD'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/16Nov_CMSSW74_12_data_Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON/data_mu_prompt_v4_25ns_runD/'
+#    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+    
+    config.General.requestName = 'data_el_prompt_25ns_runD_v4'
+    config.Data.inputDataset = '/SingleElectron/Run2015D-PromptReco-v4/MINIAOD'
+    config.Data.outLFNDirBase = '/store/user/rasharma/WWScattering/16Nov_CMSSW74_12_data_Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON/data_el_prompt_v4_25ns_runD/'
+#    config.Data.lumiMask = 'json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
+    from multiprocessing import Process
+    p = Process(target=submit, args=(config,))
+    p.start()
+    p.join()
+
+   #...

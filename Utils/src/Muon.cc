@@ -102,6 +102,8 @@ Muon::Muon(const edm::ParameterSet& iConfig)
 	produces<std::vector<bool> > (string4).setBranchAlias(string4);
         const std::string string5("isLoose");
 	produces<std::vector<bool> > (string5).setBranchAlias(string5);
+        const std::string string18("isTight");
+	produces<std::vector<bool> > (string18).setBranchAlias(string18);
         const std::string string6("type");
 	produces<std::vector<int> > (string6).setBranchAlias(string6);
         const std::string string7("charge");
@@ -151,6 +153,7 @@ Muon::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<double> > e(new std::vector<double>);
 	std::auto_ptr< std::vector<bool> > isHighPt(new std::vector<bool>);
 	std::auto_ptr< std::vector<bool> > isLoose(new std::vector<bool>);
+	std::auto_ptr< std::vector<bool> > isTight(new std::vector<bool>);
 	std::auto_ptr< std::vector<bool> > isPFMuon(new std::vector<bool>);
 	std::auto_ptr< std::vector<int> > type(new std::vector<int>);
 	std::auto_ptr< std::vector<int> > charge(new std::vector<int>);
@@ -181,12 +184,14 @@ Muon::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		  bool isHighPtId = Muons->at(i).isHighPtMuon(Vertices->at(0));
 		  bool isLooseId = Muons->at(i).isLooseMuon();
+		  bool isTightId = Muons->at(i).isTightMuon(Vertices->at(0));
 		  bool isPF = Muons->at(i).isPFMuon();
 		
 		  //if( !isHighPtId ) continue;
 		  prodMu->push_back(pat::Muon(Muons->at(i)));
 		  isHighPt->push_back( isHighPtId );
 		  isLoose->push_back( isLooseId );
+		  isTight->push_back( isTightId );
 		  isPFMuon->push_back( isPF);
 		  type->push_back(Muons->at(i).pdgId());
 		  charge->push_back(Muons->at(i).charge());
@@ -221,6 +226,8 @@ Muon::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.put(isHighPt,string4);
 	const std::string string5("isLoose");
 	iEvent.put(isLoose,string5);
+	const std::string string18("isTight");
+	iEvent.put(isTight,string18);
 	const std::string string6("type");
 	iEvent.put(type,string6);
 	const std::string string7("charge");
