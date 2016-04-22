@@ -1471,10 +1471,10 @@ reDoPruningAndSoftdrop=False
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
 #        process.HLTSelection*
-        process.TriggerProducer*
+##        process.TriggerProducer* #NOT PRESENT IN 76x MINIAOD
         ### MET Filter Bits
         process.HBHENoiseFilterResultProducer*
-        process.FilterProducer* #this now contains all the met filters
+#        process.FilterProducer* #this now contains all the met filters
 #        process.metFilters* #this now contains all the met filters
 #        process.metBits_miniAOD*
         ### HBHE noise filter
