@@ -174,13 +174,13 @@ void PrescaleWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
             double threshold = atof(strthr.c_str());
             //    cout << strthr << ": " << threshold << endl;
             triggerThres.push_back(threshold);
-            if (triggerResults->accept(i)) {
-               int currentPrescale = hltConfig_.prescaleValue(iEvent, iSetup, trigName);
-               if (currentPrescale < finalPrescale || finalPrescale == 0) {
-                  finalPrescale = currentPrescale;
-                  finalThreshold = threshold;
-               }
-            }
+	    //            if (triggerResults->accept(i)) {
+	    //  int currentPrescale = hltConfig_.prescaleValue(iEvent, iSetup, trigName);
+	    //  if (currentPrescale < finalPrescale || finalPrescale == 0) {
+	    //     finalPrescale = currentPrescale;
+	    //     finalThreshold = threshold;
+	    //  }
+	    // }
          }  
       }  
    
@@ -299,13 +299,13 @@ void PrescaleWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
                double threshold = atof(strthr.c_str());
                //  cout << strthr << ": " << threshold << endl;
                triggerThres.push_back(threshold);
-               if (triggerResults->accept(i)) {
-                  int currentPrescale = hltConfig_.prescaleValue(iEvent, iSetup, trigName);
-                  if (currentPrescale < finalPrescale || finalPrescale == 0) {
-                     finalPrescale = currentPrescale;
-                     finalThreshold = threshold;
-                  }
-               }
+	       //               if (triggerResults->accept(i)) {
+	       // int currentPrescale = hltConfig_.prescaleValue(iEvent, iSetup, trigName);
+	       // if (currentPrescale < finalPrescale || finalPrescale == 0) {
+	       //    finalPrescale = currentPrescale;
+	       //    finalThreshold = threshold;
+	       // }
+               //}
             }  
          }  
          
@@ -321,13 +321,13 @@ void PrescaleWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
                double threshold = atof(strthr.c_str());
                //   cout << strthr << ": " << threshold << endl;
                triggerThres.push_back(threshold);
-               if (triggerResults->accept(i)) {
-                  int currentPrescale = hltConfig_.prescaleValue(iEvent, iSetup, trigName);
-                  if (currentPrescale < finalPrescale || finalPrescale == 0) {
-                     finalPrescale = currentPrescale;
-                     finalThreshold = threshold;
-                  }
-               }
+	       //               if (triggerResults->accept(i)) {
+	       // int currentPrescale = hltConfig_.prescaleValue(iEvent, iSetup, trigName);
+	       // if (currentPrescale < finalPrescale || finalPrescale == 0) {
+	       //    finalPrescale = currentPrescale;
+	       //    finalThreshold = threshold;
+	       // }
+               //}
             }
          }
       }
