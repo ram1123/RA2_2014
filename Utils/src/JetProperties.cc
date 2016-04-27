@@ -58,8 +58,10 @@ private:
 	virtual void endRun(edm::Run&, edm::EventSetup const&);
 	virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-	edm::InputTag JetTag_;
-  edm::InputTag RhoTag_;
+
+  edm::EDGetTokenT<edm::View<pat::Jet> > JetToken_;
+  edm::EDGetTokenT<double> RhoToken_;
+
   std::vector<std::string> jecPayloadNames_;
   std::string l1file;
   std::string l2file;
@@ -88,11 +90,11 @@ private:
 //
 // constructors and destructor
 //
-JetProperties::JetProperties(const edm::ParameterSet& iConfig)
+JetProperties::JetProperties(const edm::ParameterSet& iConfig):
+  JetToken_(consumes<edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("JetTag"))),
+  RhoToken_(consumes<double>(iConfig.getParameter<edm::InputTag>("RhoTag")))
   //   jecPayloadNames_( iConfig.getParameter<std::vector<std::string> >("jecPayloadNames") ) // JEC level payloads   
 {
-	JetTag_ = iConfig.getParameter<edm::InputTag>("JetTag");
-	RhoTag_ = iConfig.getParameter<edm::InputTag>("RhoTag");
 	l1file = iConfig.getParameter<std::string> ("L1File");
 	l2file = iConfig.getParameter<std::string> ("L2File");
 	l3file = iConfig.getParameter<std::string> ("L3File");
@@ -214,9 +216,9 @@ JetProperties::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace reco;
 	using namespace pat;
 	edm::Handle< edm::View<pat::Jet> > Jets;
-	iEvent.getByLabel(JetTag_,Jets);
+	iEvent.getByToken(JetToken_,Jets);
 	edm::Handle<double> rho_ ;
-        iEvent.getByLabel(RhoTag_, rho_);
+        iEvent.getByToken(RhoToken_, rho_);
 
 	//  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
 	std::vector<JetCorrectorParameters> vPar;
