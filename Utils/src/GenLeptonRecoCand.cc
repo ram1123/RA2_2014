@@ -52,7 +52,7 @@ private:
 	virtual void endRun(edm::Run&, edm::EventSetup const&);
 	virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-	edm::InputTag PrunedGenParticleTag_;
+  edm::EDGetTokenT<edm::View<reco::GenParticle> > PrunedGenParticleToken_;
 	int pdgID_;
 	
 	const reco::GenParticle* BosonFound(const reco::GenParticle * particle);
@@ -75,10 +75,10 @@ private:
 //
 // constructors and destructor
 //
-GenLeptonRecoCand::GenLeptonRecoCand(const edm::ParameterSet& iConfig)
+GenLeptonRecoCand::GenLeptonRecoCand(const edm::ParameterSet& iConfig):
+  PrunedGenParticleToken_ (consumes<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag> ("PrunedGenParticleTag")))
 {
 	//register your produc
-	PrunedGenParticleTag_ 				= 	iConfig.getParameter<edm::InputTag >("PrunedGenParticleTag");	
 	const std::string string1("Boson");
 	const std::string string1t("BosonPDGId");
 	const std::string string1b("isBosonLeptonic");
@@ -148,7 +148,7 @@ GenLeptonRecoCand::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<reco::GenParticle> > selectedTop(new std::vector<reco::GenParticle>);
 	std::auto_ptr< std::vector<int> > selectedTopPDGId(new std::vector<int>);
 	Handle<edm::View<reco::GenParticle> > pruned;
-	iEvent.getByLabel(PrunedGenParticleTag_,pruned);
+	iEvent.getByToken(PrunedGenParticleToken_,pruned);
 	for(size_t i=0; i<pruned->size();i++)
 	{
 	  if (abs((*pruned)[i].pdgId() ) == 6) { //save top

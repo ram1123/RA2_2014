@@ -52,8 +52,7 @@ private:
 	virtual void endRun(edm::Run&, edm::EventSetup const&);
 	virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-	edm::InputTag GenJetCollTag_;
-
+  edm::EDGetTokenT<edm::View<pat::Jet> > GenJetCollToken_;
 	// ----------member data ---------------------------
 };
 
@@ -69,10 +68,10 @@ private:
 //
 // constructors and destructor
 //
-GenJetAK8::GenJetAK8(const edm::ParameterSet& iConfig)
+GenJetAK8::GenJetAK8(const edm::ParameterSet& iConfig):
+  GenJetCollToken_(consumes<edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("GenJetCollTag")))
 {
 	//register your produc
-	GenJetCollTag_ 				= 	iConfig.getParameter<edm::InputTag >("GenJetCollTag");	
 
 	const std::string string1("GenJetAK8");
 	produces<std::vector<pat::Jet> > (string1).setBranchAlias(string1);
@@ -130,7 +129,7 @@ GenJetAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<double> > GenAK8tau3(new std::vector<double>);
 
 	Handle<edm::View<pat::Jet> > jet;
-	iEvent.getByLabel(GenJetCollTag_,jet);
+	iEvent.getByToken(GenJetCollToken_,jet);
 
 	for(size_t i=0; i<jet->size();i++)
 	{

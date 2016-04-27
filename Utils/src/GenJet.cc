@@ -52,7 +52,7 @@ private:
 	virtual void endRun(edm::Run&, edm::EventSetup const&);
 	virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-	edm::InputTag GenJetCollTag_;
+  edm::EDGetTokenT<edm::View<reco::GenJet> > GenJetCollToken_;
 
 	// ----------member data ---------------------------
 };
@@ -69,10 +69,10 @@ private:
 //
 // constructors and destructor
 //
-GenJet::GenJet(const edm::ParameterSet& iConfig)
+GenJet::GenJet(const edm::ParameterSet& iConfig):
+  GenJetCollToken_(consumes<edm::View<reco::GenJet> >(iConfig.getParameter<edm::InputTag >("GenJetCollTag")))
 {
 	//register your produc
-	GenJetCollTag_ 				= 	iConfig.getParameter<edm::InputTag >("GenJetCollTag");	
 	const std::string string1("GenJet");
 	produces<std::vector<reco::GenJet> > (string1).setBranchAlias(string1);
 	/* Examples
@@ -110,7 +110,7 @@ GenJet::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	std::auto_ptr< std::vector<reco::GenJet> > selectedJet(new std::vector<reco::GenJet>);
 
 	Handle<edm::View<reco::GenJet> > jet;
-	iEvent.getByLabel(GenJetCollTag_,jet);
+	iEvent.getByToken(GenJetCollToken_,jet);
 
 	for(size_t i=0; i<jet->size();i++)
 	{

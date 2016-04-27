@@ -60,10 +60,12 @@ private:
 	virtual void endRun(edm::Run&, edm::EventSetup const&);
 	virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-	edm::InputTag metTag_;
-  edm::InputTag RhoTag_;
-	edm::InputTag MuTag_;
-	edm::InputTag JetTag_;
+
+  edm::EDGetTokenT<edm::View<pat::MET> > metToken_;  
+  edm::EDGetTokenT<edm::View<pat::Jet> > JetToken_;
+  edm::EDGetTokenT<edm::View<pat::Muon> > MuToken_;
+  edm::EDGetTokenT<double> RhoToken_;
+
   //  std::vector<std::string> jecPayloadNames_;
   bool corrMet;
   double corrEx;
@@ -98,14 +100,14 @@ private:
 //
 // constructors and destructor
 //
-METDouble::METDouble(const edm::ParameterSet& iConfig)
+METDouble::METDouble(const edm::ParameterSet& iConfig):
+  metToken_(consumes<edm::View<pat::MET> >(iConfig.getParameter<edm::InputTag> ("METTag"))),
+  JetToken_(consumes<edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("JetTag"))),
+  MuToken_(consumes<edm::View<pat::Muon> >(iConfig.getParameter<edm::InputTag> ("MuTag"))),
+  RhoToken_(consumes<double>(iConfig.getParameter<edm::InputTag>("RhoTag")))
   //  jecPayloadNames_( iConfig.getParameter<std::vector<std::string> >("jecPayloadNames") ) // JEC level payloads
 {
 	//register your produc
-	metTag_ = iConfig.getParameter<edm::InputTag> ("METTag");
-	RhoTag_ = iConfig.getParameter<edm::InputTag> ("RhoTag");
-	MuTag_ = iConfig.getParameter<edm::InputTag> ("MuTag");
-	JetTag_ = iConfig.getParameter<edm::InputTag> ("JetTag");
 	corrMet = iConfig.getParameter<bool> ("corrMet");
 	doJEC = iConfig.getParameter<bool> ("doJEC");
 	l1file = iConfig.getParameter<std::string> ("L1File");
@@ -162,13 +164,13 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	double rawmetpt_=0, rawmetphi_=0;
 	double calometpt_=0, calometphi_=0;
 	edm::Handle< edm::View<pat::MET> > MET;
-	iEvent.getByLabel(metTag_,MET); 
+	iEvent.getByToken(metToken_,MET); 
 	edm::Handle<double> rho_ ;
-	iEvent.getByLabel(RhoTag_, rho_);
+	iEvent.getByToken(RhoToken_, rho_);
 	edm::Handle< edm::View<pat::Jet> > Jets;
-        iEvent.getByLabel(JetTag_,Jets);
+        iEvent.getByToken(JetToken_,Jets);
 	edm::Handle< edm::View<pat::Muon> > Muons;
-        iEvent.getByLabel(MuTag_,Muons);
+        iEvent.getByToken(MuToken_,Muons);
 
 	//  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
 	std::vector<JetCorrectorParameters> vPar;
@@ -394,7 +396,7 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	    calometpt_ = MET->at(0).caloMETPt();
 	    calometphi_ = MET->at(0).caloMETPhi();
 	  }	
-	  else std::cout<<"METDouble::Invlide Tag: "<<metTag_.label()<<std::endl;
+	  else std::cout<<"METDouble::Invlide Tag: "<<std::endl;
 	}
 
 	delete JetCorrector;

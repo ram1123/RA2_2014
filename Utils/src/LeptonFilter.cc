@@ -38,8 +38,8 @@ private:
   virtual bool filter(edm::Event&, const edm::EventSetup&);
   virtual void endJob() ;
   // ----------member data ---------------------------
-  edm::InputTag electronsInputTag_;
-  edm::InputTag muonsInputTag_;
+  edm::EDGetTokenT<edm::View<pat::Electron> > electronsInputTag_;
+  edm::EDGetTokenT<edm::View<pat::Muon> > muonsInputTag_;
   double eleFilterPtCut_;
   double muFilterPtCut_;
 };
@@ -47,9 +47,10 @@ private:
 //
 // constructors and destructor
 //
-LeptonFilter::LeptonFilter(const edm::ParameterSet& iConfig) {
-  electronsInputTag_ = iConfig.getParameter<edm::InputTag> ("electronsInputTag" );
-  muonsInputTag_ = iConfig.getParameter<edm::InputTag> ("muonsInputTag" );
+LeptonFilter::LeptonFilter(const edm::ParameterSet& iConfig): 
+  electronsInputTag_(consumes<edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("electronsInputTag"))),
+  muonsInputTag_(consumes<edm::View<pat::Muon> >(iConfig.getParameter<edm::InputTag>("muonsInputTag")))
+{
   eleFilterPtCut_ = iConfig.getParameter<double> ("eleFilterPtCut" );
   muFilterPtCut_ = iConfig.getParameter<double> ("muFilterPtCut" );
 }
@@ -65,9 +66,9 @@ void LeptonFilter::endJob() {}
 bool LeptonFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   using namespace edm;
   edm::Handle< edm::View<pat::Electron> > els_h;
-  iEvent.getByLabel(electronsInputTag_,els_h);
+  iEvent.getByToken(electronsInputTag_,els_h);
   edm::Handle< edm::View<pat::Muon> > muon_h;
-  iEvent.getByLabel(muonsInputTag_, muon_h);
+  iEvent.getByToken(muonsInputTag_, muon_h);
 
   //edm::View<reco::Muon>::const_iterator muons_end = muon_h->end();
   if( els_h.isValid() ) {

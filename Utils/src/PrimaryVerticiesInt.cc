@@ -55,8 +55,8 @@ private:
 	virtual void endRun(edm::Run&, edm::EventSetup const&);
 	virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-	edm::InputTag vertexCollectionTag_;
-	
+
+  edm::EDGetTokenT<reco::VertexCollection> VertexCollectionToken_;
 	
 	// ----------member data ---------------------------
 };
@@ -73,10 +73,10 @@ private:
 //
 // constructors and destructor
 //
-PrimaryVericiesInt::PrimaryVericiesInt(const edm::ParameterSet& iConfig)
+PrimaryVericiesInt::PrimaryVericiesInt(const edm::ParameterSet& iConfig):
+  VertexCollectionToken_(consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("VertexCollection")))
 {
 	//register your produc
-	vertexCollectionTag_ = iConfig.getParameter<edm::InputTag>("VertexCollection");
 	
 	produces<int>("");
 	/* Examples
@@ -113,11 +113,11 @@ PrimaryVericiesInt::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace edm;
 	int nVertices=0;
 	edm::Handle<reco::VertexCollection> vertices;
-	iEvent.getByLabel(vertexCollectionTag_,vertices);
+	iEvent.getByToken(VertexCollectionToken_,vertices);
 	if( vertices.isValid() ) {
 		nVertices = vertices->size();
 	}
-	else std::cout<<"Warning VertexCollection Tag not valid: "<<vertexCollectionTag_.label()<<std::endl;
+	else std::cout<<"Warning VertexCollection Tag not valid "<<std::endl;
 	std::auto_ptr<int> htp(new int(nVertices));
 	iEvent.put(htp);
 	

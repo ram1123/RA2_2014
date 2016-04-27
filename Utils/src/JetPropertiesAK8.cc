@@ -58,11 +58,12 @@ private:
 	virtual void endRun(edm::Run&, edm::EventSetup const&);
 	virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 	virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-	edm::InputTag JetTag_;
-	edm::InputTag prunedJetTag_;
-	edm::InputTag softdropJetTag_;
-	std::string   btagname_;
-        edm::InputTag RhoTag_;
+  edm::EDGetTokenT<edm::View<pat::Jet> > JetToken_;
+  edm::EDGetTokenT<edm::View<pat::Jet> > prunedJetToken_;
+  edm::EDGetTokenT<edm::View<pat::Jet> > softdropJetToken_;
+  edm::EDGetTokenT<double> RhoToken_;
+
+  std::string   btagname_;
   std::string l1file;
   std::string l2file;
   std::string l3file;
@@ -70,7 +71,7 @@ private:
   std::string uncfile;
   bool doJEC;
   bool doReclusteringForPrunedAndSoftdrop;
-  //	edm::InputTag puppiJetTag_;
+  //	edm::InputTag puppiJetToken_;
   double MinPt_;
   JetCorrectorParameters L2L3JetPar;
   //  std::vector<std::string> jecPayloadNames_;
@@ -90,14 +91,13 @@ private:
 //
 // constructors and destructor
 //
-JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
+JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig):
+  JetToken_(consumes<edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("JetTag"))),
+  prunedJetToken_(consumes<edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("prunedJetTag"))),
+  softdropJetToken_(consumes<edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("softdropJetTag"))),
+  RhoToken_(consumes<double>(iConfig.getParameter<edm::InputTag>("RhoTag")))
   //  jecPayloadNames_( iConfig.getParameter<std::vector<std::string> >("jecPayloadNames") ) // JEC level payloads
 {
-	JetTag_ = iConfig.getParameter<edm::InputTag>("JetTag");
-	prunedJetTag_ = iConfig.getParameter<edm::InputTag>("prunedJetTag");
-	softdropJetTag_ = iConfig.getParameter<edm::InputTag>("softdropJetTag");
-	btagname_ = iConfig.getParameter<std::string>  ("BTagInputTag");
-	RhoTag_ = iConfig.getParameter<edm::InputTag>("RhoTag");
 	l1file = iConfig.getParameter<std::string>  ("L1File");
 	l2file = iConfig.getParameter<std::string>  ("L2File");
 	l3file = iConfig.getParameter<std::string>  ("L3File");
@@ -105,7 +105,7 @@ JetPropertiesAK8::JetPropertiesAK8(const edm::ParameterSet& iConfig)
 	uncfile = iConfig.getParameter<std::string>  ("uncFile");
 	doJEC = iConfig.getParameter<bool>  ("doJEC");
 	doReclusteringForPrunedAndSoftdrop = iConfig.getParameter<bool>  ("doReclusteringForPrunedAndSoftdrop");
-	//puppiJetTag_ = iConfig.getParameter<edm::InputTag>("puppiJetTag");
+	//puppiJetToken_ = iConfig.getParameter<edm::InputTag>("puppiJetTag");
         MinPt_ = iConfig.getParameter <double> ("MinPt");
 	//register your products
 	/* Examples
@@ -260,15 +260,15 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace reco;
 	using namespace pat;
 	edm::Handle< edm::View<pat::Jet> > Jets;
-	iEvent.getByLabel(JetTag_,Jets);
+	iEvent.getByToken(JetToken_,Jets);
 	edm::Handle< edm::View<pat::Jet> > prunedJets;
-	iEvent.getByLabel(prunedJetTag_,prunedJets);
+	iEvent.getByToken(prunedJetToken_,prunedJets);
 	edm::Handle< edm::View<pat::Jet> > softdropJets;
-	iEvent.getByLabel(softdropJetTag_,softdropJets);
+	iEvent.getByToken(softdropJetToken_,softdropJets);
 	edm::Handle<double> rho_ ;
-        iEvent.getByLabel(RhoTag_, rho_);
+        iEvent.getByToken(RhoToken_, rho_);
 	//edm::Handle< edm::View<pat::Jet> > puppiJets;
-	//iEvent.getByLabel(puppiJetTag_,puppiJets);
+	//iEvent.getByToken(puppiJetToken_,puppiJets);
 
 	//  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
 	std::vector<JetCorrectorParameters> vPar;

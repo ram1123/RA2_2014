@@ -52,9 +52,10 @@ private:
 	virtual void endRun(edm::Run&, edm::EventSetup const&);
 	virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
         virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-	edm::InputTag MuTag_;
-        edm::InputTag VertexTag_;
-	edm::InputTag RhoTag_;
+
+  edm::EDGetTokenT<edm::View<pat::Muon> > MuToken_;
+  edm::EDGetTokenT<edm::View<reco::Vertex> > VertexToken_;
+  edm::EDGetTokenT<double> RhoToken_;
   double MinPt_;
 	// ----------member data ---------------------------
 };
@@ -71,12 +72,12 @@ private:
 //
 // constructors and destructor
 //
-Muon::Muon(const edm::ParameterSet& iConfig)
+Muon::Muon(const edm::ParameterSet& iConfig):
+  MuToken_(consumes<edm::View<pat::Muon> >(iConfig.getParameter<edm::InputTag>("MuTag"))),
+  VertexToken_(consumes<edm::View<reco::Vertex> >(iConfig.getParameter<edm::InputTag>("VertexTag"))),
+  RhoToken_(consumes<double>(iConfig.getParameter<edm::InputTag>("RhoTag")))
 {
-	MuTag_ = iConfig.getParameter<edm::InputTag>("MuTag");
         MinPt_ = iConfig.getParameter <double> ("MinPt");
-        VertexTag_ = iConfig.getParameter<edm::InputTag>("VertexTag");
-	RhoTag_ = iConfig.getParameter<edm::InputTag>("RhoTag");
 	//register your products
 	/* Examples
 	 *   produces<ExampleData2>();
@@ -173,11 +174,11 @@ Muon::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace pat;
 
 	edm::Handle< edm::View<pat::Muon> > Muons;
-	iEvent.getByLabel(MuTag_,Muons);
+	iEvent.getByToken(MuToken_,Muons);
 	edm::Handle< edm::View<reco::Vertex> > Vertices;
-        iEvent.getByLabel(VertexTag_,Vertices);
+        iEvent.getByToken(VertexToken_,Vertices);
 	edm::Handle<double> rho_ ;
-	iEvent.getByLabel(RhoTag_, rho_);
+	iEvent.getByToken(RhoToken_, rho_);
 
 	if( Muons.isValid() ) {
 	  //	  std::cout<<"Muoni: "<<Muons->size()<<std::endl;

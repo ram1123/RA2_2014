@@ -59,19 +59,20 @@ private:
 	virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
         virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
         float dEtaInSeed( const pat::Electron &ele );
-	edm::InputTag EleTag_;
-	edm::InputTag VertexTag_;
-	edm::InputTag RhoTag_;
-  double MinPt_;
-  edm::EDGetTokenT<reco::ConversionCollection> ConversionTag_;
-  edm::EDGetTokenT<reco::BeamSpot> BeamSpotTag_;
 
+  edm::EDGetTokenT<edm::View<pat::Electron> > eleToken_;
+  edm::EDGetTokenT<edm::View<reco::Vertex> > VertexToken_;
+  edm::EDGetTokenT<reco::ConversionCollection> ConversionToken_;
+  edm::EDGetTokenT<reco::BeamSpot> BeamSpotToken_;
+  edm::EDGetTokenT<double> RhoToken_;
   // ID decisions objects
   //  edm::EDGetTokenT<edm::ValueMap<bool> > eleVetoIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > eleMediumIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > eleTightIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > eleHEEPIdMapToken_;
+
+  double MinPt_;
 	// ----------member data ---------------------------
 };
 
@@ -88,18 +89,19 @@ private:
 // constructors and destructor
 //
 Electron::Electron(const edm::ParameterSet& iConfig):
-  ConversionTag_(consumes<reco::ConversionCollection>(iConfig.getParameter<edm::InputTag>("ConversionTag"))),
-  BeamSpotTag_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("BeamSpotTag"))),
+  eleToken_(consumes<edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("EleTag"))),
+  VertexToken_(consumes<edm::View<reco::Vertex> >(iConfig.getParameter<edm::InputTag>("VertexTag"))),
+  ConversionToken_(consumes<reco::ConversionCollection>(iConfig.getParameter<edm::InputTag>("ConversionTag"))),
+  BeamSpotToken_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("BeamSpotTag"))),
+  RhoToken_(consumes<double>(iConfig.getParameter<edm::InputTag>("RhoTag"))),
+  //  MinPtTag_(consumes<double>(iConfig.getParameter <edm::InputTag> ("MinPt"))),
   //  eleVetoIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoIdMap"))),
   eleLooseIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIdMap"))),
   eleMediumIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"))),
   eleTightIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"))),
   eleHEEPIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleHEEPIdMap")))
 {
-	EleTag_ = iConfig.getParameter<edm::InputTag>("EleTag");
-        MinPt_ = iConfig.getParameter <double> ("MinPt");
-	VertexTag_ = iConfig.getParameter<edm::InputTag>("VertexTag");
-	RhoTag_ = iConfig.getParameter<edm::InputTag>("RhoTag");
+  MinPt_       = iConfig.getParameter<double>("MinPt");
 	//	ConversionTag_ = iConfig.getParameter<edm::InputTag>("ConversionTag");
 	//	BeamSpotTag_ = iConfig.getParameter<edm::InputTag>("BeamSpotTag");
 
@@ -227,16 +229,15 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace pat;
 
 	edm::Handle< edm::View<pat::Electron> > Electrons;
-	iEvent.getByLabel(EleTag_,Electrons);
+	iEvent.getByToken(eleToken_,Electrons);
 	edm::Handle< edm::View<reco::Vertex> > Vertices;
-	iEvent.getByLabel(VertexTag_,Vertices);
-	edm::Handle<double> rho_ ;
-	iEvent.getByLabel(RhoTag_, rho_);
+	iEvent.getByToken(VertexToken_,Vertices);
 	edm::Handle<reco::ConversionCollection> ConversionsHandle_;
-	iEvent.getByToken(ConversionTag_, ConversionsHandle_);
+	iEvent.getByToken(ConversionToken_, ConversionsHandle_);
 	edm::Handle<reco::BeamSpot> BeamSpotHandle_;	
-	iEvent.getByToken(BeamSpotTag_, BeamSpotHandle_);
-
+	iEvent.getByToken(BeamSpotToken_, BeamSpotHandle_);
+	edm::Handle<double> rho_ ;
+	iEvent.getByToken(RhoToken_, rho_);
 
 	// Get the electron ID data from the event stream.
 	// Note: this implies that the VID ID modules have been run upstream.
@@ -246,6 +247,7 @@ Electron::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
 	edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
 	edm::Handle<edm::ValueMap<bool> > heep_id_decisions;
+
 	//iEvent.getByToken(eleVetoIdMapToken_ ,veto_id_decisions);
 	iEvent.getByToken(eleLooseIdMapToken_ ,loose_id_decisions);
 	iEvent.getByToken(eleMediumIdMapToken_,medium_id_decisions);
