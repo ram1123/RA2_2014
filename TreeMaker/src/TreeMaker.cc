@@ -474,7 +474,7 @@ TreeMaker::beginJob()
 
   // double variables
   //  VarsDouble_ = std::vector<Double_t>(VarsDoubleNames_.size(),1.);
-  std::cout<<"inizio ciclo double: "<<std::endl;
+  //  std::cout<<"inizio ciclo double: "<<std::endl;
   for(unsigned int i=0; i < VarsDoubleNames_.size();i++)
   {
     std::string tempFull = VarsDoubleNames_[i];

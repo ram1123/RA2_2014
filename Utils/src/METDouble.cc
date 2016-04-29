@@ -399,7 +399,7 @@ METDouble::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  else std::cout<<"METDouble::Invlide Tag: "<<std::endl;
 	}
 
-	std::cout<<"met: "<<metpt_<<std::endl;
+	//	std::cout<<"met: "<<metpt_<<std::endl;
 
 	delete JetCorrector;
 	delete JetCorrectorL1;
