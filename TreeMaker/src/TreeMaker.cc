@@ -65,7 +65,167 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
   VectorBoolVector_.clear();
   VectorStringVector_.clear();
   VectorTLorentzVector_.clear();
-  
+ 
+   // int variables
+  VarsInt_ = std::vector<int>(VarsIntNames_.size(),1);  
+  for(unsigned int i=0; i < VarsIntNames_.size();i++)
+  {
+    std::string tempFull = VarsIntNames_[i];
+    std::string nameInTree = VarsIntNames_[i];
+    std::string tag = VarsIntNames_[i];
+    if(tempFull.find("(") <tempFull.size() && tempFull.find(")") <tempFull.size())
+    {
+      tag = SeparateString(tempFull,"(").first;
+      nameInTree = SeparateString(SeparateString(tempFull,"(").second,")").first;
+    }
+    std::cout<<"VarsIntNames: tag:"<<tag<<" nameInTree: "<<nameInTree<<" originial full name: "<<tempFull<<std::endl;
+    VarsIntTags_.push_back(consumes<int>(edm::InputTag(tag)));
+
+  }
+  // double variables
+  VarsDouble_ = std::vector<double>(VarsDoubleNames_.size(),1.);
+  for(unsigned int i=0; i < VarsDoubleNames_.size();i++)
+  {
+    std::string tempFull = VarsDoubleNames_[i];
+    std::string nameInTree = VarsDoubleNames_[i];
+    std::string tag = VarsDoubleNames_[i];
+    if(tempFull.find("(") <tempFull.size() && tempFull.find(")") <tempFull.size())
+    {
+      tag = SeparateString(tempFull,"(").first;
+      nameInTree = SeparateString(SeparateString(tempFull,"(").second,")").first;
+    }
+    std::cout<<"VarsDoubleNames_: tag:"<<tag<<" nameInTree: "<<nameInTree<<" originial full name: "<<tempFull<<std::endl;
+    VarsDoubleTags_.push_back(consumes<double>(edm::InputTag(tag)));
+  }
+  // bool variables
+  VarsBool_ = std::vector<UChar_t>(VarsBoolNames_.size(),0);
+  for(unsigned int i=0; i < VarsBoolNames_.size();i++)
+  {
+    std::string tempFull = VarsBoolNames_[i];
+    std::string nameInTree = VarsBoolNames_[i];
+    std::string tag = VarsBoolNames_[i];
+    if(tempFull.find("(") <tempFull.size() && tempFull.find(")") <tempFull.size())
+    {
+      tag = SeparateString(tempFull,"(").first;
+      nameInTree = SeparateString(SeparateString(tempFull,"(").second,")").first;
+    }
+    std::cout<<"VarsBoolNames_: tag:"<<tag<<" nameInTree: "<<nameInTree<<" originial full name: "<<tempFull<<std::endl;
+    VarsBoolTags_.push_back(consumes<UChar_t>(edm::InputTag(tag)));    
+  }
+  //  TLorentzVector variables
+  VarsTLorentzVector_ = std::vector<TLorentzVector>(VarsTLorentzVectorNames_.size(),TLorentzVector(0.,0.,0.,0.));
+  for(unsigned int i=0; i < VarsTLorentzVectorNames_.size();i++)
+  {
+    std::string tempFull = VarsTLorentzVectorNames_[i];
+    std::string nameInTree = VarsTLorentzVectorNames_[i];
+    std::string tag = VarsTLorentzVectorNames_[i];
+    if(tempFull.find("(") <tempFull.size() && tempFull.find(")") <tempFull.size())
+    {
+      tag = SeparateString(tempFull,"(").first;
+      nameInTree = SeparateString(SeparateString(tempFull,"(").second,")").first;
+    }
+    std::cout<<"VarsTLorentzVectorNames_: tag:"<<tag<<" nameInTree: "<<nameInTree<<" originial full name: "<<tempFull<<std::endl;
+    VarsTLorentzVectorTags_.push_back(consumes<TLorentzVector>(edm::InputTag(tag)));
+  }
+  //  TString variables
+  VarsString_ = std::vector<std::string>(VarsStringNames_.size(), (std::string)"");
+  for(unsigned int i=0; i < VarsStringNames_.size();i++)
+  {
+    std::string tempFull = VarsStringNames_[i];
+    std::string nameInTree = VarsStringNames_[i];
+    std::string tag = VarsStringNames_[i];
+    if(tempFull.find("(") <tempFull.size() && tempFull.find(")") <tempFull.size())
+    {
+      tag = SeparateString(tempFull,"(").first;
+      nameInTree = SeparateString(SeparateString(tempFull,"(").second,")").first;
+    }
+    std::cout<<"VarsStringNames_: tag:"<<tag<<" nameInTree: "<<nameInTree<<" originial full name: "<<tempFull<<std::endl;
+    VarsStringTags_.push_back(consumes<std::string>(edm::InputTag(tag)));
+  }
+
+  RecoCandN_ = std::vector<UShort_t>(varsRecoCandNames_.size(),0);
+  for(unsigned int i=0; i<varsRecoCandNames_.size();i++)
+  {
+    std::string temp = varsRecoCandNames_[i];
+    std::string nameInTree = "";
+    std::string ttemp ="";
+    
+    std::cout<<"RecoCand Setup: item["<<i<<"] full string: "<<temp<<std::endl;
+    if(temp.find('|')<temp.size() ) temp = temp.substr(0,temp.find("|") );
+    if(temp.find('(')<temp.size() && temp.find(')')<temp.size() ) 
+    {
+      nameInTree = temp.substr(temp.find('(')+1, temp.find(')')-temp.find('(')-1);
+      temp=temp.substr(0,temp.find('('));
+    }
+    else nameInTree = temp;
+    std::cout<<"RecoCand Tag: "<<temp<<std::endl;
+    varsRecoCandTags_.push_back(consumes<edm::View<reco::Candidate> >(edm::InputTag(temp))); //QUI
+    std::cout<<"RecoCand stored name in tree: "<<nameInTree<<std::endl;
+
+    std::string mainNameInTree=temp;
+    temp = varsRecoCandNames_[i];
+
+    std::vector<edm::EDGetTokenT<std::vector<bool> > >tagvecB;
+    std::vector<edm::EDGetTokenT<std::vector<int> > >tagvecI;
+    std::vector<edm::EDGetTokenT<std::vector<double> > >tagvecF;
+    //edm::View<float> tagvecF;
+    RecoCandAdditionalBoolVariablesTags_.push_back(tagvecB);
+    RecoCandAdditionalIntVariablesTags_.push_back(tagvecI);
+    RecoCandAdditionalFloatVariablesTags_.push_back(tagvecF);
+    std::string temp2="";
+    std::string tag="";
+    int typ=-1;
+    while (temp.find('|')<temp.size() ) // loop over the posible additonal variables
+    {
+      typ=-1;
+      temp = temp.substr(temp.find("|")+1 );
+      temp2="";
+      if(temp.find('|')<temp.size() ) temp2 = temp.substr(0, temp.find('|') );
+      else temp2=temp;
+      // check for typ definition and for optional naming
+      if(temp2.find('(')<temp2.size() && temp2.find(')')<temp2.size() )
+      {
+	//	std::cout<<"POINT1::temp2: "<<temp2<<std::endl;
+	// check for optional naming
+	if(temp2.find('_')<temp2.size())
+	{
+	  nameInTree = temp2.substr(temp2.find('_')+1, temp2.find(')')-temp2.find('_')-1);
+	  tag = temp2.substr(0, temp2.find('('));
+	  if(temp2.find("b_")<temp2.size() )typ = 0;
+	  if(temp2.find("I_")<temp2.size() )typ = 1;
+	  if(temp2.find("F_")<temp2.size() )typ = 2;
+	}
+	else 
+	{
+	  nameInTree = temp2.substr(0, temp2.find('('));
+	  tag=temp2.substr(0, temp2.find('('));
+	  if(temp2.find('b')<temp2.size() )typ = 0;
+	  if(temp2.find('I')<temp2.size() )typ = 1;
+	  if(temp2.find('F')<temp2.size() )typ = 2;
+	  
+	}
+      }
+      else if(typ==-1)std::cout<<"Warning no typ selected for additonal input object: "<<temp2<<" of main varialbe: "<<nameInTree<<"Please use: tag(x_Name) with x=b,I,F (bool, int float) and optional Name for naming in the tree"<<std::endl;
+      if(typ==0)
+      {
+	
+	RecoCandAdditionalBoolVariablesTags_[i].push_back(consumes<std::vector<bool> >(edm::InputTag(tag )) );
+      }
+      if(typ==1)
+      {
+	
+	RecoCandAdditionalIntVariablesTags_[i].push_back(consumes<std::vector<int> >(edm::InputTag(tag )) );
+      }
+      if(typ==2)
+      {
+	
+	RecoCandAdditionalFloatVariablesTags_[i].push_back(consumes<std::vector<double> >(edm::InputTag(tag )) );
+      }
+      if(typ>2)std::cout<<"Error typ is: "<<typ<<" which is not defined!!! check!"<<std::endl;
+    }
+
+  }  
+
 }
 
 
@@ -96,59 +256,60 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   if(debug_) std::cout<<"Point a"<<std::endl;
   for(unsigned int i = 0; i < VarsIntTags_.size(); ++i) {
     edm::Handle<int> var;
-    iEvent.getByLabel(VarsIntTags_.at(i),var);
+    iEvent.getByToken(VarsIntTags_.at(i),var);
     if( var.isValid() ) {
       VarsInt_.at(i) = *var;
     }else{
-      std::cout<<"WARNING ... "<<i<<"th variable : "<<VarsIntTags_[i].label()<<" is NOT valid?!"<<std::endl;
+      std::cout<<"WARNING ... "<<i<<"th variable : "<<" is NOT valid?!"<<std::endl;
     }
   }
   if(debug_) std::cout<<"Point b"<<std::endl;
   for(unsigned int i = 0; i < VarsDoubleTags_.size(); ++i) {
     edm::Handle<double> var;
-    iEvent.getByLabel(VarsDoubleTags_.at(i),var);
+    iEvent.getByToken(VarsDoubleTags_.at(i),var);
     if( var.isValid() ) {
       VarsDouble_.at(i) = *var;
+      //      std::cout<<*var<<std::endl;
     }else{
-      std::cout<<"WARNING ... "<<i<<"th variable : "<<VarsDoubleTags_[i].label()<<" is NOT valid?!"<<std::endl;
+      std::cout<<"WARNING ... "<<i<<"th variable : "<<" is NOT valid?!"<<std::endl;
     }
   }
   if(debug_) std::cout<<"Point c"<<std::endl;
   for(unsigned int i = 0; i < VarsBoolTags_.size(); ++i) {
     edm::Handle<bool> var;
-    iEvent.getByLabel(VarsBoolTags_.at(i),var);
+    iEvent.getByToken(VarsBoolTags_.at(i),var);
     if( var.isValid() ) {
       if( *var ) VarsBool_.at(i) = 1;
       else VarsBool_.at(i) = 0;
     }else{
-      std::cout<<"WARNING ... "<<i<<"th variable : "<<VarsBoolTags_[i].label()<<" is NOT valid?!"<<std::endl;
+      std::cout<<"WARNING ... "<<i<<"th variable : "<<" is NOT valid?!"<<std::endl;
     }
   }
   if(debug_) std::cout<<"Point d"<<std::endl;
   for(unsigned int i = 0; i < VarsStringTags_.size(); ++i) {
     edm::Handle<std::string> var;
-    iEvent.getByLabel(VarsStringTags_.at(i),var);
+    iEvent.getByToken(VarsStringTags_.at(i),var);
     if( var.isValid() ) {
       VarsString_.at(i) = *var;
     }else{
-      std::cout<<"WARNING ... "<<i<<"th variable : "<<VarsStringTags_[i].label()<<" is NOT valid?!"<<std::endl;
+      std::cout<<"WARNING ... "<<i<<"th variable : "<<" is NOT valid?!"<<std::endl;
     }
   }
   if(debug_) std::cout<<"Point e"<<std::endl;
   for(unsigned int i = 0; i < VarsTLorentzVectorTags_.size(); ++i) {
     edm::Handle<TLorentzVector> var;
-    iEvent.getByLabel(VarsTLorentzVectorTags_.at(i),var);
+    iEvent.getByToken(VarsTLorentzVectorTags_.at(i),var);
     if( var.isValid() ) {
       VarsTLorentzVector_.at(i) = *var;
     }else{
-      std::cout<<"WARNING ... "<<i<<"th variable : "<<VarsTLorentzVectorTags_[i].label()<<" is NOT valid?!"<<std::endl;
+      std::cout<<"WARNING ... "<<i<<"th variable : "<<" is NOT valid?!"<<std::endl;
     }
   }
   if(debug_) std::cout<<"Point f"<<std::endl;
   for(unsigned int i = 0; i < varsRecoCandTags_.size(); ++i) 
   {
     edm::Handle< edm::View<reco::Candidate> > cands;
-    iEvent.getByLabel(varsRecoCandTags_.at(i),cands);
+    iEvent.getByToken(varsRecoCandTags_.at(i),cands);
     if( cands.isValid() ) 
     {
       RecoCandN_[i] = (unsigned int)(cands->size());
@@ -162,11 +323,11 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
       for(unsigned int ii=0; ii< RecoCandAdditionalFloatVariablesTags_[i].size();ii++)
       {
-	edm::Handle<std::vector<double> > FloatVar;
-	iEvent.getByLabel(RecoCandAdditionalFloatVariablesTags_[i].at(ii),FloatVar);
+	edm::Handle<std::vector<double> >FloatVar;
+	iEvent.getByToken(RecoCandAdditionalFloatVariablesTags_[i].at(ii),FloatVar);
 	if( !FloatVar.isValid() )
 	{
-	  if(debug_)std::cout<<"Warning Float variable with lable: "<<RecoCandAdditionalFloatVariablesTags_[i].at(ii).label()<<" not found!!!"<<std::endl;
+	  if(debug_)std::cout<<"Warning Float variable with lable: "<<" not found!!!"<<std::endl;
 	  break;
 	}
 	for(unsigned int iii=0; iii<cands->size();iii++)
@@ -177,11 +338,11 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       // loop over int variables
       for(unsigned int ii=0; ii< RecoCandAdditionalIntVariablesTags_[i].size();ii++)
       {
-	edm::Handle<std::vector<int> > IntVar;
-	iEvent.getByLabel(RecoCandAdditionalIntVariablesTags_[i].at(ii),IntVar);
+	edm::Handle<std::vector<int> >IntVar;
+	iEvent.getByToken(RecoCandAdditionalIntVariablesTags_[i].at(ii),IntVar);
 	if( !IntVar.isValid() )
 	{
-	  if(debug_)std::cout<<"Warning Int variable with lable: "<<RecoCandAdditionalIntVariablesTags_[i].at(ii).label()<<" not found!!!"<<std::endl;
+	  if(debug_)std::cout<<"Warning Int variable with lable: "<<" not found!!!"<<std::endl;
 	  break;
 	}
 	for(unsigned int iii=0; iii<cands->size();iii++)
@@ -192,11 +353,11 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       // loop over bool variables
       for(unsigned int ii=0; ii< RecoCandAdditionalBoolVariablesTags_[i].size();ii++)
       {
-	edm::Handle<std::vector<bool> > boolVar;
-	iEvent.getByLabel(RecoCandAdditionalBoolVariablesTags_[i].at(ii),boolVar);
+	edm::Handle<std::vector<bool> >boolVar;
+	iEvent.getByToken(RecoCandAdditionalBoolVariablesTags_[i].at(ii),boolVar);
 	if( !boolVar.isValid() )
 	{
-	  if(debug_)std::cout<<"Warning bool variable with lable: "<<RecoCandAdditionalBoolVariablesTags_[i].at(ii).label()<<" not found!!!"<<std::endl;
+	  if(debug_)std::cout<<"Warning bool variable with lable: "<<" not found!!!"<<std::endl;
 	  break;
 	}
 	for(unsigned int iii=0; iii<cands->size();iii++)
@@ -206,7 +367,7 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
       }
     }
-    else if(debug_)std::cout<<"Warning recoCand with tag: "<<varsRecoCandTags_.at(i).label()<<" not found!"<<std::endl;
+    else if(debug_)std::cout<<"Warning recoCand with tag: "<<" not found!"<<std::endl;
     
   }
   if(debug_) std::cout<<"Point g"<<std::endl;
@@ -218,7 +379,7 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	VectorDoubleVector_.at(i).push_back(var->at(j));
       }
     }else{
-      std::cout<<"WARNING ... "<<i<<"th variable : "<<VectorDoubleTags_[i].label()<<" is NOT valid?!"<<std::endl;
+      std::cout<<"WARNING ... "<<i<<"th double variable : "<<VectorDoubleTags_[i].label()<<" is NOT valid?!"<<std::endl;
     }
   }
   if(debug_) std::cout<<"Point h"<<std::endl;
@@ -230,7 +391,7 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	VectorIntVector_.at(i).push_back(var->at(j));
       }
     }else{
-      std::cout<<"WARNING ... "<<i<<"th variable : "<<VectorIntTags_[i].label()<<" is NOT valid?!"<<std::endl;
+      std::cout<<"WARNING ... "<<i<<"th int variable : "<<VectorIntTags_[i].label()<<" is NOT valid?!"<<std::endl;
     }
   }
   if(debug_) std::cout<<"Point i"<<std::endl;
@@ -243,7 +404,7 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	else VectorBoolVector_.at(i).push_back(0);
       }
     }else{
-      std::cout<<"WARNING ... "<<i<<"th variable : "<<VectorBoolTags_[i].label()<<" is NOT valid?!"<<std::endl;
+      std::cout<<"WARNING ... "<<i<<"th bool variable : "<<VectorBoolTags_[i].label()<<" is NOT valid?!"<<std::endl;
     }
   }
   if(debug_) std::cout<<"Point j"<<std::endl;
@@ -293,7 +454,8 @@ TreeMaker::beginJob()
   tree_->Branch("EvtNum",&evtNum_,"EvtNum/i");
  
   // int variables
-  VarsInt_ = std::vector<int>(VarsIntNames_.size(),1);
+  //  VarsInt_ = std::vector<int>(VarsIntNames_.size(),1);  
+  std::cout<<"size varsint: "<<VarsIntNames_.size()<<std::endl;
   for(unsigned int i=0; i < VarsIntNames_.size();i++)
   {
     std::string tempFull = VarsIntNames_[i];
@@ -305,13 +467,14 @@ TreeMaker::beginJob()
       nameInTree = SeparateString(SeparateString(tempFull,"(").second,")").first;
     }
     std::cout<<"VarsIntNames: tag:"<<tag<<" nameInTree: "<<nameInTree<<" originial full name: "<<tempFull<<std::endl;
-    VarsIntTags_.push_back(edm::InputTag(tag));
     nameInTree.erase (std::remove (nameInTree.begin(), nameInTree.end(), ':'), nameInTree.end());
     tree_->Branch((TString)nameInTree,&(VarsInt_.at(i)),(TString)nameInTree+"/I");
     
   }
+
   // double variables
-  VarsDouble_ = std::vector<Float_t>(VarsDoubleNames_.size(),1.);
+  //  VarsDouble_ = std::vector<Double_t>(VarsDoubleNames_.size(),1.);
+  std::cout<<"inizio ciclo double: "<<std::endl;
   for(unsigned int i=0; i < VarsDoubleNames_.size();i++)
   {
     std::string tempFull = VarsDoubleNames_[i];
@@ -323,13 +486,12 @@ TreeMaker::beginJob()
       nameInTree = SeparateString(SeparateString(tempFull,"(").second,")").first;
     }
     std::cout<<"VarsDoubleNames_: tag:"<<tag<<" nameInTree: "<<nameInTree<<" originial full name: "<<tempFull<<std::endl;
-    VarsDoubleTags_.push_back(edm::InputTag(tag));
+    //    std::cout<<"value: "<<VarsDouble_.at(i)<<std::endl; getchar();
     nameInTree.erase (std::remove (nameInTree.begin(), nameInTree.end(), ':'), nameInTree.end());
-    tree_->Branch((TString)nameInTree,&(VarsDouble_.at(i)),(TString)nameInTree+"/F");
-    
+    tree_->Branch((TString)nameInTree,&(VarsDouble_.at(i)),(TString)nameInTree+"/D");
   }
   // bool variables
-  VarsBool_ = std::vector<UChar_t>(VarsBoolNames_.size(),0);
+  //  VarsBool_ = std::vector<UChar_t>(VarsBoolNames_.size(),0);
   for(unsigned int i=0; i < VarsBoolNames_.size();i++)
   {
     std::string tempFull = VarsBoolNames_[i];
@@ -341,13 +503,11 @@ TreeMaker::beginJob()
       nameInTree = SeparateString(SeparateString(tempFull,"(").second,")").first;
     }
     std::cout<<"VarsBoolNames_: tag:"<<tag<<" nameInTree: "<<nameInTree<<" originial full name: "<<tempFull<<std::endl;
-    VarsBoolTags_.push_back(edm::InputTag(tag));
     nameInTree.erase (std::remove (nameInTree.begin(), nameInTree.end(), ':'), nameInTree.end());
-    tree_->Branch((TString)nameInTree,&(VarsBool_.at(i)),(TString)nameInTree+"/b");
-    
+    tree_->Branch((TString)nameInTree,&(VarsBool_.at(i)),(TString)nameInTree+"/b");    
   }
   //  TLorentzVector variables
-  VarsTLorentzVector_ = std::vector<TLorentzVector>(VarsTLorentzVectorNames_.size(),TLorentzVector(0.,0.,0.,0.));
+  //VarsTLorentzVector_ = std::vector<TLorentzVector>(VarsTLorentzVectorNames_.size(),TLorentzVector(0.,0.,0.,0.));
   for(unsigned int i=0; i < VarsTLorentzVectorNames_.size();i++)
   {
     std::string tempFull = VarsTLorentzVectorNames_[i];
@@ -359,13 +519,12 @@ TreeMaker::beginJob()
       nameInTree = SeparateString(SeparateString(tempFull,"(").second,")").first;
     }
     std::cout<<"VarsTLorentzVectorNames_: tag:"<<tag<<" nameInTree: "<<nameInTree<<" originial full name: "<<tempFull<<std::endl;
-    VarsTLorentzVectorTags_.push_back(edm::InputTag(tag));
     nameInTree.erase (std::remove (nameInTree.begin(), nameInTree.end(), ':'), nameInTree.end());
     tree_->Branch((TString)nameInTree,(TString)nameInTree,&(VarsTLorentzVector_.at(i)));
     
   }
   //  TString variables
-  VarsString_ = std::vector<std::string>(VarsStringNames_.size(), (std::string)"");
+  //VarsString_ = std::vector<std::string>(VarsStringNames_.size(), (std::string)"");
   for(unsigned int i=0; i < VarsStringNames_.size();i++)
   {
     std::string tempFull = VarsStringNames_[i];
@@ -377,13 +536,13 @@ TreeMaker::beginJob()
       nameInTree = SeparateString(SeparateString(tempFull,"(").second,")").first;
     }
     std::cout<<"VarsStringNames_: tag:"<<tag<<" nameInTree: "<<nameInTree<<" originial full name: "<<tempFull<<std::endl;
-    VarsStringTags_.push_back(edm::InputTag(tag));
     nameInTree.erase (std::remove (nameInTree.begin(), nameInTree.end(), ':'), nameInTree.end());
     tree_->Branch((TString)nameInTree,(TString)nameInTree,&(VarsString_.at(i)));
     
   }
+
+
   // loop over input varsFloat string to extract optional names in tree
-  RecoCandN_ = std::vector<UShort_t>(varsRecoCandNames_.size(),0);
   for(unsigned int i=0; i<varsRecoCandNames_.size();i++)
   {
     RecoCandPt_.push_back (new Float_t[200]);
@@ -395,8 +554,7 @@ TreeMaker::beginJob()
     std::string temp = varsRecoCandNames_[i];
     std::string nameInTree = "";
     std::string ttemp ="";
-    
-    
+        
     std::cout<<"RecoCand Setup: item["<<i<<"] full string: "<<temp<<std::endl;
     if(temp.find('|')<temp.size() ) temp = temp.substr(0,temp.find("|") );
     if(temp.find('(')<temp.size() && temp.find(')')<temp.size() ) 
@@ -406,8 +564,6 @@ TreeMaker::beginJob()
     }
     else nameInTree = temp;
     std::cout<<"RecoCand Tag: "<<temp<<std::endl;
-    varsRecoCandTags_.push_back(edm::InputTag(temp));
-    std::cout<<"RecoCand stored name in tree: "<<nameInTree<<std::endl;
     temp=nameInTree;
     temp.erase (std::remove (temp.begin(), temp.end(), ':'), temp.end());
     tree_->Branch((temp+"Num").c_str(),&(RecoCandN_.at(i)),(temp+"Num/s").c_str());
@@ -427,10 +583,6 @@ TreeMaker::beginJob()
     RecoCandAdditionalIntVariables_.push_back(vecInt);
     std::vector<Float_t*> vecFloat;
     RecoCandAdditionalFloatVariables_.push_back(vecFloat);
-    std::vector<edm::InputTag> tagvec;
-    RecoCandAdditionalBoolVariablesTags_.push_back(tagvec);
-    RecoCandAdditionalIntVariablesTags_.push_back(tagvec);
-    RecoCandAdditionalFloatVariablesTags_.push_back(tagvec);
     std::string temp2="";
     std::string tag="";
     int typ=-1;
@@ -471,7 +623,6 @@ TreeMaker::beginJob()
       if(typ==0)
       {
 	
-	RecoCandAdditionalBoolVariablesTags_[i].push_back(edm::InputTag(tag ) );
 	RecoCandAdditionalBoolVariables_[i].push_back(new UChar_t[200]);
 	tree_->Branch((mainNameInTree+"_"+nameInTree).c_str(), RecoCandAdditionalBoolVariables_.at(i).at(countBool), (mainNameInTree+"_"+nameInTree+"["+mainNameInTree+"Num]/b").c_str());
 	// 				tree_->Branch((nameInTree).c_str(), RecoCandAdditionalBoolVariables_.at(i).at(countBool), (nameInTree+"["+mainNameInTree+"Num]/b").c_str());
@@ -480,7 +631,6 @@ TreeMaker::beginJob()
       if(typ==1)
       {
 	
-	RecoCandAdditionalIntVariablesTags_[i].push_back(edm::InputTag(tag ) );
 	RecoCandAdditionalIntVariables_[i].push_back(new Int_t[200]);
 	tree_->Branch((mainNameInTree+"_"+nameInTree).c_str(), RecoCandAdditionalIntVariables_.at(i).at(countInt), (mainNameInTree+"_"+nameInTree+"["+mainNameInTree+"Num]/I").c_str());
 	// 				tree_->Branch((nameInTree).c_str(), RecoCandAdditionalIntVariables_.at(i).at(countInt), (nameInTree+"["+mainNameInTree+"Num]/I").c_str());
@@ -489,7 +639,6 @@ TreeMaker::beginJob()
       if(typ==2)
       {
 	
-	RecoCandAdditionalFloatVariablesTags_[i].push_back(edm::InputTag(tag ) );
 	RecoCandAdditionalFloatVariables_[i].push_back(new Float_t[200]);
 	tree_->Branch((mainNameInTree+"_"+nameInTree).c_str(), RecoCandAdditionalFloatVariables_.at(i).at(countFloat), (mainNameInTree+"_"+nameInTree+"["+mainNameInTree+"Num]/F").c_str());
 	countFloat++;
@@ -668,7 +817,7 @@ TreeMaker::setBranchVariablesToDefault()
       {
 	RecoCandAdditionalIntVariables_.at(i)[ii][iii]=-9999;
       }
-      for(unsigned int ii=0; ii < RecoCandAdditionalFloatVariablesTags_.at(i).size();ii++)
+      for(unsigned int ii=0; ii < RecoCandAdditionalFloatVariablesTags_[i].size();ii++)
       {
 	RecoCandAdditionalFloatVariables_.at(i)[ii][iii]=-9999.;
       }

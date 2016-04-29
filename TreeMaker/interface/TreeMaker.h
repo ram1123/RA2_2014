@@ -50,23 +50,24 @@ private:
   UInt_t runNum_;      
   UInt_t lumiBlockNum_;
   UInt_t evtNum_;
-  std::vector<edm::InputTag> VarsTLorentzVectorTags_;
+  
+  std::vector<edm::EDGetTokenT<TLorentzVector> > VarsTLorentzVectorTags_;
   std::vector<std::string> VarsTLorentzVectorNames_;
   std::vector<TLorentzVector> VarsTLorentzVector_;
   
-  std::vector<edm::InputTag> VarsStringTags_;
+  std::vector<edm::EDGetTokenT<std::string> > VarsStringTags_;
   std::vector<std::string> VarsStringNames_;
   std::vector<std::string> VarsString_;
   
-  std::vector<edm::InputTag> VarsDoubleTags_;
+  std::vector<edm::EDGetTokenT<double> > VarsDoubleTags_;
   std::vector<std::string> VarsDoubleNames_;
-  std::vector<Float_t> VarsDouble_;
+  std::vector<double> VarsDouble_;
   // any int precision varialbes
-  std::vector<edm::InputTag> VarsIntTags_;
+  std::vector<edm::EDGetTokenT<Int_t> > VarsIntTags_;
   std::vector<std::string> VarsIntNames_;
   std::vector<Int_t> VarsInt_;
   // any bool precision varialbes
-  std::vector<edm::InputTag> VarsBoolTags_;
+  std::vector<edm::EDGetTokenT<UChar_t> > VarsBoolTags_;
   std::vector<std::string> VarsBoolNames_;
   std::vector<UChar_t> VarsBool_;
   
@@ -89,8 +90,9 @@ private:
   std::vector<edm::InputTag> VectorTLorentzVectorTags_;
   std::vector<std::string> VectorTLorentzVectorNames_;
   std::vector<std::vector<TLorentzVector> > VectorTLorentzVector_;
+
   // any reco candidate plus addiation doubles
-  std::vector<edm::InputTag> varsRecoCandTags_;
+  std::vector<edm::EDGetTokenT<edm::View<reco::Candidate> > >varsRecoCandTags_;
   std::vector<std::string> varsRecoCandNames_;
   std::vector<UShort_t> RecoCandN_;
   std::vector<Float_t*> RecoCandPt_;
@@ -99,10 +101,10 @@ private:
   std::vector<Float_t*> RecoCandE_;
   std::vector<TLorentzVector*> RecoCandLorentzVector_;
   std::vector<UShort_t> RecoCandAdditionalBoolVariablesN_,RecoCandAdditionalIntVariablesN_,RecoCandAdditionalFloatVariablesN_;
-  std::vector< std::vector<edm::InputTag> > RecoCandAdditionalBoolVariablesTags_;
+  std::vector< std::vector< edm::EDGetTokenT< std::vector<bool> > > >RecoCandAdditionalBoolVariablesTags_;
   std::vector< std::vector<UChar_t*> > RecoCandAdditionalBoolVariables_;
-  std::vector< std::vector<edm::InputTag> > RecoCandAdditionalIntVariablesTags_;
+  std::vector< std::vector< edm::EDGetTokenT< std::vector<int> > > >RecoCandAdditionalIntVariablesTags_;
   std::vector< std::vector<Int_t*> > RecoCandAdditionalIntVariables_;
-  std::vector< std::vector<edm::InputTag> > RecoCandAdditionalFloatVariablesTags_;
+  std::vector< std::vector< edm::EDGetTokenT< std::vector<double> > > >RecoCandAdditionalFloatVariablesTags_;
   std::vector< std::vector<Float_t*> > RecoCandAdditionalFloatVariables_;
 };

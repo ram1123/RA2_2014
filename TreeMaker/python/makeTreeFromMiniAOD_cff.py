@@ -1056,11 +1056,13 @@ reDoPruningAndSoftdrop=False
     )
     from AllHadronicSUSY.Utils.njetint_cfi import njetint
     process.NJets = njetint.clone(
-    JetTag  = cms.InputTag('HTJets'),
+#    JetTag  = cms.InputTag('HTJets'),
+    JetTag  = cms.InputTag('slimmedJets'),
     )
     from AllHadronicSUSY.Utils.btagint_cfi import btagint
     process.BTags = btagint.clone(
-    JetTag  = cms.InputTag('HTJets'),
+#    JetTag  = cms.InputTag('HTJets'),
+    JetTag  = cms.InputTag('slimmedJets'),
     BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     BTagCutValue					= cms.double(0.679)
     )
@@ -1441,7 +1443,7 @@ reDoPruningAndSoftdrop=False
     	TreeName          = cms.string("PreSelection"),
     	VarsRecoCand = RecoCandVector,
     	#VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
-    	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MHT','MET:Pt(METPt)','MET:Phi(METPhi)','MET:PtUp(METPtUp)','MET:PhiUp(METPhiUp)','MET:PtDown(METPtDown)','MET:PhiDown(METPhiDown)','MET:PtRaw(METPtRaw)','MET:PhiRaw(METPhiRaw)','MET:CaloMetPt(CaloMetPt)','MET:CaloMetPhi(CaloMetPhi)','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)','GenEventInfo:genEventWeight(genEventWeight)','GenEventInfo:PUWeight(PUWeight)','METpuppi:Pt(METpuppiPt)','METpuppi:Phi(METpuppiPhi)','METpuppi:PtUp(METpuppiPtUp)','METpuppi:PhiUp(METpuppiPhiUp)','METpuppi:PtDown(METpuppiPtDown)','METpuppi:PhiDown(METpuppiPhiDown)','METpuppi:PtRaw(METpuppiPtRaw)','METpuppi:PhiRaw(METpuppiPhiRaw)','METpuppi:CaloMetPt(METpuppiCaloMetPt)','METpuppi:CaloMetPhi(METpuppiCaloMetPhi)'),
+    	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MET:Pt(METPt)','MET:Phi(METPhi)','MET:PtUp(METPtUp)','MET:PhiUp(METPhiUp)','MET:PtDown(METPtDown)','MET:PhiDown(METPhiDown)','MET:PtRaw(METPtRaw)','MET:PhiRaw(METPhiRaw)','MET:CaloMetPt(CaloMetPt)','MET:CaloMetPhi(CaloMetPhi)','GenEventInfo:genEventWeight(genEventWeight)','GenEventInfo:PUWeight(PUWeight)','METpuppi:Pt(METpuppiPt)','METpuppi:Phi(METpuppiPhi)','METpuppi:PtUp(METpuppiPtUp)','METpuppi:PhiUp(METpuppiPhiUp)','METpuppi:PtDown(METpuppiPtDown)','METpuppi:PhiDown(METpuppiPhiDown)','METpuppi:PtRaw(METpuppiPtRaw)','METpuppi:PhiRaw(METpuppiPhiRaw)','METpuppi:CaloMetPt(METpuppiCaloMetPt)','METpuppi:CaloMetPhi(METpuppiCaloMetPhi)'), #'MHT','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)',
     	VarsInt = cms.vstring('NJets','BTags','NVtx','GenEventInfo:npT(npT)','FilterProducer:passFilterHBHE(passFilterHBHE)','FilterProducer:passFilterHBHEIso(passFilterHBHEIso)','FilterProducer:passFilterCSCHalo(passFilterCSCHalo)','FilterProducer:passFilterGoodVtx(passFilterGoodVtx)','FilterProducer:passFilterEEBadSC(passFilterEEBadSC)','FilterProducer:passFilterHBHELooseRerun(passFilterHBHELooseRerun)','FilterProducer:passFilterHBHETightRerun(passFilterHBHETightRerun)','FilterProducer:passFilterHBHEIsoRerun(passFilterHBHEIsoRerun)'),#,'Leptons'),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
 #        VarsBool = cms.vstring('FilterProducer:passFilterEEBadSC(passFilterEEBadSC)'),
@@ -1492,7 +1494,7 @@ reDoPruningAndSoftdrop=False
 #    	process.selectedIDIsoElectrons *
 #    	process.selectedIDElectrons *
     	process.WeightProducer *
-    	process.IsolatedTracks *
+#    	process.IsolatedTracks *
         process.substructureSequenceGen *
         process.softdropGen_onMiniAOD *
         process.pruningGen_onMiniAOD *
@@ -1510,24 +1512,24 @@ reDoPruningAndSoftdrop=False
         process.pruning_onMiniAOD *
         process.redoPatJets*
         process.redoPuppiJets*
-      process.HTJets *
-      process.HT *
+#      process.HTJets *
+#      process.HT *
       process.NJets *
-      process.BTags *
+#      process.BTags *
 #      process.ak4PFJets *
 #      process.patJetCorrFactorsAK4 *
 #      process.patJetsAK4 *
-      process.MHTJets *
-      process.MHTJetsProperties *
+#      process.MHTJets *
+#      process.MHTJetsProperties *
       process.JetsProperties *
-      process.MHTJetsAK8 *
-      process.MHTJetsPropertiesAK8 *
+#      process.MHTJetsAK8 *
+#      process.MHTJetsPropertiesAK8 *
       process.JetsPropertiesAK8 *
       process.additionalJets *
-      process.MHT *
+#      process.MHT *
 #      process.Leptons *
       process.MET *
-      process.DeltaPhi *
+#      process.DeltaPhi *
       process.NVtx *
       process.GenLeptons *
       process.GenJets *

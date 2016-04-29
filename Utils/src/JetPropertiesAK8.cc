@@ -322,12 +322,16 @@ JetPropertiesAK8::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	double massCorrUp;
 	double massCorrDown;
 	
+	std::cout<<"inizio"<<std::endl;
+	
 	if( Jets.isValid() ) {
 	  edm::View<pat::Jet>::const_iterator ijet = Jets->begin();
 	  //	  edm::View<pat::Jet>::const_iterator puppiJet = puppiJets->begin();
 		for(unsigned int i=0; i<Jets->size();i++)
 		{
 		  if (Jets->at(i).pt()<MinPt_)  continue;
+
+		  std::cout<<"passato pt cut: "<<Jets->at(i).pt()<<std::endl;
 
 		  bool looseJetId=false;
 		  bool tightJetId=false;
