@@ -19,19 +19,20 @@ QCD=False,
 LostLepton=False,
 numProcessedEvt=1000,
 doJECCorrection=False,
-doPuppi=False,
+doPuppi=True,
 leptonFilter=True,
 doAK8Reclustering=False,
 doAK10Reclustering=False,
 doAK12Reclustering=False,
 genJetsAK8Reclustering=True,
-genJetsAK10Reclustering=True,
-genJetsAK12Reclustering=True,
+genJetsAK10Reclustering=False,
+genJetsAK12Reclustering=False,
 customizeHBHENoiseForEarlyData=False,
 customizeHBHENoiseForRun2015D=True,
 jsonFileName="",
 isCrab=False,
-reDoPruningAndSoftdrop=False
+reDoPruningAndSoftdrop=False,
+reDoPruningAndSoftdropPuppi=True
 ):
 
     if (MC):
@@ -658,7 +659,7 @@ reDoPruningAndSoftdrop=False
         process.redoPuppiJets+=process.puppiJetsAK8
         process.redoPuppiJets+=process.selectedPuppiJetsAK8
 
-        if (reDoPruningAndSoftdrop):
+        if (reDoPruningAndSoftdropPuppi):
             process.patJetCorrFactorsPuppiPruned = patJetCorrFactorsAK8.clone( src = 'ak8PFJetsPuppiPruned' )
             process.patJetsPuppiPruned = patJetsAK8.clone( jetSource = 'ak8PFJetsPuppiPruned' )
             process.patJetsPuppiPruned.userData.userFloats.src = [ "" ]
@@ -1190,7 +1191,7 @@ reDoPruningAndSoftdrop=False
         #    puppiJetTag = cms.InputTag('selectedPuppiJetsAK8'),
         MinPt = cms.double(-1),
         doJEC  = cms.bool(doJECCorrection),
-        doReclusteringForPrunedAndSoftdrop = cms.bool(reDoPruningAndSoftdrop),
+        doReclusteringForPrunedAndSoftdrop = cms.bool(reDoPruningAndSoftdropPuppi),
         L1File = cms.string("Summer15_25nsV6_DATA_L1FastJet_AK8PFPuppi.txt"),
         L2File = cms.string("Summer15_25nsV6_DATA_L2Relative_AK8PFPuppi.txt"),
         L3File = cms.string("Summer15_25nsV6_DATA_L3Absolute_AK8PFPuppi.txt"),
@@ -1208,8 +1209,6 @@ reDoPruningAndSoftdrop=False
         process.JetsPropertiesAK10.softdropJetTag  = cms.InputTag('selectedPatJetsAK10Softdrop')
         process.JetsPropertiesAK12.prunedJetTag  = cms.InputTag('selectedPatJetsAK12Pruned')
         process.JetsPropertiesAK12.softdropJetTag  = cms.InputTag('selectedPatJetsAK12Softdrop')
-        process.JetsPropertiesPuppi.prunedJetTag  = cms.InputTag('selectedPatJetsPuppiPruned')
-        process.JetsPropertiesPuppi.softdropJetTag  = cms.InputTag('selectedPatJetsPuppiSoftdrop')
     else:
         process.JetsPropertiesAK8.prunedJetTag  = cms.InputTag('slimmedJetsAK8')
         process.JetsPropertiesAK8.softdropJetTag  = cms.InputTag('slimmedJetsAK8')
@@ -1217,8 +1216,14 @@ reDoPruningAndSoftdrop=False
         process.JetsPropertiesAK10.softdropJetTag  = cms.InputTag('slimmedJetsAK8')
         process.JetsPropertiesAK12.prunedJetTag  = cms.InputTag('slimmedJetsAK8')
         process.JetsPropertiesAK12.softdropJetTag  = cms.InputTag('slimmedJetsAK8')
+
+    if (reDoPruningAndSoftdropPuppi):
+        process.JetsPropertiesPuppi.prunedJetTag  = cms.InputTag('selectedPatJetsPuppiPruned')
+        process.JetsPropertiesPuppi.softdropJetTag  = cms.InputTag('selectedPatJetsPuppiSoftdrop')
+    else:
         process.JetsPropertiesPuppi.prunedJetTag  = cms.InputTag('slimmedJetsPuppi')
         process.JetsPropertiesPuppi.softdropJetTag  = cms.InputTag('slimmedJetsPuppi')
+
     if (MC):
         process.JetsProperties.L1File = cms.string("Summer15_25nsV6_MC_L1FastJet_AK4PFchs.txt")
         process.JetsProperties.L2File = cms.string("Summer15_25nsV6_MC_L2Relative_AK4PFchs.txt")

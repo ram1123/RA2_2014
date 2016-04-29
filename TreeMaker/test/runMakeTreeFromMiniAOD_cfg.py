@@ -26,7 +26,7 @@ DoAK8Reclustering=parameters.value("DoAK8Reclustering",False)
 DoAK10Reclustering=parameters.value("DoAK10Reclustering",False)
 DoAK12Reclustering=parameters.value("DoAK12Reclustering",False)
 DoJECCorrection=parameters.value("DoJECCorrection",False)
-DoPuppi=parameters.value("DoPuppi",False)
+DoPuppi=parameters.value("DoPuppi",True)
 LeptonFilter=parameters.value("leptonFilter",True)
 GenJetsAK8Reclustering=parameters.value("genJetsAK8Reclustering",True)
 GenJetsAK10Reclustering=parameters.value("genJetsAK10Reclustering",False)
@@ -36,6 +36,7 @@ isHBHERun2015D=parameters.value("isHBHERun2015D",True)
 JsonFileName=parameters.value("jsonFileName","json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt")
 IsCrab=parameters.value("isCrab",False)
 ReDoPruningAndSoftdrop=parameters.value("ReDoPruningAndSoftdrop",False)
+ReDoPruningAndSoftdropPuppi=parameters.value("ReDoPruningAndSoftdropPuppi",True)
 
 processName      = parameters.value("name","RSGraviton1000")
 
@@ -56,6 +57,7 @@ print "       doAK10Reclustering : "+str(DoAK10Reclustering)
 print "       doAK12Reclustering : "+str(DoAK12Reclustering)
 print "       doJECCorrection : "+str(DoJECCorrection)
 print "       ReDoPruningAndSoftdrop :"+str(ReDoPruningAndSoftdrop)
+print "       ReDoPruningAndSoftdropPuppi :"+str(ReDoPruningAndSoftdropPuppi)
 print "       doPuppi : "+str(DoPuppi)
 print "       leptonFilter : "+str(LeptonFilter)
 print "       genJetsAK8Reclustering : "+str(GenJetsAK8Reclustering)
@@ -101,5 +103,6 @@ makeTreeTreeFromMiniAOD(process,
                 customizeHBHENoiseForRun2015D=isHBHERun2015D,
                 jsonFileName=JsonFileName,
                 isCrab=IsCrab,
-                reDoPruningAndSoftdrop=ReDoPruningAndSoftdrop)
+                reDoPruningAndSoftdrop=ReDoPruningAndSoftdrop,
+                reDoPruningAndSoftdropPuppi=ReDoPruningAndSoftdropPuppi)
 
