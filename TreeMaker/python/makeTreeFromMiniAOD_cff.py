@@ -355,11 +355,11 @@ reDoPruningAndSoftdropPuppi=True
                             measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
                             beta = cms.double(1.0),              # CMS default is 1
                             R0 = cms.double( 0.8 ),              # CMS default is jet cone size
-                            Rcutoff = cms.double( -999.0),       # not used by default
+                            Rcutoff = cms.double( 999.0),       # not used by default
                             # variables for axes definition :
                             axesDefinition = cms.uint32( 6 ),    # CMS default is 1-pass KT axes
-                            nPass = cms.int32(-999),             # not used by default
-                            akAxesR0 = cms.double(-999.0)        # not used by default
+                            nPass = cms.int32(999),             # not used by default
+                            akAxesR0 = cms.double(999.0)        # not used by default
                             )
 
         process.ak4PFJetsCHS = ak4PFJetsCHS.clone(src = 'chs', rParam = cms.double(0.4))
@@ -434,11 +434,11 @@ reDoPruningAndSoftdropPuppi=True
                             measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
                             beta = cms.double(1.0),              # CMS default is 1
                             R0 = cms.double( 1.0 ),              # CMS default is jet cone size
-                            Rcutoff = cms.double( -999.0),       # not used by default
+                            Rcutoff = cms.double( 999.0),       # not used by default
                             # variables for axes definition :
                             axesDefinition = cms.uint32( 6 ),    # CMS default is 1-pass KT axes
-                            nPass = cms.int32(-999),             # not used by default
-                            akAxesR0 = cms.double(-999.0)        # not used by default
+                            nPass = cms.int32(999),             # not used by default
+                            akAxesR0 = cms.double(999.0)        # not used by default
                             )
 
         process.ak10PFJetsCHS = ak8PFJetsCHS.clone( src = 'chs', jetPtMin = 100.0,     rParam = cms.double(1.0) )
@@ -522,11 +522,11 @@ reDoPruningAndSoftdropPuppi=True
                             measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
                             beta = cms.double(1.0),              # CMS default is 1
                             R0 = cms.double( 1.2 ),              # CMS default is jet cone size
-                            Rcutoff = cms.double( -999.0),       # not used by default
+                            Rcutoff = cms.double( 999.0),       # not used by default
                             # variables for axes definition :
                             axesDefinition = cms.uint32( 6 ),    # CMS default is 1-pass KT axes
-                            nPass = cms.int32(-999),             # not used by default
-                            akAxesR0 = cms.double(-999.0)        # not used by default
+                            nPass = cms.int32(999),             # not used by default
+                            akAxesR0 = cms.double(999.0)        # not used by default
                             )
 
         process.ak12PFJetsCHS = ak8PFJetsCHS.clone( src = 'chs', jetPtMin = 100.0,     rParam = cms.double(1.2) )
@@ -613,11 +613,11 @@ reDoPruningAndSoftdropPuppi=True
                             measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
                             beta = cms.double(1.0),              # CMS default is 1
                             R0 = cms.double( 0.8 ),              # CMS default is jet cone size
-                            Rcutoff = cms.double( -999.0),       # not used by default
+                            Rcutoff = cms.double( 999.0),       # not used by default
                             # variables for axes definition :
                             axesDefinition = cms.uint32( 6 ),    # CMS default is 1-pass KT axes
-                            nPass = cms.int32(-999),             # not used by default
-                            akAxesR0 = cms.double(-999.0)        # not used by default
+                            nPass = cms.int32(999),             # not used by default
+                            akAxesR0 = cms.double(999.0)        # not used by default
                             )
 
         process.ak4PFJetsPuppi = ak4PFJetsPuppi.clone(src = 'puppi')
@@ -710,11 +710,11 @@ reDoPruningAndSoftdropPuppi=True
                             measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
                             beta = cms.double(1.0),              # CMS default is 1
                             R0 = cms.double( 0.8 ),              # CMS default is jet cone size
-                            Rcutoff = cms.double( -999.0),       # not used by default
+                            Rcutoff = cms.double( 999.0),       # not used by default
                             # variables for axes definition :
                             axesDefinition = cms.uint32( 6 ),    # CMS default is 1-pass KT axes
-                            nPass = cms.int32(-999),             # not used by default
-                            akAxesR0 = cms.double(-999.0)        # not used by default
+                            nPass = cms.int32(999),             # not used by default
+                            akAxesR0 = cms.double(999.0)        # not used by default
                             )
 
         process.genParticlesForJets = cms.EDProducer("InputGenJetsParticleSelector",
@@ -808,11 +808,11 @@ reDoPruningAndSoftdropPuppi=True
                             measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
                             beta = cms.double(1.0),              # CMS default is 1
                             R0 = cms.double( 1.0 ),              # CMS default is jet cone size
-                            Rcutoff = cms.double( -999.0),       # not used by default
+                            Rcutoff = cms.double( 999.0),       # not used by default
                             # variables for axes definition :
                             axesDefinition = cms.uint32( 6 ),    # CMS default is 1-pass KT axes
-                            nPass = cms.int32(-999),             # not used by default
-                            akAxesR0 = cms.double(-999.0)        # not used by default
+                            nPass = cms.int32(999),             # not used by default
+                            akAxesR0 = cms.double(999.0)        # not used by default
                             )
 
         process.genParticlesForJets = cms.EDProducer("InputGenJetsParticleSelector",
@@ -907,11 +907,11 @@ reDoPruningAndSoftdropPuppi=True
                             measureDefinition = cms.uint32( 0 ), # CMS default is normalized measure
                             beta = cms.double(1.0),              # CMS default is 1
                             R0 = cms.double( 1.2 ),              # CMS default is jet cone size
-                            Rcutoff = cms.double( -999.0),       # not used by default
+                            Rcutoff = cms.double( 999.0),       # not used by default
                             # variables for axes definition :
                             axesDefinition = cms.uint32( 6 ),    # CMS default is 1-pass KT axes
-                            nPass = cms.int32(-999),             # not used by default
-                            akAxesR0 = cms.double(-999.0)        # not used by default
+                            nPass = cms.int32(999),             # not used by default
+                            akAxesR0 = cms.double(999.0)        # not used by default
                             )
 
         process.genParticlesForJets = cms.EDProducer("InputGenJetsParticleSelector",
@@ -1434,7 +1434,7 @@ reDoPruningAndSoftdropPuppi=True
     process.dump = cms.EDAnalyzer("EventContentAnalyzer")
     process.WriteTree = cms.Path(
 #        process.HLTSelection*
-        process.TriggerProducer* #NOT PRESENT IN 76x MINIAOD
+#        process.TriggerProducer* #NOT PRESENT IN 80x MINIAOD
         ### MET Filter Bits
         process.HBHENoiseFilterResultProducer*
 #        process.FilterProducer* #this now contains all the met filters
