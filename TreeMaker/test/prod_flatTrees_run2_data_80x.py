@@ -7,7 +7,7 @@ config.General.workArea = 'data_mu'
 config.section_('JobType')
 config.JobType.psetName = 'TreeMaker/test/runMakeTreeFromMiniAOD_cfg.py'
 config.JobType.pluginName = 'Analysis'
-config.JobType.pyCfgParams = ['global_tag=80X_dataRun2_Prompt_v8','leptonFilter=True', 'MC=True', 'isCrab=True', 'DoJECCorrection=True', 'isHBHERun2015D=True', 'DoPuppi=True','ReDoPruningAndSoftdropPuppi=True']
+config.JobType.pyCfgParams = ['global_tag=80X_dataRun2_Prompt_v8','leptonFilter=True', 'MC=False', 'isCrab=True', 'DoJECCorrection=True', 'isHBHERun2015D=False', 'DoPuppi=True','ReDoPruningAndSoftdropPuppi=True']
 config.JobType.allowUndistributedCMSSW = True
 #config.JobType.maxMemoryMB = 2500    # 2.5 GB                      
 config.JobType.maxJobRuntimeMin = 900 #15 h
@@ -15,7 +15,7 @@ config.JobType.inputFiles = ['Summer15_25nsV7_DATA_L1FastJet_AK8PFchs.txt','Summ
 config.section_('Data')
 config.Data.inputDataset = '/SingleMuon/Run2015B-PromptReco-v1/MINIAOD'
 config.Data.unitsPerJob = 10
-config.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-274240_13TeV_PromptReco_Collisions16_JSON.txt' #2016
+config.Data.lumiMask = 'json/Cert_271036-274240_13TeV_PromptReco_Collisions16_JSON.txt' #2016
 config.Data.inputDBS = 'global' #'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet'
 config.Data.splitting = 'LumiBased'
 config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple_data_mu/'
@@ -37,7 +37,7 @@ if __name__ == '__main__':
         
     config.General.requestName = 'data_el_2016_runB_v1'
     config.Data.inputDataset = '/SingleElectron/Run2016B-PromptReco-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_9mag2016_jecV7_v1/data_el_2016_runB_v1/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_10jun2016_jecV7_v1/data_el_2016_runB_v1/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'data_el_2016_runB_v2'
     config.Data.inputDataset = '/SingleElectron/Run2016B-PromptReco-v2/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_9mag2016_jecV7_v1/data_el_2016_runB_v2/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_10jun2016_jecV7_v1/data_el_2016_runB_v2/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'data_mu_2016_runB_v1'
     config.Data.inputDataset = '/SingleMuon/Run2016B-PromptReco-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_9mag2016_jecV7_v1/data_mu_2016_runB_v1/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_10jun2016_jecV7_v1/data_mu_2016_runB_v1/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -62,7 +62,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'data_mu_2016_runB_v2'
     config.Data.inputDataset = '/SingleMuon/Run2016B-PromptReco-v2/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_9mag2016_jecV7_v1/data_mu_2016_runB_v2/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_10jun2016_jecV7_v1/data_mu_2016_runB_v2/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
