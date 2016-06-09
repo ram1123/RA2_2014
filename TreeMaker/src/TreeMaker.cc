@@ -416,6 +416,7 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
 	for(unsigned int iii=0; iii<cands->size();iii++)
 	{
+	  if (iii>=FloatVar->size()) continue;
 	  RecoCandAdditionalFloatVariables_.at(i)[ii][iii] = FloatVar->at(iii);
 	}
       }
@@ -431,6 +432,7 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
 	for(unsigned int iii=0; iii<cands->size();iii++)
 	{
+	  if (iii>=IntVar->size()) continue;
 	  RecoCandAdditionalIntVariables_.at(i)[ii][iii] = IntVar->at(iii);
 	}
       }
@@ -446,6 +448,7 @@ TreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
 	for(unsigned int iii=0; iii<cands->size();iii++)
 	{
+	  if (iii>=boolVar->size()) continue;
 	  if( boolVar->at(iii) ) RecoCandAdditionalBoolVariables_.at(i)[ii][iii] = 1;
 	  else RecoCandAdditionalBoolVariables_.at(i)[ii][iii] = 0;
 	}
