@@ -149,7 +149,7 @@ reDoPruningAndSoftdropPuppi=True
     if not MC:
         if(len(jsonFileName)>0):
             import FWCore.PythonUtilities.LumiList as LumiList
-            process.source.lumisToProcess = LumiList.LumiList(filename = jsonFileName).getVLuminosityBlockRange()
+#luca            process.source.lumisToProcess = LumiList.LumiList(filename = jsonFileName).getVLuminosityBlockRange()
         else:
             print "ERROR!! running on data with no json file applied!"
             sys.exit()

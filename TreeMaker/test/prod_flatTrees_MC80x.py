@@ -36,9 +36,8 @@ if __name__ == '__main__':
         res = crabCommand('submit', config = config)
 
     #########    From now on that's what users should modify: this is the a-la-CRAB2 configuration part.
-    '''    
     config.General.requestName = 'Higgs650'
-    config.Data.inputDataset = '/GluGluHToWWToLNuQQ_M650_13TeV_powheg_JHUgen_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'
+    config.Data.inputDataset = '/GluGluHToWWToLNuQQ_M650_13TeV_powheg_JHUgen_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple_MC_24mag_v1/Higgs650/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
@@ -47,7 +46,7 @@ if __name__ == '__main__':
 
 
     config.General.requestName = 'Higgs750'
-    config.Data.inputDataset = '/GluGluHToWWToLNuQQ_M750_13TeV_powheg_JHUgenv628_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'
+    config.Data.inputDataset = '/GluGluHToWWToLNuQQ_M750_13TeV_powheg_JHUgenv628_pythia8/RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v2/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple_MC_24mag_v1/Higgs750/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
@@ -56,13 +55,14 @@ if __name__ == '__main__':
 
 
     config.General.requestName = 'Higgs1000'
-    config.Data.inputDataset = '/GluGluHToWWToLNuQQ_M1000_13TeV_powheg_JHUgen_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'
+    config.Data.inputDataset = '/GluGluHToWWToLNuQQ_M1000_13TeV_powheg_JHUgen_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple_MC_24mag_v1/Higgs1000/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
     p.join()
 
+    '''    
 
     config.General.requestName = 'VBFHiggs650'
     config.Data.inputDataset = '/VBF_HToWWToLNuQQ_M650_13TeV_powheg_JHUgen_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'
@@ -609,7 +609,7 @@ if __name__ == '__main__':
     
 
     config.General.requestName = 'WJets600bis'
-    config.Data.inputDataset = '/WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM_false'
+    config.Data.inputDataset = '/WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v2/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple_MC_24mag_v1/WJets600bis/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
