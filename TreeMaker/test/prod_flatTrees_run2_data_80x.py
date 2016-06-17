@@ -15,7 +15,7 @@ config.JobType.inputFiles = ['Spring16_25nsV3_DATA_L1FastJet_AK8PFchs.txt','Spri
 config.section_('Data')
 config.Data.inputDataset = '/SingleMuon/Run2015B-PromptReco-v1/MINIAOD'
 config.Data.unitsPerJob = 10
-config.Data.lumiMask = 'json/Cert_271036-274421_13TeV_PromptReco_Collisions16_JSON.txt' #2016, 2.0/fb
+config.Data.lumiMask = 'json/Cert_271036-274443_13TeV_PromptReco_Collisions16_JSON.txt' #2016, 2.6/fb
 config.Data.inputDBS = 'global' #'http://cmsdbsprod.cern.ch/cms_dbs_prod_global/servlet/DBSServlet'
 config.Data.splitting = 'LumiBased'
 config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/ntuple_data_mu/'
