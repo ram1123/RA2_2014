@@ -28,7 +28,7 @@ if __name__ == '__main__':
     from CRABAPI.RawCommand import crabCommand
 
     #Make sure you set this parameter (here or above in the config it does not matter)
-    config.General.workArea = 'data_12jun2016_jecV7_v1'
+    config.General.workArea = 'data_17jun2016_jecV7_v2'
 
     def submit(config):
         res = crabCommand('submit', config = config)
@@ -37,7 +37,7 @@ if __name__ == '__main__':
         
     config.General.requestName = 'data_el_2016_runB_v1'
     config.Data.inputDataset = '/SingleElectron/Run2016B-PromptReco-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_12jun2016_jecV7_v1/data_el_2016_runB_v1/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_17jun2016_jecV7_v2/data_el_2016_runB_v1/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'data_el_2016_runB_v2'
     config.Data.inputDataset = '/SingleElectron/Run2016B-PromptReco-v2/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_12jun2016_jecV7_v1/data_el_2016_runB_v2/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_17jun2016_jecV7_v2/data_el_2016_runB_v2/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'data_mu_2016_runB_v1'
     config.Data.inputDataset = '/SingleMuon/Run2016B-PromptReco-v1/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_12jun2016_jecV7_v1/data_mu_2016_runB_v1/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_17jun2016_jecV7_v2/data_mu_2016_runB_v1/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
@@ -62,7 +62,7 @@ if __name__ == '__main__':
 
     config.General.requestName = 'data_mu_2016_runB_v2'
     config.Data.inputDataset = '/SingleMuon/Run2016B-PromptReco-v2/MINIAOD'
-    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_12jun2016_jecV7_v1/data_mu_2016_runB_v2/'
+    config.Data.outLFNDirBase = '/store/group/dpg_ecal/alca_ecalcalib/ecalMIBI/lbrianza/data_17jun2016_jecV7_v2/data_mu_2016_runB_v2/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
