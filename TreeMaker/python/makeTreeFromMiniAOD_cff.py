@@ -1383,7 +1383,7 @@ reDoPruningAndSoftdropPuppi=True
 
 
     process.badChargedCandidateFilter = BadChargedCandidateFilter.clone(
-        PFCandidates  = cms.InputTag("particleFlow"),   # Collection to test
+        PFCandidates  = cms.InputTag("packedPFCandidates"),   # Collection to test
         muons  = cms.InputTag("slimmedMuons"),   # Collection to test
         taggingMode   = cms.bool(False),
         debug         = cms.bool(False),
