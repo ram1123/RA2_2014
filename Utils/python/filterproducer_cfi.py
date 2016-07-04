@@ -1,6 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 filterProducer = cms.EDProducer('FilterProducer',
                                  noiseFilterTag = cms.InputTag('TriggerResults','', 'PAT'),
+                                 BadChCandNoiseFilterTag = cms.InputTag("badChargedCandidateFilter"),
+                                 BadPFMuonNoiseFilterTag = cms.InputTag("badPFMuonFilter"),
                                  HBHENoiseFilter_Selector_ = cms.string("Flag_HBHENoiseFilter"),
                                  HBHENoiseIsoFilter_Selector_ = cms.string("Flag_HBHENoiseIsoFilter"),
                                  CSCHaloNoiseFilter_Selector_ = cms.string("Flag_CSCTightHaloFilter"),

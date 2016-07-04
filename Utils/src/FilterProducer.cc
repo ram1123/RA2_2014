@@ -51,6 +51,9 @@ private:
   std::string EEBadScNoiseFilter_Selector_;
   std::string GlobalTightHalo2016NoiseFilter_Selector_;
   std::string EcalDeadCellTriggerPrimitiveNoiseFilter_Selector_;
+
+  edm::EDGetTokenT<bool> BadPFMuonNoiseFilterTag_;
+  edm::EDGetTokenT<bool> BadChCandNoiseFilterTag_;
   /*
   edm::InputTag HBHENoiseFilterLoose_Rerun_Selector_;
   edm::InputTag HBHENoiseFilterTight_Rerun_Selector_;
@@ -67,7 +70,9 @@ private:
 // constructors and destructor
 //
 FilterProducer::FilterProducer(const edm::ParameterSet& iConfig):
-  noiseFilterTag_(consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("noiseFilterTag")))
+  noiseFilterTag_(consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("noiseFilterTag"))),
+  BadPFMuonNoiseFilterTag_(consumes<bool>(iConfig.getParameter<edm::InputTag>("BadPFMuonNoiseFilterTag"))),
+  BadChCandNoiseFilterTag_(consumes<bool>(iConfig.getParameter<edm::InputTag>("BadChCandNoiseFilterTag")))
 // HBHENoiseFilterTag_(consumes<edm::View<string> >(iConfig.getParameter<edm::InputTag>("HBHENoiseFilterTag"))),
 // HBHENoiseIsoFilterTag_(consumes<edm::View<string> >(iConfig.getParameter<edm::InputTag>("HBHENoiseIsoFilterTag"))),
 // CSCHaloNoiseFilterTag_(consumes<edm::View<string> >(iConfig.getParameter<edm::InputTag>("CSCHaloNoiseFilterTag"))),
@@ -96,6 +101,8 @@ FilterProducer::FilterProducer(const edm::ParameterSet& iConfig):
   produces<int>("passFilterEEBadSC");
   produces<int>("passFilterGlobalTightHalo2016");
   produces<int>("passFilterEcalDeadCellTriggerPrimitive");
+  produces<int>("passFilterBadChCand");
+  produces<int>("passFilterBadPFMuon");
   //  produces<int>("passFilterHBHELooseRerun");
   //produces<int>("passFilterHBHETightRerun");
   //produces<int>("passFilterHBHEIsoRerun");
@@ -136,8 +143,8 @@ FilterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   int passFilterEEBadSC=0;
   int passFilterGlobalTightHalo2016=0;
   int passFilterEcalDeadCellTriggerPrimitive=0;
-  //  int passFilterBadMuon=0;
-  //int passFilterBadChargedHadron=0;
+  int passFilterBadPFMuon=0;
+  int passFilterBadChCand=0;
   //  int passFilterHBHELooseRerun=0;
   //int passFilterHBHETightRerun=0;
   //int passFilterHBHEIsoRerun=0;
@@ -150,7 +157,6 @@ FilterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   const edm::TriggerNames &names = iEvent.triggerNames(*noiseFilterBits_);
       
   for (unsigned int i = 0, n = noiseFilterBits_->size(); i < n; ++i) {
-    //    std::cout<<names.triggerName(i)<<" "<<noiseFilterBits_->accept(i)<<std::endl;
     if (names.triggerName(i) == HBHENoiseFilter_Selector_)
       passFilterHBHE=noiseFilterBits_->accept(i);
     if (names.triggerName(i) == HBHENoiseIsoFilter_Selector_)
@@ -166,15 +172,15 @@ FilterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     if (names.triggerName(i) == EcalDeadCellTriggerPrimitiveNoiseFilter_Selector_)
       passFilterEcalDeadCellTriggerPrimitive=noiseFilterBits_->accept(i);
   }
-  /*
+  
   edm::Handle<bool> ifilterbadChCand;
-  iEvent.getByToken("BadChCandFilter", ifilterbadChCand);
-  int filterbadChCandidate = *ifilterbadChCand;
+  iEvent.getByToken(BadChCandNoiseFilterTag_, ifilterbadChCand);
+  passFilterBadChCand = *ifilterbadChCand;
     
   edm::Handle<bool> ifilterbadPFMuon;
-  iEvent.getByToken("BadPFMuon", ifilterbadPFMuon);
-  int filterbadPFMuon = *ifilterbadPFMuon;
-  */    
+  iEvent.getByToken(BadPFMuonNoiseFilterTag_, ifilterbadPFMuon);
+  passFilterBadPFMuon = *ifilterbadPFMuon;
+      
   /*
   edm::Handle<bool> HBHENoiseFilterLooseResultHandle;
   iEvent.getByToken(HBHENoiseFilterLoose_Rerun_Selector_, HBHENoiseFilterLooseResultHandle);
@@ -218,10 +224,10 @@ FilterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.put(f5,"passFilterGlobalTightHalo2016");
   std::auto_ptr<int> f6(new int(passFilterEcalDeadCellTriggerPrimitive));
   iEvent.put(f6,"passFilterEcalDeadCellTriggerPrimitive");
-  //  std::auto_ptr<int> f7(new int(passFilterBadMuon));
-  //iEvent.put(f7,"passFilterBadMuon");
-  //std::auto_ptr<int> f8(new int(passFilterBadChargedHadron));
-  //iEvent.put(f8,"passFilterBadChargedHadron");
+  std::auto_ptr<int> f7(new int(passFilterBadPFMuon));
+  iEvent.put(f7,"passFilterBadPFMuon");
+  std::auto_ptr<int> f8(new int(passFilterBadChCand));
+  iEvent.put(f8,"passFilterBadChCand");
   /*
   std::auto_ptr<int> f7(new int(passFilterHBHELooseRerun));
   iEvent.put(f7,"passFilterHBHELooseRerun");

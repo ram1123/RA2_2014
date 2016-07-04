@@ -1361,12 +1361,14 @@ reDoPruningAndSoftdropPuppi=True
 
 ########## save flags for filters
     from AllHadronicSUSY.Utils.filterproducer_cfi import filterProducer
-#    from RecoMET.METFilters.BadChargedCandidateFilter_cfi import BadChargedCandidateFilter
-#    from RecoMET.METFilters.BadPFMuonFilter_cfi import BadPFMuonFilter
+    from RecoMET.METFilters.BadChargedCandidateFilter_cfi import BadChargedCandidateFilter
+    from RecoMET.METFilters.BadPFMuonFilter_cfi import BadPFMuonFilter
     process.FilterProducer = filterProducer.clone(
                                  #triggerNameList = cms.vstring(),
                                  noiseFilterTag = cms.InputTag("TriggerResults"),
 #                                 noiseFilterTag = cms.InputTag('TriggerResults','', 'PAT'),
+                                 BadChCandNoiseFilterTag = cms.InputTag("badChargedCandidateFilter"),
+                                 BadPFMuonNoiseFilterTag = cms.InputTag("badPFMuonFilter"),
                                  HBHENoiseFilter_Selector_ = cms.string("Flag_HBHENoiseFilter"),
                                  HBHENoiseIsoFilter_Selector_ = cms.string("Flag_HBHENoiseIsoFilter"),
                                  CSCHaloNoiseFilter_Selector_ = cms.string("Flag_CSCTightHaloFilter"),
@@ -1379,6 +1381,25 @@ reDoPruningAndSoftdropPuppi=True
                                  HBHENoiseIsoFilter = cms.InputTag("HBHENoiseFilterResultProducer", "HBHEIsoNoiseFilterResult")
                                  )
 
+
+    process.badChargedCandidateFilter = BadChargedCandidateFilter.clone(
+        PFCandidates  = cms.InputTag("particleFlow"),   # Collection to test
+        muons  = cms.InputTag("slimmedMuons"),   # Collection to test
+        taggingMode   = cms.bool(False),
+        debug         = cms.bool(False),
+        maxDR         = cms.double(0.01),               # Maximum DR between reco::muon->innerTrack and pfCandidate 
+        minPtErrorRel = cms.double(-0.5),               # lower threshold on difference between pt of reco::muon->innerTrack and pfCandidate
+        minMuonPt     = cms.double(20),                 # minimum muon pt 
+        )
+
+    process.badPFMuonFilter = BadPFMuonFilter.clone(
+        PFCandidates  = cms.InputTag("slimmedMuons"),   # Collection to test
+        taggingMode   = cms.bool(False),
+        debug         = cms.bool(False),
+        minDZ         = cms.double(0.1),              # dz threshold on PF muons to consider
+        minMuPt       = cms.double(100),               # pt threshold on PF muons 
+        minTrkPtError  = cms.double(-1),               # threshold on inner track pt Error 
+        )
 
     RecoCandVector = cms.vstring()
 #    RecoCandVector.extend(['IsolatedTracks']) # basic muons electrons and isoalted tracks
@@ -1409,7 +1430,7 @@ reDoPruningAndSoftdropPuppi=True
     	VarsRecoCand = RecoCandVector,
     	#VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
     	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MET:Pt(METPt)','MET:Phi(METPhi)','MET:PtUp(METPtUp)','MET:PhiUp(METPhiUp)','MET:PtDown(METPtDown)','MET:PhiDown(METPhiDown)','MET:PtRaw(METPtRaw)','MET:PhiRaw(METPhiRaw)','MET:CaloMetPt(CaloMetPt)','MET:CaloMetPhi(CaloMetPhi)','GenEventInfo:genEventWeight(genEventWeight)','GenEventInfo:PUWeight(PUWeight)','METpuppi:Pt(METpuppiPt)','METpuppi:Phi(METpuppiPhi)','METpuppi:PtUp(METpuppiPtUp)','METpuppi:PhiUp(METpuppiPhiUp)','METpuppi:PtDown(METpuppiPtDown)','METpuppi:PhiDown(METpuppiPhiDown)','METpuppi:PtRaw(METpuppiPtRaw)','METpuppi:PhiRaw(METpuppiPhiRaw)','METpuppi:CaloMetPt(METpuppiCaloMetPt)','METpuppi:CaloMetPhi(METpuppiCaloMetPhi)'), #'MHT','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)',
-    	VarsInt = cms.vstring('NJets','NVtx','GenEventInfo:npT(npT)','FilterProducer:passFilterHBHE(passFilterHBHE)','FilterProducer:passFilterHBHEIso(passFilterHBHEIso)','FilterProducer:passFilterCSCHalo(passFilterCSCHalo)','FilterProducer:passFilterGoodVtx(passFilterGoodVtx)','FilterProducer:passFilterEEBadSC(passFilterEEBadSC)','FilterProducer:passFilterEcalDeadCellTriggerPrimitive(passFilterEcalDeadCellTriggerPrimitive)','FilterProducer:passFilterGlobalTightHalo2016(passFilterGlobalTightHalo2016)','FilterProducer:passFilterHBHELooseRerun(passFilterHBHELooseRerun)','FilterProducer:passFilterHBHETightRerun(passFilterHBHETightRerun)','FilterProducer:passFilterHBHEIsoRerun(passFilterHBHEIsoRerun)'),#,'Leptons'),
+    	VarsInt = cms.vstring('NJets','NVtx','GenEventInfo:npT(npT)','FilterProducer:passFilterHBHE(passFilterHBHE)','FilterProducer:passFilterHBHEIso(passFilterHBHEIso)','FilterProducer:passFilterCSCHalo(passFilterCSCHalo)','FilterProducer:passFilterGoodVtx(passFilterGoodVtx)','FilterProducer:passFilterEEBadSC(passFilterEEBadSC)','FilterProducer:passFilterEcalDeadCellTriggerPrimitive(passFilterEcalDeadCellTriggerPrimitive)','FilterProducer:passFilterGlobalTightHalo2016(passFilterGlobalTightHalo2016)','FilterProducer:passFilterBadChCand(passFilterBadChCand)','FilterProducer:passFilterBadPFMuon(passFilterBadPFMuon)','FilterProducer:passFilterHBHELooseRerun(passFilterHBHELooseRerun)','FilterProducer:passFilterHBHETightRerun(passFilterHBHETightRerun)','FilterProducer:passFilterHBHEIsoRerun(passFilterHBHEIsoRerun)'),#,'Leptons'),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
 #        VarsBool = cms.vstring('FilterProducer:passFilterEEBadSC(passFilterEEBadSC)'),
         debug = debug,
@@ -1441,8 +1462,8 @@ reDoPruningAndSoftdropPuppi=True
         process.TriggerProducer* #NOT PRESENT IN 80x MINIAOD
         ### MET Filter Bits
 #        process.HBHENoiseFilterResultProducer*
-#        process.BadChargedCandidateFilter*
-#        process.BadPFMuonFilter*
+        process.badChargedCandidateFilter*
+        process.badPFMuonFilter*
         process.FilterProducer* #this now contains all the met filters
 #        process.metFilters* #this now contains all the met filters
 #        process.metBits_miniAOD*
