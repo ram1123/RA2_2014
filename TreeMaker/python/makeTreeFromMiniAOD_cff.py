@@ -1384,7 +1384,7 @@ reDoPruningAndSoftdropPuppi=True
 
     process.badChargedCandidateFilter = BadChargedCandidateFilter.clone(
         PFCandidates  = cms.InputTag("packedPFCandidates"),   # Collection to test
-        muons  = cms.InputTag("slimmedMuons"),   # Collection to test
+        muons         = cms.InputTag("slimmedMuons"),   # Collection to test
         taggingMode   = cms.bool(False),
         debug         = cms.bool(False),
         maxDR         = cms.double(0.01),               # Maximum DR between reco::muon->innerTrack and pfCandidate 
@@ -1393,7 +1393,8 @@ reDoPruningAndSoftdropPuppi=True
         )
 
     process.badPFMuonFilter = BadPFMuonFilter.clone(
-        PFCandidates  = cms.InputTag("slimmedMuons"),   # Collection to test
+        PFCandidates  = cms.InputTag("packedPFCandidates"),   # Collection to test 
+        muons         = cms.InputTag("slimmedMuons"),   # Collection to test
         taggingMode   = cms.bool(False),
         debug         = cms.bool(False),
         minDZ         = cms.double(0.1),              # dz threshold on PF muons to consider
