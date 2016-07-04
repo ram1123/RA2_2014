@@ -1361,6 +1361,8 @@ reDoPruningAndSoftdropPuppi=True
 
 ########## save flags for filters
     from AllHadronicSUSY.Utils.filterproducer_cfi import filterProducer
+#    from RecoMET.METFilters.BadChargedCandidateFilter_cfi import BadChargedCandidateFilter
+#    from RecoMET.METFilters.BadPFMuonFilter_cfi import BadPFMuonFilter
     process.FilterProducer = filterProducer.clone(
                                  #triggerNameList = cms.vstring(),
                                  noiseFilterTag = cms.InputTag("TriggerResults"),
@@ -1370,6 +1372,8 @@ reDoPruningAndSoftdropPuppi=True
                                  CSCHaloNoiseFilter_Selector_ = cms.string("Flag_CSCTightHaloFilter"),
                                  GoodVtxNoiseFilter_Selector_ = cms.string("Flag_goodVertices"),
                                  EEBadScNoiseFilter_Selector_ = cms.string("Flag_eeBadScFilter"),
+                                 EcalDeadCellTriggerPrimitiveFilter_Selector_ = cms.string("Flag_EcalDeadCellTriggerPrimitiveFilter"),
+                                 GlobalTightHalo2016Filter_Selector_ = cms.string("Flag_globalTightHalo2016Filter"),
                                  HBHENoiseFilterLoose = cms.InputTag("HBHENoiseFilterResultProducer", "HBHENoiseFilterResultRun2Loose"),
                                  HBHENoiseFilterTight = cms.InputTag("HBHENoiseFilterResultProducer", "HBHENoiseFilterResultRun2Tight"),
                                  HBHENoiseIsoFilter = cms.InputTag("HBHENoiseFilterResultProducer", "HBHEIsoNoiseFilterResult")
@@ -1405,7 +1409,7 @@ reDoPruningAndSoftdropPuppi=True
     	VarsRecoCand = RecoCandVector,
     	#VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
     	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MET:Pt(METPt)','MET:Phi(METPhi)','MET:PtUp(METPtUp)','MET:PhiUp(METPhiUp)','MET:PtDown(METPtDown)','MET:PhiDown(METPhiDown)','MET:PtRaw(METPtRaw)','MET:PhiRaw(METPhiRaw)','MET:CaloMetPt(CaloMetPt)','MET:CaloMetPhi(CaloMetPhi)','GenEventInfo:genEventWeight(genEventWeight)','GenEventInfo:PUWeight(PUWeight)','METpuppi:Pt(METpuppiPt)','METpuppi:Phi(METpuppiPhi)','METpuppi:PtUp(METpuppiPtUp)','METpuppi:PhiUp(METpuppiPhiUp)','METpuppi:PtDown(METpuppiPtDown)','METpuppi:PhiDown(METpuppiPhiDown)','METpuppi:PtRaw(METpuppiPtRaw)','METpuppi:PhiRaw(METpuppiPhiRaw)','METpuppi:CaloMetPt(METpuppiCaloMetPt)','METpuppi:CaloMetPhi(METpuppiCaloMetPhi)'), #'MHT','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)',
-    	VarsInt = cms.vstring('NJets','NVtx','GenEventInfo:npT(npT)','FilterProducer:passFilterHBHE(passFilterHBHE)','FilterProducer:passFilterHBHEIso(passFilterHBHEIso)','FilterProducer:passFilterCSCHalo(passFilterCSCHalo)','FilterProducer:passFilterGoodVtx(passFilterGoodVtx)','FilterProducer:passFilterEEBadSC(passFilterEEBadSC)','FilterProducer:passFilterHBHELooseRerun(passFilterHBHELooseRerun)','FilterProducer:passFilterHBHETightRerun(passFilterHBHETightRerun)','FilterProducer:passFilterHBHEIsoRerun(passFilterHBHEIsoRerun)'),#,'Leptons'),
+    	VarsInt = cms.vstring('NJets','NVtx','GenEventInfo:npT(npT)','FilterProducer:passFilterHBHE(passFilterHBHE)','FilterProducer:passFilterHBHEIso(passFilterHBHEIso)','FilterProducer:passFilterCSCHalo(passFilterCSCHalo)','FilterProducer:passFilterGoodVtx(passFilterGoodVtx)','FilterProducer:passFilterEEBadSC(passFilterEEBadSC)','FilterProducer:passFilterEcalDeadCellTriggerPrimitive(passFilterEcalDeadCellTriggerPrimitive)','FilterProducer:passFilterGlobalTightHalo2016(passFilterGlobalTightHalo2016)','FilterProducer:passFilterHBHELooseRerun(passFilterHBHELooseRerun)','FilterProducer:passFilterHBHETightRerun(passFilterHBHETightRerun)','FilterProducer:passFilterHBHEIsoRerun(passFilterHBHEIsoRerun)'),#,'Leptons'),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
 #        VarsBool = cms.vstring('FilterProducer:passFilterEEBadSC(passFilterEEBadSC)'),
         debug = debug,
@@ -1436,8 +1440,10 @@ reDoPruningAndSoftdropPuppi=True
 #        process.HLTSelection*
         process.TriggerProducer* #NOT PRESENT IN 80x MINIAOD
         ### MET Filter Bits
-        process.HBHENoiseFilterResultProducer*
-#        process.FilterProducer* #this now contains all the met filters
+#        process.HBHENoiseFilterResultProducer*
+#        process.BadChargedCandidateFilter*
+#        process.BadPFMuonFilter*
+        process.FilterProducer* #this now contains all the met filters
 #        process.metFilters* #this now contains all the met filters
 #        process.metBits_miniAOD*
         ### HBHE noise filter

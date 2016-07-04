@@ -41,18 +41,21 @@ private:
   virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
 // ----------member data ---------------------------
-//  edm::EDGetTokenT<edm::TriggerResults> noiseFilterToken;
-  edm::InputTag noiseFilterTag;
+  edm::EDGetTokenT<edm::TriggerResults> noiseFilterTag_;
+  //  edm::InputTag noiseFilterTag;
 
   std::string HBHENoiseFilter_Selector_;
   std::string HBHENoiseIsoFilter_Selector_;
   std::string CSCHaloNoiseFilter_Selector_;
   std::string GoodVtxNoiseFilter_Selector_;
   std::string EEBadScNoiseFilter_Selector_;
-
+  std::string GlobalTightHalo2016NoiseFilter_Selector_;
+  std::string EcalDeadCellTriggerPrimitiveNoiseFilter_Selector_;
+  /*
   edm::InputTag HBHENoiseFilterLoose_Rerun_Selector_;
   edm::InputTag HBHENoiseFilterTight_Rerun_Selector_;
   edm::InputTag HBHENoiseIsoFilter_Rerun_Selector_;
+  */
 };
 //
 // constants, enums and typedefs
@@ -63,28 +66,39 @@ private:
 //
 // constructors and destructor
 //
-FilterProducer::FilterProducer(const edm::ParameterSet& iConfig)
+FilterProducer::FilterProducer(const edm::ParameterSet& iConfig):
+  noiseFilterTag_(consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("noiseFilterTag")))
+// HBHENoiseFilterTag_(consumes<edm::View<string> >(iConfig.getParameter<edm::InputTag>("HBHENoiseFilterTag"))),
+// HBHENoiseIsoFilterTag_(consumes<edm::View<string> >(iConfig.getParameter<edm::InputTag>("HBHENoiseIsoFilterTag"))),
+// CSCHaloNoiseFilterTag_(consumes<edm::View<string> >(iConfig.getParameter<edm::InputTag>("CSCHaloNoiseFilterTag"))),
+// GoodVtxNoiseFilterTag_(consumes<edm::View<string> >(iConfig.getParameter<edm::InputTag>("GoodVtxNoiseFilterTag"))),
+// EEBadScNoiseFilterTag_(consumes<edm::View<string> >(iConfig.getParameter<edm::InputTag>("EEBadScNoiseFilterTag"))),
+// GlobalTightHalo2016FilterTag_(consumes<edm::View<string> >(iConfig.getParameter<edm::InputTag>("GlobalTightHalo2016FilterTag"))),
+// EcalDeadCellTriggerPrimitiveFilterTag_(consumes<edm::View<string> >(iConfig.getParameter<edm::InputTag>("EcalDeadCellTriggerPrimitiveFilterTag"))),
+  //  HBHENoiseFilterLoose_Rerun_Selector_(consumes<edm::View<string> >(iConfig.getParameter<edm::InputTag>("HBHENoiseFilterLoose"))),
+  //HBHENoiseFilterTight_Rerun_Selector_(consumes<edm::View<string> >(iConfig.getParameter<edm::InputTag>("HBHENoiseFilterTight"))),
+  // HBHENoiseIsoFilter_Rerun_Selector_(consumes<edm::View<string> >(iConfig.getParameter<edm::InputTag>("HBHENoiseIsoFilter"))),
   //  noiseFilterToken_( noiseFilterToken )
 {
-  noiseFilterTag = iConfig.getParameter<edm::InputTag>("noiseFilterTag");
- HBHENoiseFilter_Selector_ =  iConfig.getParameter<std::string> ("HBHENoiseFilter_Selector_");  
- HBHENoiseIsoFilter_Selector_ =  iConfig.getParameter<std::string> ("HBHENoiseIsoFilter_Selector_");  
- CSCHaloNoiseFilter_Selector_ =  iConfig.getParameter<std::string> ("CSCHaloNoiseFilter_Selector_");
- GoodVtxNoiseFilter_Selector_ =  iConfig.getParameter<std::string> ("GoodVtxNoiseFilter_Selector_");
- EEBadScNoiseFilter_Selector_ =  iConfig.getParameter<std::string> ("EEBadScNoiseFilter_Selector_");
-
- HBHENoiseFilterLoose_Rerun_Selector_ =  iConfig.getParameter<edm::InputTag>("HBHENoiseFilterLoose"),
- HBHENoiseFilterTight_Rerun_Selector_ =  iConfig.getParameter<edm::InputTag>("HBHENoiseFilterTight"),
- HBHENoiseIsoFilter_Rerun_Selector_ =  iConfig.getParameter<edm::InputTag>("HBHENoiseIsoFilter"),
+  //  noiseFilterTag = iConfig.getParameter<edm::InputTag>("noiseFilterTag");
+  HBHENoiseFilter_Selector_ =  iConfig.getParameter<std::string> ("HBHENoiseFilter_Selector_");  
+  HBHENoiseIsoFilter_Selector_ =  iConfig.getParameter<std::string> ("HBHENoiseIsoFilter_Selector_");  
+  CSCHaloNoiseFilter_Selector_ =  iConfig.getParameter<std::string> ("CSCHaloNoiseFilter_Selector_");
+  GoodVtxNoiseFilter_Selector_ =  iConfig.getParameter<std::string> ("GoodVtxNoiseFilter_Selector_");
+  EEBadScNoiseFilter_Selector_ =  iConfig.getParameter<std::string> ("EEBadScNoiseFilter_Selector_");
+  GlobalTightHalo2016NoiseFilter_Selector_ =  iConfig.getParameter<std::string> ("GlobalTightHalo2016NoiseFilter_Selector_");
+  EcalDeadCellTriggerPrimitiveNoiseFilter_Selector_ =  iConfig.getParameter<std::string> ("EcalDeadCellTriggerPrimitiveNoiseFilter_Selector_");
 
   produces<int>("passFilterHBHE");
   produces<int>("passFilterHBHEIso");
   produces<int>("passFilterCSCHalo");
   produces<int>("passFilterGoodVtx");
   produces<int>("passFilterEEBadSC");
-  produces<int>("passFilterHBHELooseRerun");
-  produces<int>("passFilterHBHETightRerun");
-  produces<int>("passFilterHBHEIsoRerun");
+  produces<int>("passFilterGlobalTightHalo2016");
+  produces<int>("passFilterEcalDeadCellTriggerPrimitive");
+  //  produces<int>("passFilterHBHELooseRerun");
+  //produces<int>("passFilterHBHETightRerun");
+  //produces<int>("passFilterHBHEIsoRerun");
 
  /*
  const std::string string0("passFilterHBHEIso");
@@ -120,14 +134,18 @@ FilterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   int passFilterCSCHalo=0;
   int passFilterGoodVtx=0;
   int passFilterEEBadSC=0;
-  int passFilterHBHELooseRerun=0;
-  int passFilterHBHETightRerun=0;
-  int passFilterHBHEIsoRerun=0;
+  int passFilterGlobalTightHalo2016=0;
+  int passFilterEcalDeadCellTriggerPrimitive=0;
+  //  int passFilterBadMuon=0;
+  //int passFilterBadChargedHadron=0;
+  //  int passFilterHBHELooseRerun=0;
+  //int passFilterHBHETightRerun=0;
+  //int passFilterHBHEIsoRerun=0;
 
 
   //int passesTrigger;
   edm::Handle<edm::TriggerResults> noiseFilterBits_; //our trigger result object
-  iEvent.getByLabel(noiseFilterTag,noiseFilterBits_);
+  iEvent.getByToken(noiseFilterTag_,noiseFilterBits_);
   //  iEvent.getByToken(noiseFilterTag, noiseFilterBits_);
   const edm::TriggerNames &names = iEvent.triggerNames(*noiseFilterBits_);
       
@@ -143,10 +161,23 @@ FilterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       passFilterGoodVtx=noiseFilterBits_->accept(i);
     if (names.triggerName(i) == EEBadScNoiseFilter_Selector_)
       passFilterEEBadSC=noiseFilterBits_->accept(i);
+    if (names.triggerName(i) == GlobalTightHalo2016NoiseFilter_Selector_)
+      passFilterGlobalTightHalo2016=noiseFilterBits_->accept(i);
+    if (names.triggerName(i) == EcalDeadCellTriggerPrimitiveNoiseFilter_Selector_)
+      passFilterEcalDeadCellTriggerPrimitive=noiseFilterBits_->accept(i);
   }
-
+  /*
+  edm::Handle<bool> ifilterbadChCand;
+  iEvent.getByToken("BadChCandFilter", ifilterbadChCand);
+  int filterbadChCandidate = *ifilterbadChCand;
+    
+  edm::Handle<bool> ifilterbadPFMuon;
+  iEvent.getByToken("BadPFMuon", ifilterbadPFMuon);
+  int filterbadPFMuon = *ifilterbadPFMuon;
+  */    
+  /*
   edm::Handle<bool> HBHENoiseFilterLooseResultHandle;
-  iEvent.getByLabel(HBHENoiseFilterLoose_Rerun_Selector_, HBHENoiseFilterLooseResultHandle);
+  iEvent.getByToken(HBHENoiseFilterLoose_Rerun_Selector_, HBHENoiseFilterLooseResultHandle);
   bool HBHENoiseFilterLooseResult = *HBHENoiseFilterLooseResultHandle;
   if (!HBHENoiseFilterLooseResultHandle.isValid()) {
     LogDebug("") << "CaloTowerAnalyzer: Could not find HBHENoiseFilterResult" << std::endl;
@@ -155,7 +186,7 @@ FilterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   passFilterHBHELooseRerun = HBHENoiseFilterLooseResult;
 
   edm::Handle<bool> HBHENoiseFilterTightResultHandle;
-  iEvent.getByLabel(HBHENoiseFilterTight_Rerun_Selector_, HBHENoiseFilterTightResultHandle);
+  iEvent.getByToken(HBHENoiseFilterTight_Rerun_Selector_, HBHENoiseFilterTightResultHandle);
   bool HBHENoiseFilterTightResult = *HBHENoiseFilterTightResultHandle;
   if (!HBHENoiseFilterTightResultHandle.isValid()) {
     LogDebug("") << "CaloTowerAnalyzer: Could not find HBHENoiseFilterResult" << std::endl;
@@ -164,14 +195,14 @@ FilterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   passFilterHBHETightRerun = HBHENoiseFilterTightResult;
  
   edm::Handle<bool> HBHENoiseIsoFilterResultHandle;
-  iEvent.getByLabel(HBHENoiseIsoFilter_Rerun_Selector_, HBHENoiseIsoFilterResultHandle);
+  iEvent.getByToken(HBHENoiseIsoFilter_Rerun_Selector_, HBHENoiseIsoFilterResultHandle);
   bool HBHENoiseIsoFilterResult = *HBHENoiseIsoFilterResultHandle;
   if (!HBHENoiseIsoFilterResultHandle.isValid()) {
     LogDebug("") << "CaloTowerAnalyzer: Could not find HBHENoiseFilterResult" << std::endl;
   }
 
   passFilterHBHEIsoRerun = HBHENoiseIsoFilterResult;
-
+  */
 
   std::auto_ptr<int> f0(new int(passFilterHBHE));
   iEvent.put(f0,"passFilterHBHE");
@@ -183,12 +214,22 @@ FilterProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.put(f3,"passFilterGoodVtx");
   std::auto_ptr<int> f4(new int(passFilterEEBadSC));
   iEvent.put(f4,"passFilterEEBadSC");
-  std::auto_ptr<int> f5(new int(passFilterHBHELooseRerun));
-  iEvent.put(f5,"passFilterHBHELooseRerun");
-  std::auto_ptr<int> f6(new int(passFilterHBHETightRerun));
-  iEvent.put(f6,"passFilterHBHETightRerun");
-  std::auto_ptr<int> f7(new int(passFilterHBHEIsoRerun));
-  iEvent.put(f7,"passFilterHBHEIsoRerun");
+  std::auto_ptr<int> f5(new int(passFilterGlobalTightHalo2016));
+  iEvent.put(f5,"passFilterGlobalTightHalo2016");
+  std::auto_ptr<int> f6(new int(passFilterEcalDeadCellTriggerPrimitive));
+  iEvent.put(f6,"passFilterEcalDeadCellTriggerPrimitive");
+  //  std::auto_ptr<int> f7(new int(passFilterBadMuon));
+  //iEvent.put(f7,"passFilterBadMuon");
+  //std::auto_ptr<int> f8(new int(passFilterBadChargedHadron));
+  //iEvent.put(f8,"passFilterBadChargedHadron");
+  /*
+  std::auto_ptr<int> f7(new int(passFilterHBHELooseRerun));
+  iEvent.put(f7,"passFilterHBHELooseRerun");
+  std::auto_ptr<int> f8(new int(passFilterHBHETightRerun));
+  iEvent.put(f8,"passFilterHBHETightRerun");
+  std::auto_ptr<int> f9(new int(passFilterHBHEIsoRerun));
+  iEvent.put(f9,"passFilterHBHEIsoRerun");
+  */
 }  
 // ------------ method called once each job just before starting event loop ------------
 void
