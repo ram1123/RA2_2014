@@ -32,7 +32,11 @@ customizeHBHENoiseForRun2015D=True,
 jsonFileName="",
 isCrab=False,
 reDoPruningAndSoftdrop=False,
-reDoPruningAndSoftdropPuppi=True
+reDoPruningAndSoftdropPuppi=True,
+isRun2016BCD=False,
+isRun2016E=False,
+isRun2016F=False,
+isRun2016GH=False
 ):
 
     if (MC):
@@ -308,6 +312,7 @@ reDoPruningAndSoftdropPuppi=True
       minNumber = 1,
       )
 
+    '''
     jecLevelsAK8 = [
         "Spring16_25nsV3_DATA_L1FastJet_AK8PFchs.txt",
         "Spring16_25nsV3_DATA_L2Relative_AK8PFchs.txt",
@@ -330,7 +335,7 @@ reDoPruningAndSoftdropPuppi=True
             "Spring16_25nsV3_MC_L2Relative_AK4PFchs.txt",
             "Spring16_25nsV3_MC_L3Absolute_AK4PFchs.txt"
             ]
-
+    '''
 #    print cms.string(os.environ['CMSSW_BASE']+"/src/AllHadronicSUSY/PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt")
 
     process.substructureSequence = cms.Sequence()
@@ -1068,16 +1073,78 @@ reDoPruningAndSoftdropPuppi=True
     BTagCutValue					= cms.double(0.679)
     )
 
+
+#    JECstring="Spring16_25nsV10"
+    JECstring="Spring16_25nsV3"
+    if (isRun2016BCD):
+        JECstring="Spring16_25nsV10BCD"
+    elif (isRun2016E):
+        JECstring="Spring16_25nsV10E"
+    elif (isRun2016F):
+        JECstring="Spring16_25nsV10F"
+    elif (isRun2016GH):
+        JECstring="Spring16_25nsV10p2"
+    
+
+    L1string_AK4_data=JECstring+"_DATA_L1FastJet_AK4PFchs.txt"
+    L2string_AK4_data=JECstring+"_DATA_L2Relative_AK4PFchs.txt"
+    L3string_AK4_data=JECstring+"_DATA_L3Absolute_AK4PFchs.txt"
+    L2L3string_AK4_data=JECstring+"_DATA_L2L3Residual_AK4PFchs.txt"
+    Uncstring_AK4_data=JECstring+"_DATA_Uncertainty_AK4PFchs.txt"
+
+    L1string_AK8_data=JECstring+"_DATA_L1FastJet_AK8PFchs.txt"
+    L2string_AK8_data=JECstring+"_DATA_L2Relative_AK8PFchs.txt"
+    L3string_AK8_data=JECstring+"_DATA_L3Absolute_AK8PFchs.txt"
+    L2L3string_AK8_data=JECstring+"_DATA_L2L3Residual_AK8PFchs.txt"
+    Uncstring_AK8_data=JECstring+"_DATA_Uncertainty_AK8PFchs.txt"
+
+    L1string_AK4_mc=JECstring+"_MC_L1FastJet_AK4PFchs.txt"
+    L2string_AK4_mc=JECstring+"_MC_L2Relative_AK4PFchs.txt"
+    L3string_AK4_mc=JECstring+"_MC_L3Absolute_AK4PFchs.txt"
+    L2L3string_AK4_mc=JECstring+"_MC_L2L3Residual_AK4PFchs.txt"
+    Uncstring_AK4_mc=JECstring+"_MC_Uncertainty_AK4PFchs.txt"
+
+    L1string_AK8_mc=JECstring+"_MC_L1FastJet_AK8PFchs.txt"
+    L2string_AK8_mc=JECstring+"_MC_L2Relative_AK8PFchs.txt"
+    L3string_AK8_mc=JECstring+"_MC_L3Absolute_AK8PFchs.txt"
+    L2L3string_AK8_mc=JECstring+"_MC_L2L3Residual_AK8PFchs.txt"
+    Uncstring_AK8_mc=JECstring+"_MC_Uncertainty_AK8PFchs.txt"
+
+    L1string_puppi_AK4_data=JECstring+"_DATA_L1FastJet_AK4PFPuppi.txt"
+    L2string_puppi_AK4_data=JECstring+"_DATA_L2Relative_AK4PFPuppi.txt"
+    L3string_puppi_AK4_data=JECstring+"_DATA_L3Absolute_AK4PFPuppi.txt"
+    L2L3string_puppi_AK4_data=JECstring+"_DATA_L2L3Residual_AK4PFPuppi.txt"
+    Uncstring_puppi_AK4_data=JECstring+"_DATA_Uncertainty_AK4PFPuppi.txt"
+
+    L1string_puppi_AK8_data=JECstring+"_DATA_L1FastJet_AK8PFPuppi.txt"
+    L2string_puppi_AK8_data=JECstring+"_DATA_L2Relative_AK8PFPuppi.txt"
+    L3string_puppi_AK8_data=JECstring+"_DATA_L3Absolute_AK8PFPuppi.txt"
+    L2L3string_puppi_AK8_data=JECstring+"_DATA_L2L3Residual_AK8PFPuppi.txt"
+    Uncstring_puppi_AK8_data=JECstring+"_DATA_Uncertainty_AK8PFPuppi.txt"
+
+    L1string_puppi_AK4_mc=JECstring+"_MC_L1FastJet_AK4PFPuppi.txt"
+    L2string_puppi_AK4_mc=JECstring+"_MC_L2Relative_AK4PFPuppi.txt"
+    L3string_puppi_AK4_mc=JECstring+"_MC_L3Absolute_AK4PFPuppi.txt"
+    L2L3string_puppi_AK4_mc=JECstring+"_MC_L2L3Residual_AK4PFPuppi.txt"
+    Uncstring_puppi_AK4_mc=JECstring+"_MC_Uncertainty_AK4PFPuppi.txt"
+
+    L1string_puppi_AK8_mc=JECstring+"_MC_L1FastJet_AK8PFPuppi.txt"
+    L2string_puppi_AK8_mc=JECstring+"_MC_L2Relative_AK8PFPuppi.txt"
+    L3string_puppi_AK8_mc=JECstring+"_MC_L3Absolute_AK8PFPuppi.txt"
+    L2L3string_puppi_AK8_mc=JECstring+"_MC_L2L3Residual_AK8PFPuppi.txt"
+    Uncstring_puppi_AK8_mc=JECstring+"_MC_Uncertainty_AK8PFPuppi.txt"
+
+
     from AllHadronicSUSY.Utils.jetproperties_cfi import jetproperties
     process.JetsProperties = jetproperties.clone(
     JetTag  = cms.InputTag('slimmedJets'),
     MinPt = cms.double(-1),
     doJEC  = cms.bool(doJECCorrection),
-    L1File = cms.string("Spring16_25nsV3_DATA_L1FastJet_AK4PFchs.txt"),
-    L2File = cms.string("Spring16_25nsV3_DATA_L2Relative_AK4PFchs.txt"),
-    L3File = cms.string("Spring16_25nsV3_DATA_L3Absolute_AK4PFchs.txt"),
-    L2L3File = cms.string("Spring16_25nsV3_DATA_L2L3Residual_AK4PFchs.txt"),
-    uncFile = cms.string("Spring16_25nsV3_DATA_Uncertainty_AK4PFchs.txt"),
+    L1File = cms.string(L1string_AK4_data),
+    L2File = cms.string(L2string_AK4_data),
+    L3File = cms.string(L3string_AK4_data),
+    L2L3File = cms.string(L2L3string_AK4_data),
+    uncFile = cms.string(Uncstring_AK4_data),
 #    jecPayloadNames      = cms.vstring(jecLevelsAK4),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
@@ -1088,11 +1155,11 @@ reDoPruningAndSoftdropPuppi=True
     MinPt = cms.double(-1),
     doJEC  = cms.bool(doJECCorrection),
     doReclusteringForPrunedAndSoftdrop = cms.bool(reDoPruningAndSoftdrop),
-    L1File = cms.string("Spring16_25nsV3_DATA_L1FastJet_AK8PFchs.txt"),
-    L2File = cms.string("Spring16_25nsV3_DATA_L2Relative_AK8PFchs.txt"),
-    L3File = cms.string("Spring16_25nsV3_DATA_L3Absolute_AK8PFchs.txt"),
-    L2L3File = cms.string("Spring16_25nsV3_DATA_L2L3Residual_AK8PFchs.txt"),
-    uncFile = cms.string("Spring16_25nsV3_DATA_Uncertainty_AK8PFchs.txt"),
+    L1File = cms.string(L1string_AK8_data),
+    L2File = cms.string(L2string_AK8_data),
+    L3File = cms.string(L3string_AK8_data),
+    L2L3File = cms.string(L2L3string_AK8_data),
+    uncFile = cms.string(Uncstring_AK8_data),
 #    jecPayloadNames      = cms.vstring(jecLevelsAK8),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
@@ -1103,11 +1170,11 @@ reDoPruningAndSoftdropPuppi=True
     MinPt = cms.double(-1),
     doJEC  = cms.bool(doJECCorrection),
     doReclusteringForPrunedAndSoftdrop = cms.bool(reDoPruningAndSoftdrop),
-    L1File = cms.string("Spring16_25nsV3_DATA_L1FastJet_AK8PFchs.txt"),
-    L2File = cms.string("Spring16_25nsV3_DATA_L2Relative_AK8PFchs.txt"),
-    L3File = cms.string("Spring16_25nsV3_DATA_L3Absolute_AK8PFchs.txt"),
-    L2L3File = cms.string("Spring16_25nsV3_DATA_L2L3Residual_AK8PFchs.txt"),
-    uncFile = cms.string("Spring16_25nsV3_DATA_Uncertainty_AK8PFchs.txt"),
+    L1File = cms.string(L1string_AK8_data),
+    L2File = cms.string(L2string_AK8_data),
+    L3File = cms.string(L3string_AK8_data),
+    L2L3File = cms.string(L2L3string_AK8_data),
+    uncFile = cms.string(Uncstring_AK8_data),
 #    jecPayloadNames      = cms.vstring(jecLevelsAK8),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
@@ -1118,11 +1185,11 @@ reDoPruningAndSoftdropPuppi=True
     MinPt = cms.double(-1),
     doJEC  = cms.bool(doJECCorrection),
     doReclusteringForPrunedAndSoftdrop = cms.bool(reDoPruningAndSoftdrop),
-    L1File = cms.string("Spring16_25nsV3_DATA_L1FastJet_AK8PFchs.txt"),
-    L2File = cms.string("Spring16_25nsV3_DATA_L2Relative_AK8PFchs.txt"),
-    L3File = cms.string("Spring16_25nsV3_DATA_L3Absolute_AK8PFchs.txt"),
-    L2L3File = cms.string("Spring16_25nsV3_DATA_L2L3Residual_AK8PFchs.txt"),
-    uncFile = cms.string("Spring16_25nsV3_DATA_Uncertainty_AK8PFchs.txt"),
+    L1File = cms.string(L1string_AK8_data),
+    L2File = cms.string(L2string_AK8_data),
+    L3File = cms.string(L3string_AK8_data),
+    L2L3File = cms.string(L2L3string_AK8_data),
+    uncFile = cms.string(Uncstring_AK8_data),
 #    jecPayloadNames      = cms.vstring(jecLevelsAK8),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
@@ -1137,11 +1204,11 @@ reDoPruningAndSoftdropPuppi=True
         MinPt = cms.double(-1),
         doJEC  = cms.bool(doJECCorrection),
         doReclusteringForPrunedAndSoftdrop = cms.bool(reDoPruningAndSoftdropPuppi),
-        L1File = cms.string("Spring16_25nsV3_DATA_L1FastJet_AK8PFPuppi.txt"),
-        L2File = cms.string("Spring16_25nsV3_DATA_L2Relative_AK8PFPuppi.txt"),
-        L3File = cms.string("Spring16_25nsV3_DATA_L3Absolute_AK8PFPuppi.txt"),
-        L2L3File = cms.string("Spring16_25nsV3_DATA_L2L3Residual_AK8PFPuppi.txt"),
-        uncFile = cms.string("Spring16_25nsV3_DATA_Uncertainty_AK8PFPuppi.txt"),
+        L1File = cms.string(L1string_puppi_AK8_data),
+        L2File = cms.string(L2string_puppi_AK8_data),
+        L3File = cms.string(L3string_puppi_AK8_data),
+        L2L3File = cms.string(L2L3string_puppi_AK8_data),
+        uncFile = cms.string(Uncstring_puppi_AK8_data),
         #    jecPayloadNames      = cms.vstring(jecLevelsAK8),
         #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
         )
@@ -1151,11 +1218,11 @@ reDoPruningAndSoftdropPuppi=True
     JetTag  = cms.InputTag('slimmedJetsPuppi'),
     MinPt = cms.double(-1),
     doJEC  = cms.bool(doJECCorrection),
-    L1File = cms.string("Spring16_25nsV3_DATA_L1FastJet_AK4PFPuppi.txt"),
-    L2File = cms.string("Spring16_25nsV3_DATA_L2Relative_AK4PFPuppi.txt"),
-    L3File = cms.string("Spring16_25nsV3_DATA_L3Absolute_AK4PFPuppi.txt"),
-    L2L3File = cms.string("Spring16_25nsV3_DATA_L2L3Residual_AK4PFPuppi.txt"),
-    uncFile = cms.string("Spring16_25nsV3_DATA_Uncertainty_AK4PFPuppi.txt"),
+    L1File = cms.string(L1string_puppi_AK4_data),
+    L2File = cms.string(L2string_puppi_AK4_data),
+    L3File = cms.string(L3string_puppi_AK4_data),
+    L2L3File = cms.string(L2L3string_puppi_AK4_data),
+    uncFile = cms.string(Uncstring_puppi_AK4_data),
 #    jecPayloadNames      = cms.vstring(jecLevelsAK4),
 #    BTagInputTag	        = cms.string('combinedInclusiveSecondaryVertexV2BJetTags'),
     )
@@ -1183,36 +1250,36 @@ reDoPruningAndSoftdropPuppi=True
         process.JetsPropertiesPuppiAK8.softdropJetTag  = cms.InputTag('slimmedJetsPuppiAK8')
 
     if (MC):
-        process.JetsProperties.L1File = cms.string("Spring16_25nsV3_MC_L1FastJet_AK4PFchs.txt")
-        process.JetsProperties.L2File = cms.string("Spring16_25nsV3_MC_L2Relative_AK4PFchs.txt")
-        process.JetsProperties.L3File = cms.string("Spring16_25nsV3_MC_L3Absolute_AK4PFchs.txt")
+        process.JetsProperties.L1File = cms.string(L1string_AK4_mc)
+        process.JetsProperties.L2File = cms.string(L2string_AK4_mc)
+        process.JetsProperties.L3File = cms.string(L3string_AK4_mc)
         process.JetsProperties.L2L3File = cms.string("NONE")
-        process.JetsProperties.uncFile = cms.string("Spring16_25nsV3_MC_Uncertainty_AK4PFchs.txt")
-        process.JetsPropertiesAK8.L1File = cms.string("Spring16_25nsV3_MC_L1FastJet_AK8PFchs.txt")
-        process.JetsPropertiesAK8.L2File = cms.string("Spring16_25nsV3_MC_L2Relative_AK8PFchs.txt")
-        process.JetsPropertiesAK8.L3File = cms.string("Spring16_25nsV3_MC_L3Absolute_AK8PFchs.txt")
+        process.JetsProperties.uncFile = cms.string(Uncstring_AK4_mc)
+        process.JetsPropertiesAK8.L1File = cms.string(L1string_AK8_mc)
+        process.JetsPropertiesAK8.L2File = cms.string(L2string_AK8_mc)
+        process.JetsPropertiesAK8.L3File = cms.string(L3string_AK8_mc)
         process.JetsPropertiesAK8.L2L3File = cms.string("NONE")
-        process.JetsPropertiesAK8.uncFile = cms.string("Spring16_25nsV3_MC_Uncertainty_AK8PFchs.txt")
-        process.JetsPropertiesAK10.L1File = cms.string("Spring16_25nsV3_MC_L1FastJet_AK8PFchs.txt")
-        process.JetsPropertiesAK10.L2File = cms.string("Spring16_25nsV3_MC_L2Relative_AK8PFchs.txt")
-        process.JetsPropertiesAK10.L3File = cms.string("Spring16_25nsV3_MC_L3Absolute_AK8PFchs.txt")
+        process.JetsPropertiesAK8.uncFile = cms.string(Uncstring_AK8_mc)
+        process.JetsPropertiesAK10.L1File = cms.string(L1string_AK8_mc)
+        process.JetsPropertiesAK10.L2File = cms.string(L2string_AK8_mc)
+        process.JetsPropertiesAK10.L3File = cms.string(L3string_AK8_mc)
         process.JetsPropertiesAK10.L2L3File = cms.string("NONE")
-        process.JetsPropertiesAK10.uncFile = cms.string("Spring16_25nsV3_MC_Uncertainty_AK8PFchs.txt")
-        process.JetsPropertiesAK12.L1File = cms.string("Spring16_25nsV3_MC_L1FastJet_AK8PFchs.txt")
-        process.JetsPropertiesAK12.L2File = cms.string("Spring16_25nsV3_MC_L2Relative_AK8PFchs.txt")
-        process.JetsPropertiesAK12.L3File = cms.string("Spring16_25nsV3_MC_L3Absolute_AK8PFchs.txt")
+        process.JetsPropertiesAK10.uncFile = cms.string(Uncstring_AK8_mc)
+        process.JetsPropertiesAK12.L1File = cms.string(L1string_AK8_mc)
+        process.JetsPropertiesAK12.L2File = cms.string(L2string_AK8_mc)
+        process.JetsPropertiesAK12.L3File = cms.string(L3string_AK8_mc)
         process.JetsPropertiesAK12.L2L3File = cms.string("NONE")
-        process.JetsPropertiesAK12.uncFile = cms.string("Spring16_25nsV3_MC_Uncertainty_AK8PFchs.txt")
-        process.JetsPropertiesPuppiAK8.L1File = cms.string("Spring16_25nsV3_MC_L1FastJet_AK8PFPuppi.txt")
-        process.JetsPropertiesPuppiAK8.L2File = cms.string("Spring16_25nsV3_MC_L2Relative_AK8PFPuppi.txt")
-        process.JetsPropertiesPuppiAK8.L3File = cms.string("Spring16_25nsV3_MC_L3Absolute_AK8PFPuppi.txt")
+        process.JetsPropertiesAK12.uncFile = cms.string(Uncstring_AK8_mc)
+        process.JetsPropertiesPuppiAK8.L1File = cms.string(L1string_puppi_AK8_mc)
+        process.JetsPropertiesPuppiAK8.L2File = cms.string(L2string_puppi_AK8_mc)
+        process.JetsPropertiesPuppiAK8.L3File = cms.string(L3string_puppi_AK8_mc)
         process.JetsPropertiesPuppiAK8.L2L3File = cms.string("NONE")
-        process.JetsPropertiesPuppiAK8.uncFile = cms.string("Spring16_25nsV3_MC_Uncertainty_AK8PFPuppi.txt")
-        process.JetsPropertiesPuppi.L1File = cms.string("Spring16_25nsV3_MC_L1FastJet_AK4PFPuppi.txt")
-        process.JetsPropertiesPuppi.L2File = cms.string("Spring16_25nsV3_MC_L2Relative_AK4PFPuppi.txt")
-        process.JetsPropertiesPuppi.L3File = cms.string("Spring16_25nsV3_MC_L3Absolute_AK4PFPuppi.txt")
+        process.JetsPropertiesPuppiAK8.uncFile = cms.string(Uncstring_puppi_AK8_mc)
+        process.JetsPropertiesPuppi.L1File = cms.string(L1string_puppi_AK4_mc)
+        process.JetsPropertiesPuppi.L2File = cms.string(L2string_puppi_AK4_mc)
+        process.JetsPropertiesPuppi.L3File = cms.string(L3string_puppi_AK4_mc)
         process.JetsPropertiesPuppi.L2L3File = cms.string("NONE")
-        process.JetsPropertiesPuppi.uncFile = cms.string("Spring16_25nsV3_MC_Uncertainty_AK4PFPuppi.txt")
+        process.JetsPropertiesPuppi.uncFile = cms.string(Uncstring_puppi_AK4_mc)
 
     if doAK8Reclustering:
         process.JetsPropertiesAK8.JetTag = cms.InputTag('selectedPatJetsAK8')
@@ -1222,11 +1289,11 @@ reDoPruningAndSoftdropPuppi=True
     METTag  = cms.InputTag("slimmedMETs"),
     JetTag  = cms.InputTag('slimmedJets'),
     doJEC  = cms.bool(doJECCorrection),
-    L1File = cms.string("Spring16_25nsV3_DATA_L1FastJet_AK4PFchs.txt"),
-    L2File = cms.string("Spring16_25nsV3_DATA_L2Relative_AK4PFchs.txt"),
-    L3File = cms.string("Spring16_25nsV3_DATA_L3Absolute_AK4PFchs.txt"),
-    L2L3File = cms.string("Spring16_25nsV3_DATA_L2L3Residual_AK4PFchs.txt"),
-    uncFile = cms.string("Spring16_25nsV3_DATA_Uncertainty_AK4PFchs.txt"),
+    L1File = cms.string(L1string_AK4_data),
+    L2File = cms.string(L2string_AK4_data),
+    L3File = cms.string(L3string_AK4_data),
+    L2L3File = cms.string(L2L3string_AK4_data),
+    uncFile = cms.string(Uncstring_AK4_data),
 #    jecPayloadNames      = cms.vstring(jecLevelsAK4),
     MuTag = cms.InputTag("slimmedMuons"),
     RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
@@ -1239,11 +1306,11 @@ reDoPruningAndSoftdropPuppi=True
     METTag  = cms.InputTag("slimmedMETsPuppi"),
     JetTag  = cms.InputTag('slimmedJetsPuppi'),
     doJEC  = cms.bool(doJECCorrection),
-    L1File = cms.string("Spring16_25nsV3_DATA_L1FastJet_AK4PFPuppi.txt"),
-    L2File = cms.string("Spring16_25nsV3_DATA_L2Relative_AK4PFPuppi.txt"),
-    L3File = cms.string("Spring16_25nsV3_DATA_L3Absolute_AK4PFPuppi.txt"),
-    L2L3File = cms.string("Spring16_25nsV3_DATA_L2L3Residual_AK4PFPuppi.txt"),
-    uncFile = cms.string("Spring16_25nsV3_DATA_Uncertainty_AK4PFPuppi.txt"),
+    L1File = cms.string(L1string_puppi_AK4_data),
+    L2File = cms.string(L2string_puppi_AK4_data),
+    L3File = cms.string(L3string_puppi_AK4_data),
+    L2L3File = cms.string(L2L3string_puppi_AK4_data),
+    uncFile = cms.string(Uncstring_puppi_AK4_data),
 #    jecPayloadNames      = cms.vstring(jecLevelsAK4),
     MuTag = cms.InputTag("slimmedMuons"),
     RhoTag = cms.InputTag("fixedGridRhoFastjetAll"),
@@ -1252,16 +1319,16 @@ reDoPruningAndSoftdropPuppi=True
     )
 
     if (MC):
-        process.MET.L1File = cms.string("Spring16_25nsV3_MC_L1FastJet_AK4PFchs.txt")
-        process.MET.L2File = cms.string("Spring16_25nsV3_MC_L2Relative_AK4PFchs.txt")
-        process.MET.L3File = cms.string("Spring16_25nsV3_MC_L3Absolute_AK4PFchs.txt")
+        process.MET.L1File = cms.string(L1string_AK4_mc)
+        process.MET.L2File = cms.string(L2string_AK4_mc)
+        process.MET.L3File = cms.string(L3string_AK4_mc)
         process.MET.L2L3File = cms.string("NONE")
-        process.MET.uncFile = cms.string("Spring16_25nsV3_MC_Uncertainty_AK4PFchs.txt")
-        process.METpuppi.L1File = cms.string("Spring16_25nsV3_MC_L1FastJet_AK4PFPuppi.txt")
-        process.METpuppi.L2File = cms.string("Spring16_25nsV3_MC_L2Relative_AK4PFPuppi.txt")
-        process.METpuppi.L3File = cms.string("Spring16_25nsV3_MC_L3Absolute_AK4PFPuppi.txt")
+        process.MET.uncFile = cms.string(Uncstring_AK4_mc)
+        process.METpuppi.L1File = cms.string(L1string_puppi_AK4_mc)
+        process.METpuppi.L2File = cms.string(L2string_puppi_AK4_mc)
+        process.METpuppi.L3File = cms.string(L3string_puppi_AK4_mc)
         process.METpuppi.L2L3File = cms.string("NONE")
-        process.METpuppi.uncFile = cms.string("Spring16_25nsV3_MC_Uncertainty_AK4PFPuppi.txt")
+        process.METpuppi.uncFile = cms.string(Uncstring_puppi_AK4_mc)
 
 
     from AllHadronicSUSY.Utils.leptonint_cfi import leptonint
