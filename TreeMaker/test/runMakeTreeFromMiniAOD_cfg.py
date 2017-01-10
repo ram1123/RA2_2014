@@ -38,9 +38,9 @@ IsCrab=parameters.value("isCrab",False)
 ReDoPruningAndSoftdrop=parameters.value("ReDoPruningAndSoftdrop",False)
 ReDoPruningAndSoftdropPuppi=parameters.value("ReDoPruningAndSoftdropPuppi",True)
 #IsRun2016BCD=parameters.Value("IsRun2016BCD",False)
-#IsRun2016E=parameters.Value("IsRun2016E",False)
-#IsRun2016F=parameters.Value("IsRun2016F",False)
-#IsRun2016GH=parameters.Value("IsRun2016GH",False)
+#IsRun2016EF=parameters.Value("IsRun2016EF",False)
+#IsRun2016G=parameters.Value("IsRun2016G",False)
+#IsRun2016H=parameters.Value("IsRun2016H",False)
 
 processName      = parameters.value("name","RSGraviton1000")
 
@@ -71,9 +71,9 @@ print "       isHBHEEarlyData : "+str(isHBHEEarlyData)
 print "       isHBHERun2015D : "+str(isHBHERun2015D)
 print "       jsonFileName : "+str(JsonFileName)
 #print "       isRun2016BCD : "+str(IsRun2016BCD)
-#print "       isRun2016E : "+str(IsRun2016E)
-#print "       isRun2016F : "+str(IsRun2016F)
-#print "       isRun2016GH : "+str(IsRun2016GH)
+#print "       isRun2016EF : "+str(IsRun2016EF)
+#print "       isRun2016G : "+str(IsRun2016G)
+#print "       isRun2016H : "+str(IsRun2016H)
 print "       isCrab : "+str(False)
 print "************************************************"
 
@@ -114,8 +114,8 @@ makeTreeTreeFromMiniAOD(process,
                 reDoPruningAndSoftdrop=ReDoPruningAndSoftdrop,
                 reDoPruningAndSoftdropPuppi=ReDoPruningAndSoftdropPuppi
 #                isRun2016BCD=IsRun2016BCD,
-#                isRun2016E=IsRun2016E,
-#                isRun2016F=IsRun2016F,
-#                isRun2016GH=IsRun2016GH
+#                isRun2016EF=IsRun2016EF,
+#                isRun2016G=IsRun2016G,
+#                isRun2016H=IsRun2016H
                 )
 

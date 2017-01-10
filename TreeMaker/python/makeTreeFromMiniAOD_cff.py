@@ -34,9 +34,9 @@ isCrab=False,
 reDoPruningAndSoftdrop=False,
 reDoPruningAndSoftdropPuppi=True,
 isRun2016BCD=False,
-isRun2016E=False,
-isRun2016F=False,
-isRun2016GH=False
+isRun2016EF=False,
+isRun2016G=False,
+isRun2016H=False
 ):
 
     if (MC):
@@ -94,32 +94,31 @@ isRun2016GH=False
         prescaleTagArg3 = cms.string(''),
         triggerNameList = cms.vstring( # list of trigger names
             'HLT_Ele105_CaloIdVT_GsfTrkIdT_v',
-            'HLT_Mu45_eta2p1_v',
             'HLT_Ele115_CaloIdVT_GsfTrkIdT_v',
-            'HLT_Mu50_v',
-            'HLT_Ele27_WPLoose_Gsf_v',
+            'HLT_Ele22_eta2p1_WPLoose_Gsf_v',
+            'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v',
+	    'HLT_Ele27_WPTight_Gsf_v',
+            'HLT_Ele27_eta2p1_WPLoose_Gsf_v',
+            'HLT_Ele27_eta2p1_WPTight_Gsf_v',
+            'HLT_Ele32_eta2p1_WPTight_Gsf_v',
+	    'HLT_Ele32_WPTight_Gsf_v',
+            'HLT_IsoTkMu20_v',
+	    'HLT_IsoTkMu22_eta2p1_v',
+	    'HLT_IsoTkMu24_v',
+	    'HLT_IsoTkMu24_eta2p1_v',
+	    'HLT_IsoTkMu27_v',
+            'HLT_IsoMu20_v',
+            'HLT_IsoMu22_v',
+	    'HLT_IsoMu22_eta2p1_v',
+            'HLT_IsoMu24_v',
+	    'HLT_IsoMu24_eta2p1_v',
+            'HLT_IsoMu27_v',
             'HLT_Mu24_eta2p1_v',
-            'HLT_Mu24_v',
+            'HLT_Mu45_eta2p1_v',
+            'HLT_Mu50_v',
             'HLT_PFJet450_v',
             'HLT_PFJet500_v',
-            'HLT_AK8PFJet360_TrimMass30_v',
-            'HLT_Ele22_eta2p1_WPLoose_Gsf_v',
-            'HLT_Ele22_eta2p1_WPTight_Gsf_v',
-            'HLT_Ele23_WPLoose_Gsf_v',
-            'HLT_Ele27_WPLoose_Gsf_v',
-            'HLT_Ele27_eta2p1_WPLoose_Gsf_v',
-            'HLT_Ele32_eta2p1_WPTight_Gsf_v',
-            'HLT_Ele27_eta2p1_WPTight_Gsf_v',
-            'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v',
-            'HLT_IsoMu27_v',
-            'HLT_IsoMu24_v',
-            'HLT_IsoMu22_v',
-            'HLT_IsoMu20_v',
-            'HLT_IsoTkMu20_v',
-            'HLT_Ele22_eta2p1_WP75_Gsf_v1',
-            'HLT_Ele27_WP85_Gsf_v1',
-            'HLT_Ele27_eta2p1_WP75_Gsf_v1',
-            'HLT_Ele32_eta2p1_WP75_Gsf_v1'
+            'HLT_AK8PFJet360_TrimMass30_v'
             )
         )
 
@@ -312,30 +311,6 @@ isRun2016GH=False
       minNumber = 1,
       )
 
-    '''
-    jecLevelsAK8 = [
-        "Spring16_25nsV3_DATA_L1FastJet_AK8PFchs.txt",
-        "Spring16_25nsV3_DATA_L2Relative_AK8PFchs.txt",
-        "Spring16_25nsV3_DATA_L3Absolute_AK8PFchs.txt"
-        ]
-    jecLevelsAK4 = [
-#        "AAA/src/AllHadronicSUSY/PHYS14_25_V2_All_L1FastJet_AK4PFchs.txt",
-        "Spring16_25nsV3_DATA_L1FastJet_AK4PFchs.txt",
-        "Spring16_25nsV3_DATA_L2Relative_AK4PFchs.txt",
-        "Spring16_25nsV3_DATA_L3Absolute_AK4PFchs.txt"
-        ]
-    if (MC):
-        jecLevelsAK8 = [
-            "Spring16_25nsV3_MC_L1FastJet_AK8PFchs.txt",
-            "Spring16_25nsV3_MC_L2Relative_AK8PFchs.txt",
-            "Spring16_25nsV3_MC_L3Absolute_AK8PFchs.txt"
-            ]
-        jecLevelsAK4 = [
-            "Spring16_25nsV3_MC_L1FastJet_AK4PFchs.txt",
-            "Spring16_25nsV3_MC_L2Relative_AK4PFchs.txt",
-            "Spring16_25nsV3_MC_L3Absolute_AK4PFchs.txt"
-            ]
-    '''
 #    print cms.string(os.environ['CMSSW_BASE']+"/src/AllHadronicSUSY/PHYS14_25_V2_All_L1FastJet_AK8PFchs.txt")
 
     process.substructureSequence = cms.Sequence()
@@ -1074,16 +1049,15 @@ isRun2016GH=False
     )
 
 
-#    JECstring="Spring16_25nsV10"
-    JECstring="Spring16_25nsV3"
+    JECstring="Spring16_23Sep2016V2"
     if (isRun2016BCD):
-        JECstring="Spring16_25nsV10BCD"
-    elif (isRun2016E):
-        JECstring="Spring16_25nsV10E"
-    elif (isRun2016F):
-        JECstring="Spring16_25nsV10F"
-    elif (isRun2016GH):
-        JECstring="Spring16_25nsV10p2"
+        JECstring="Spring16_23Sep2016BCDV2"
+    elif (isRun2016EF):
+        JECstring="Spring16_23Sep2016EFV2"
+    elif (isRun2016G):
+        JECstring="Spring16_23Sep2016GV2"
+    elif (isRun2016H):
+        JECstring="Spring16_23Sep2016HV2"
     
 
     L1string_AK4_data=JECstring+"_DATA_L1FastJet_AK4PFchs.txt"
