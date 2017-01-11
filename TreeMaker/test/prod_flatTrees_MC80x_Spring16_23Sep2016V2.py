@@ -7,8 +7,7 @@ config.General.workArea = 'RSGraviton1000'
 config.section_('JobType')
 config.JobType.psetName = 'TreeMaker/test/runMakeTreeFromMiniAOD_cfg.py'
 config.JobType.pluginName = 'Analysis'
-#config.JobType.pyCfgParams = ['global_tag=80X_mcRun2_asymptotic_2016_v3','leptonFilter=False', 'MC=True', 'isCrab=True', 'DoJECCorrection=True', 'isHBHERun2015D=False', 'DoPuppi=True','ReDoPruningAndSoftdropPuppi=True']
-config.JobType.pyCfgParams = ['global_tag=80X_mcRun2_asymptotic_2016_TrancheIV_v7','leptonFilter=False', 'MC=True', 'isCrab=True', 'DoJECCorrection=True', 'isHBHERun2015D=False', 'DoPuppi=True','ReDoPruningAndSoftdropPuppi=True']
+config.JobType.pyCfgParams = ['global_tag=80X_mcRun2_asymptotic_2016_TrancheIV_v7','leptonFilter=False', 'MC=True', 'isCrab=True', 'DoJECCorrection=True', 'DoPuppi=True','ReDoPruningAndSoftdropPuppi=True']
 config.JobType.inputFiles = ['Spring16_23Sep2016V2_MC_L1FastJet_AK8PFchs.txt','Spring16_23Sep2016V2_MC_L2Relative_AK8PFchs.txt','Spring16_23Sep2016V2_MC_L3Absolute_AK8PFchs.txt','Spring16_23Sep2016V2_MC_L1FastJet_AK4PFchs.txt','Spring16_23Sep2016V2_MC_L2Relative_AK4PFchs.txt','Spring16_23Sep2016V2_MC_L3Absolute_AK4PFchs.txt','Spring16_23Sep2016V2_MC_Uncertainty_AK4PFchs.txt','Spring16_23Sep2016V2_MC_Uncertainty_AK8PFchs.txt','Spring16_23Sep2016V2_MC_L1FastJet_AK8PFPuppi.txt','Spring16_23Sep2016V2_MC_L2Relative_AK8PFPuppi.txt','Spring16_23Sep2016V2_MC_L3Absolute_AK8PFPuppi.txt','Spring16_23Sep2016V2_MC_L1FastJet_AK4PFPuppi.txt','Spring16_23Sep2016V2_MC_L2Relative_AK4PFPuppi.txt','Spring16_23Sep2016V2_MC_L3Absolute_AK4PFPuppi.txt','Spring16_23Sep2016V2_MC_Uncertainty_AK4PFPuppi.txt','Spring16_23Sep2016V2_MC_Uncertainty_AK8PFPuppi.txt' ]
 config.JobType.allowUndistributedCMSSW = True
 #config.JobType.maxMemoryMB = 2500    # 2.5 GB     
@@ -62,15 +61,13 @@ if __name__ == '__main__':
     p.start()
     p.join()
 
-    '''
-    config.General.requestName = 'DYJetsToLL_amcatnlo'
-    config.Data.inputDataset = ''
-    config.Data.outLFNDirBase = '/store/user/rasharma/aQGC_Ntuples/FirstStepOutput/Jan102016/DYJetsToLL_amcatnlo/'
+    config.General.requestName = 'DYJetsToLL_amcatnlo_ext1'
+    config.Data.inputDataset = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM'
+    config.Data.outLFNDirBase = '/store/user/rasharma/aQGC_Ntuples/FirstStepOutput/Jan102016/DYJetsToLL_amcatnlo_ext1/'
     from multiprocessing import Process
     p = Process(target=submit, args=(config,))
     p.start()
     p.join()
-    '''
 
     config.General.requestName = 'WJets_amcatnlo'
     config.Data.inputDataset = '/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'
@@ -156,7 +153,7 @@ if __name__ == '__main__':
     p.start()
     p.join()
     
-    config.eneral.requestName = 'WJets600'
+    config.General.requestName = 'WJets600'
     config.Data.inputDataset = '/WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/user/rasharma/aQGC_Ntuples/FirstStepOutput/Jan102016/WJets600/'
     from multiprocessing import Process
@@ -164,7 +161,7 @@ if __name__ == '__main__':
     p.start()
     p.join()
 
-    config.eneral.requestName = 'WJets600ext1'
+    config.General.requestName = 'WJets600ext1'
     config.Data.inputDataset = '/WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM'
     config.Data.outLFNDirBase = '/store/user/rasharma/aQGC_Ntuples/FirstStepOutput/Jan102016/WJets600ext1/'
     from multiprocessing import Process

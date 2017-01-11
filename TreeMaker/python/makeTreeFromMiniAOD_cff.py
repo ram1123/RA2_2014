@@ -28,7 +28,6 @@ genJetsAK8Reclustering=True,
 genJetsAK10Reclustering=False,
 genJetsAK12Reclustering=False,
 customizeHBHENoiseForEarlyData=False,
-customizeHBHENoiseForRun2015D=True,
 jsonFileName="",
 isCrab=False,
 reDoPruningAndSoftdrop=False,
@@ -39,13 +38,7 @@ isRun2016G=False,
 isRun2016H=False
 ):
 
-    if (MC):
-#        process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-        process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
-        customizeHBHENoiseForRun2015D=False
-    else:
-        process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
-
+    process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
     process.GlobalTag.globaltag = Global_Tag
 
     ## --- Log output ------------------------------------------------------
@@ -1362,7 +1355,6 @@ isRun2016H=False
     #### -----> HBHE noise filter <----- ####
 ##___________________________HCAL_Noise_Filter________________________________||
     process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
-#    if customizeHBHENoiseForRun2015D:
     process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
     process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
     process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
@@ -1393,12 +1385,6 @@ isRun2016H=False
 #        )
 
 #    process.metFilters = cms.Sequence()
-#    if customizeHBHENoiseForRun2015D and not MC:
-#    process.metFilters = cms.Sequence(process.metBits_miniAOD
-#                                          *process.HBHENoiseFilterResultProducer
-#                                          *process.ApplyBaselineHBHENoiseFilter
-#                                          *process.ApplyBaselineHBHEIsoNoiseFilter
-#                                      )
 
 ########## save flags for filters
     from AllHadronicSUSY.Utils.filterproducer_cfi import filterProducer
@@ -1472,7 +1458,7 @@ isRun2016H=False
     	VarsRecoCand = RecoCandVector,
     	#VarsRecoCand = cms.vstring('selectedIDIsoMuons','selectedIDIsoElectrons','IsolatedTracks','HTJets'),
     	VarsDouble  	  = cms.vstring('WeightProducer:weight(Weight)','MET:Pt(METPt)','MET:Phi(METPhi)','MET:PtUp(METPtUp)','MET:PhiUp(METPhiUp)','MET:PtDown(METPtDown)','MET:PhiDown(METPhiDown)','MET:PtRaw(METPtRaw)','MET:PhiRaw(METPhiRaw)','MET:CaloMetPt(CaloMetPt)','MET:CaloMetPhi(CaloMetPhi)','GenEventInfo:genEventWeight(genEventWeight)','GenEventInfo:PUWeight(PUWeight)','METpuppi:Pt(METpuppiPt)','METpuppi:Phi(METpuppiPhi)','METpuppi:PtUp(METpuppiPtUp)','METpuppi:PhiUp(METpuppiPhiUp)','METpuppi:PtDown(METpuppiPtDown)','METpuppi:PhiDown(METpuppiPhiDown)','METpuppi:PtRaw(METpuppiPtRaw)','METpuppi:PhiRaw(METpuppiPhiRaw)','METpuppi:CaloMetPt(METpuppiCaloMetPt)','METpuppi:CaloMetPhi(METpuppiCaloMetPhi)'), #'MHT','HT','DeltaPhi:DeltaPhi1(DeltaPhi1)','DeltaPhi:DeltaPhi2(DeltaPhi2)','DeltaPhi:DeltaPhi3(DeltaPhi3)',
-    	VarsInt = cms.vstring('NJets','NVtx','GenEventInfo:npT(npT)','FilterProducer:passFilterHBHE(passFilterHBHE)','FilterProducer:passFilterHBHEIso(passFilterHBHEIso)','FilterProducer:passFilterCSCHalo(passFilterCSCHalo)','FilterProducer:passFilterGoodVtx(passFilterGoodVtx)','FilterProducer:passFilterEEBadSC(passFilterEEBadSC)','FilterProducer:passFilterEcalDeadCellTriggerPrimitive(passFilterEcalDeadCellTriggerPrimitive)','FilterProducer:passFilterGlobalTightHalo2016(passFilterGlobalTightHalo2016)','FilterProducer:passFilterBadChCand(passFilterBadChCand)','FilterProducer:passFilterBadPFMuon(passFilterBadPFMuon)','FilterProducer:passFilterHBHELooseRerun(passFilterHBHELooseRerun)','FilterProducer:passFilterHBHETightRerun(passFilterHBHETightRerun)','FilterProducer:passFilterHBHEIsoRerun(passFilterHBHEIsoRerun)'),#,'Leptons'),
+    	VarsInt = cms.vstring('NJets','NVtx','GenEventInfo:npT(npT)','FilterProducer:passFilterHBHE(passFilterHBHE)','FilterProducer:passFilterHBHEIso(passFilterHBHEIso)','FilterProducer:passFilterCSCHalo(passFilterCSCHalo)','FilterProducer:passFilterGoodVtx(passFilterGoodVtx)','FilterProducer:passFilterEEBadSC(passFilterEEBadSC)','FilterProducer:passFilterEcalDeadCellTriggerPrimitive(passFilterEcalDeadCellTriggerPrimitive)','FilterProducer:passFilterGlobalTightHalo2016(passFilterGlobalTightHalo2016)','FilterProducer:passFilterBadChCand(passFilterBadChCand)','FilterProducer:passFilterBadPFMuon(passFilterBadPFMuon)'),#,'Leptons'),
     #	VarsDoubleNamesInTree = cms.vstring('WeightProducer'),
 #        VarsBool = cms.vstring('FilterProducer:passFilterEEBadSC(passFilterEEBadSC)'),
         debug = debug,
