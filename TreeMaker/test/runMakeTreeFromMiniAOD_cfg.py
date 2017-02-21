@@ -115,4 +115,3 @@ makeTreeTreeFromMiniAOD(process,
                 isRun2016G=IsRun2016G,
                 isRun2016H=IsRun2016H
                 )
-
